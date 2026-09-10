@@ -10,14 +10,12 @@ namespace EcommerceApp.Controllers
     [Authorize]
     public class ProductsController(ApplicationDbContext context) : Controller
     {
-        [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
             var products = await context.Products.AsNoTracking().ToListAsync();
             return View(products);
         }
 
-        [AllowAnonymous]
         public async Task<IActionResult> Details(int id)
         {
             var product = await context.Products.FindAsync(id);

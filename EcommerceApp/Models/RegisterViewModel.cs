@@ -16,7 +16,7 @@ namespace EcommerceApp.Models
 
 
 
-        [Required, StringLength(100, MinimumLength = 6), DataType(DataType.Password)]
+        [Required, StringLength(100, MinimumLength = 3), DataType(DataType.Password)]
 
         public string Password { get; set; } = string.Empty;
 

@@ -1,13 +1,14 @@
-﻿@model LoginViewModel
+﻿@model RegisterViewModel
+@using EcommerceApp.Models 
 @{
-    ViewData["Title"] = "Iniciar sesión";
+    ViewData["Title"] = "Crear cuenta";
     Layout = null;
 }
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="utf-8" />
-    <title>Iniciar sesión</title>
+    <title>Crear cuenta</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="~/css/glass-theme.css" />
@@ -17,10 +18,14 @@
     <div class="blob blob-2"></div>
     <div class="glass-wrap">
         <div class="glass-card">
-            <h1>Bienvenido</h1>
-            <p class="sub">Iniciá sesión para ver el catálogo</p>
-            <form asp-action="Login" method="post">
+            <h1>Crear cuenta</h1>
+            <p class="sub">Registrate para empezar a comprar</p>
+            <form asp-action="Register" method="post">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <label asp-for="FullName">Nombre completo</label>
+                <input asp-for="FullName" class="form-control" placeholder="Tu nombre" />
+                <span asp-validation-for="FullName" class="text-danger"></span>
+
                 <label asp-for="Email">Correo</label>
                 <input asp-for="Email" class="form-control" placeholder="vos@ejemplo.com" />
                 <span asp-validation-for="Email" class="text-danger"></span>
@@ -29,13 +34,12 @@
                 <input asp-for="Password" class="form-control" placeholder="••••••••" />
                 <span asp-validation-for="Password" class="text-danger"></span>
 
-                <button type="submit" class="glass-btn">Ingresar</button>
+                <button type="submit" class="glass-btn">Crear cuenta</button>
             </form>
             <div class="glass-footer-link">
-                ¿No tenés cuenta? <a asp-action="Register">Registrate</a>
+                ¿Ya tenés cuenta? <a asp-action="Login">Iniciá sesión</a>
             </div>
-
-
+        </div>
     </div>
 </body>
 </html>

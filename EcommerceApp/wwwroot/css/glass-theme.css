@@ -1,0 +1,329 @@
+﻿:root {
+    --bg: #05070D;
+    --glass: rgba(255,255,255,.07);
+    --glass-border: rgba(255,255,255,.16);
+    --violet: #7C5CFC;
+    --cyan: #22D3EE;
+    --text: #F5F6FA;
+    --muted: #9AA1B4;
+}
+
+body.glass-page {
+    margin: 0;
+    min-height: 100vh;
+    background: var(--bg);
+    font-family: 'Inter',sans-serif;
+    color: var(--text);
+    overflow-x: hidden;
+    position: relative;
+}
+
+.blob {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(90px);
+    opacity: .5;
+    z-index: 0;
+    animation: floatBlob 16s ease-in-out infinite;
+    pointer-events: none;
+}
+
+.blob-1 {
+    width: 420px;
+    height: 420px;
+    background: var(--violet);
+    top: -120px;
+    left: -100px;
+}
+
+.blob-2 {
+    width: 380px;
+    height: 380px;
+    background: var(--cyan);
+    bottom: -140px;
+    right: -80px;
+    animation-delay: -7s;
+}
+
+@keyframes floatBlob {
+    0%,100% {
+        transform: translate(0,0);
+    }
+
+    50% {
+        transform: translate(40px,-30px);
+    }
+}
+
+.glass-wrap {
+    position: relative;
+    z-index: 2;
+    min-height: 80vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 16px;
+}
+
+.glass-card {
+    width: 100%;
+    max-width: 380px;
+    padding: 40px 32px;
+    border-radius: 24px;
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(24px) saturate(140%);
+    -webkit-backdrop-filter: blur(24px) saturate(140%);
+    box-shadow: 0 8px 32px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.1);
+    animation: riseIn .6s cubic-bezier(.16,1,.3,1);
+}
+
+@keyframes riseIn {
+    from {
+        opacity: 0;
+        transform: translateY(16px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.glass-card h1 {
+    font-family: 'Space Grotesk',sans-serif;
+    font-size: 26px;
+    margin: 0 0 6px;
+}
+
+.glass-card .sub {
+    color: var(--muted);
+    margin: 0 0 28px;
+    font-size: 14px;
+}
+
+.glass-card label {
+    display: block;
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 6px;
+}
+
+.glass-card .form-control {
+    width: 100%;
+    padding: 12px 14px;
+    margin-bottom: 16px;
+    border-radius: 12px;
+    background: rgba(255,255,255,.05) !important;
+    border: 1px solid rgba(255,255,255,.12) !important;
+    color: var(--text) !important;
+    font-family: 'Inter';
+    font-size: 14px;
+    outline: none;
+    transition: .2s;
+}
+
+    .glass-card .form-control:focus {
+        border-color: var(--cyan) !important;
+        background: rgba(255,255,255,.08) !important;
+        box-shadow: none;
+    }
+
+    .glass-card .form-control::placeholder {
+        color: #5c6378;
+    }
+
+.glass-btn {
+    width: 100%;
+    padding: 13px;
+    border: none;
+    border-radius: 12px;
+    font-family: 'Space Grotesk',sans-serif;
+    font-weight: 600;
+    font-size: 15px;
+    color: #05070D;
+    cursor: pointer;
+    background: linear-gradient(135deg,var(--cyan),var(--violet));
+    transition: transform .15s ease, box-shadow .15s ease;
+}
+
+    .glass-btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 6px 20px rgba(124,92,252,.35);
+    }
+
+.glass-footer-link {
+    text-align: center;
+    margin-top: 18px;
+    font-size: 13px;
+    color: var(--muted);
+}
+
+    .glass-footer-link a {
+        color: var(--cyan);
+        text-decoration: none;
+    }
+
+.text-danger {
+    color: #FF6B8A !important;
+    font-size: 12.5px;
+}
+/* ---- Layout general de la app con el mismo tema ---- */
+.app-shell {
+    position: relative;
+    z-index: 2;
+}
+
+/* ---- Grilla de productos ---- */
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 20px;
+    padding: 24px 0;
+}
+
+.product-card {
+    position: relative;
+    border-radius: 20px;
+    padding: 22px;
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(20px) saturate(140%);
+    -webkit-backdrop-filter: blur(20px) saturate(140%);
+    box-shadow: 0 6px 24px rgba(0,0,0,.35);
+    transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+}
+
+    .product-card:hover {
+        transform: translateY(-4px);
+        border-color: rgba(34,211,238,.4);
+        box-shadow: 0 12px 32px rgba(34,211,238,.15);
+    }
+
+.category-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--cyan);
+    background: rgba(34,211,238,.1);
+    border: 1px solid rgba(34,211,238,.25);
+    padding: 4px 10px;
+    border-radius: 999px;
+    margin-bottom: 14px;
+}
+
+.product-card h3 {
+    font-family: 'Space Grotesk',sans-serif;
+    font-size: 17px;
+    margin: 0 0 8px;
+    color: var(--text);
+}
+
+.product-card p.desc {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.5;
+    margin: 0 0 16px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.product-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+}
+
+.price {
+    font-family: 'Space Grotesk',sans-serif;
+    font-size: 19px;
+    font-weight: 700;
+    background: linear-gradient(135deg,var(--cyan),var(--violet));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.stock-badge {
+    font-size: 11.5px;
+    padding: 3px 9px;
+    border-radius: 999px;
+}
+
+.stock-in {
+    background: rgba(74,222,128,.12);
+    color: #4ADE80;
+    border: 1px solid rgba(74,222,128,.3);
+}
+
+.stock-out {
+    background: rgba(255,107,138,.12);
+    color: #FF6B8A;
+    border: 1px solid rgba(255,107,138,.3);
+}
+
+.card-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-glass-sm {
+    flex: 1;
+    text-align: center;
+    padding: 8px 10px;
+
+    .product-image {
+        height: 110px;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 42px;
+        margin-bottom: 16px;
+        background-size: cover;
+        background-position: center;
+    }
+
+    .cat-gpu {
+        background: linear-gradient(135deg,#7C5CFC,#22D3EE);
+    }
+
+    .cat-cpu {
+        background: linear-gradient(135deg,#FF4FD8,#7C5CFC);
+    }
+
+    .cat-ram {
+        background: linear-gradient(135deg,#22D3EE,#4ADE80);
+    }
+
+    .cat-almacenamiento {
+        background: linear-gradient(135deg,#4ADE80,#22D3EE);
+    }
+
+    .cat-placamadre {
+        background: linear-gradient(135deg,#7C5CFC,#FF4FD8);
+    }
+
+    .cat-fuente {
+        background: linear-gradient(135deg,#FACC15,#FF4FD8);
+    }
+
+    .cat-refrigeracion {
+        background: linear-gradient(135deg,#22D3EE,#7C5CFC);
+    }
+
+    .cat-gabinete {
+        background: linear-gradient(135deg,#9AA1B4,#7C5CFC);
+    }
+
+    .cat-monitor {
+        background: linear-gradient(135deg,#FF4FD8,#22D3EE);
+    }
+
+    .cat-periferico {
+        background: linear-gradient(135deg,#7C5CFC,#4ADE80);
+    }

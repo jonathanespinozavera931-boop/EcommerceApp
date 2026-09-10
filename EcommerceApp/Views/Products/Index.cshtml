@@ -1,27 +1,69 @@
-﻿@model List<EcommerceApp.Models.Product>
-<h2>Productos</h2>
-@if (User.Identity?.IsAuthenticated == true && User.IsInRole("Admin"))
-{
-    <a href="@Url.Action("Create")" class="btn btn-primary mb-3">Crear Producto</a>
-}
-<div class="row">
-    @foreach (var product in Model)
+﻿@model IEnumerable<EcommerceApp.Models.Product>
+@{
+    ViewData["Title"] = "Componentes";
+    bool isAdmin = User.IsInRole("Admin");
+
+    string IconFor(string? category) => category switch
     {
-        <div class="col-md-4 mb-4">
-            <div class="card">
-                <img src="@(product.ImageUrl ?? "/images/default-product.jpg")" class="card-img-top" alt="@product.Name" />
-                <div class="card-body">
-                    <h5 class="card-title">@product.Name</h5>
-                    <p class="card-text">@product.Description</p>
-                    <p class="card-text"><strong>Precio:</strong> @product.Price.ToString("C")</p>
-                    <p class="card-text"><strong>Stock:</strong> @product.Stock</p>
-                    <a href="@Url.Action("Details", new { id = product.Id })" class="btn btn-info">Ver</a>
-                    @if (User.Identity?.IsAuthenticated == true && User.IsInRole("Admin"))
-                    {
-                        <a href="@Url.Action("Edit", new { id = product.Id })" class="btn btn-warning">Editar</a>
-                        <a href="@Url.Action("Delete", new { id = product.Id })" class="btn btn-danger">Eliminar</a>
-                    }
-                </div>
+        "GPU" => "🎮",
+        "CPU" => "🧠",
+        "RAM" => "💾",
+        "Almacenamiento" => "💿",
+        "Placa Madre" => "🔌",
+        "Fuente" => "⚡",
+        "Refrigeración" => "❄️",
+        "Gabinete" => "🖥️",
+        "Monitor" => "🖵",
+        "Periférico" => "🖱️",
+        _ => "🔧"
+    };
+}
+
+<div class="page-header">
+    <h1>Componentes</h1>
+    @if (isAdmin)
+    {
+        <a asp-action="Create" class="btn-glass-sm primary" style="flex:none; padding:10px 18px;">+ Crear Producto</a>
+    }
+</div>
+
+<div class="product-grid">
+    @foreach (var item in Model)
+    {
+
+        <div class="product-card">
+            @{
+                var catClass = "cat-" + (item.Category ?? "").Replace(" ", "").ToLower();
+            }
+            @if (!string.IsNullOrEmpty(item.ImageUrl))
+            {
+                <div class="product-image" style="background-image:url('@item.ImageUrl');"></div>
+            }
+            else
+            {
+                <div class="product-image @catClass"><span>@IconFor(item.Category)</span></div>
+            }
+            <span class="category-badge">@IconFor(item.Category) @item.Category</span>
+            <h3>@item.Name</h3>
+            <p class="desc">@item.Description</p>
+            <div class="product-footer">
+                <span class="price">Bs @item.Price.ToString("N2")</span>
+                @if (item.Stock > 0)
+                {
+                    <span class="stock-badge stock-in">En stock (@item.Stock)</span>
+                }
+                else
+                {
+                    <span class="stock-badge stock-out">Agotado</span>
+                }
+            </div>
+            <div class="card-actions">
+                <a asp-action="Details" asp-route-id="@item.Id" class="btn-glass-sm">Ver</a>
+                @if (isAdmin)
+                {
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn-glass-sm">Editar</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn-glass-sm">Borrar</a>
+                }
             </div>
         </div>
     }
