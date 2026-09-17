@@ -1,7 +1,13 @@
-**/.git
-**/.vs
-**/.vscode
-**/bin
-**/obj
-**/node_modules
-**/Dockerfile*
+# Ignorar configuración local con secretos
+appsettings.Development.json
+
+# Ignorar archivos de compilación de .NET
+bin/
+obj/
+.vs/
+*.user
+*.suo
+
+# Ignorar archivos de Docker
+Dockerfile*
+.dockerignore
