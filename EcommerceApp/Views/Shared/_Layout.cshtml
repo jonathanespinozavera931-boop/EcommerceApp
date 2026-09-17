@@ -3,11 +3,11 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - EcommerceApp</title>
+    <title>@ViewData["Title"] - NexHard</title>
     <script type="importmap"></script>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/EcommerceApp.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/NexHard.styles.css" asp-append-version="true" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="~/css/glass-theme.css" />
@@ -17,58 +17,40 @@
     <div class="blob blob-2"></div>
 
     <div class="app-shell">
-        <header>
-            <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-                <div class="container-fluid">
-                    <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">EcommerceApp</a>
-                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                            aria-expanded="false" aria-label="Toggle navigation">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
-                    <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                        <ul class="navbar-nav ms-auto">
-                            @if (User.Identity != null && User.Identity.IsAuthenticated)
-                            {
-                                <li class="nav-item d-flex align-items-center me-2">
-                                    <span class="nav-link text-light">Hola, @User.Identity.Name</span>
-                                </li>
-                                <li class="nav-item">
-                                    <form asp-controller="Account" asp-action="Logout" method="post">
-                                        <button type="submit" class="nav-link btn btn-link text-light">Cerrar sesión</button>
-                                    </form>
-                                </li>
-                            }
-                            else
-                            {
-                                <li class="nav-item">
-                                    <a class="nav-link text-light" asp-controller="Account" asp-action="Login">Iniciar sesión</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-light" asp-controller="Account" asp-action="Register">Registrarse</a>
-                                </li>
-                            }
-                        </ul>
-                        <ul class="navbar-nav flex-grow-1">
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                            </li>
-                        </ul>
-                    </div>
+        <nav class="glass-navbar">
+            <div class="container d-flex align-items-center justify-content-between">
+                <a class="brand-gradient" asp-area="" asp-controller="Home" asp-action="Index">NexHard</a>
+                <div class="d-flex align-items-center gap-1">
+                    <a class="nav-pill" asp-controller="Home" asp-action="Index">Home</a>
+                    <a class="nav-pill" asp-controller="Products" asp-action="Index">Componentes</a>
+                    @if (User.Identity != null && User.Identity.IsAuthenticated)
+                    {
+                        <a class="nav-pill cart-pill" asp-controller="Products" asp-action="Index">
+                            🛒<span class="cart-badge" id="cartBadge">0</span>
+                        </a>
+                        <span class="nav-pill">Hola, @User.Identity.Name</span>
+                        <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
+                            <button type="submit" class="nav-pill cta">Cerrar sesión</button>
+                        </form>
+                    }
+                    else
+                    {
+                        <a class="nav-pill" asp-controller="Account" asp-action="Register">Registrarse</a>
+                        <a class="nav-pill cta" asp-controller="Account" asp-action="Login">Iniciar sesión</a>
+                    }
                 </div>
-            </nav>
-        </header>
+            </div>
+        </nav>
+
         <div class="container">
             <main role="main" class="pb-3">
                 @RenderBody()
             </main>
         </div>
 
-        <footer class="border-top footer text-muted">
+        <footer class="border-top footer text-muted" style="border-color:rgba(255,255,255,.1) !important;">
             <div class="container">
-                &copy; 2026 - EcommerceApp - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                &copy; 2026 - NexHard - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
             </div>
         </footer>
     </div>
