@@ -7,7 +7,7 @@ using EcommerceApp.Models;
 namespace EcommerceApp.Controllers
 {
     // Constructor primario: "context" reemplaza el campo _context de antes.
-    [Authorize]
+    // [Authorize] <--- ESTA LÍNEA SE ELIMINÓ PARA QUE CUALQUIERA PUEDA VER EL CATÁLOGO
     public class ProductsController(ApplicationDbContext context) : Controller
     {
         public async Task<IActionResult> Index()
