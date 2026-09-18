@@ -20,11 +20,17 @@
         <nav class="glass-navbar">
             <div class="container d-flex align-items-center justify-content-between">
                 <a class="brand-gradient" asp-area="" asp-controller="Home" asp-action="Index">NexHard</a>
-                <div class="d-flex align-items-center gap-1">
+                <div class="d-flex align-items-center gap-1 flex-wrap">
                     <a class="nav-pill" asp-controller="Home" asp-action="Index">Home</a>
                     <a class="nav-pill" asp-controller="Products" asp-action="Index">Componentes</a>
+
                     @if (User.Identity != null && User.Identity.IsAuthenticated)
                     {
+                        <!-- Módulos de Administración (solo logueados) -->
+                        <a class="nav-pill" asp-controller="Proveedores" asp-action="Index">Proveedores</a>
+                        <a class="nav-pill" asp-controller="Clientes" asp-action="Index">Clientes</a>
+                        <a class="nav-pill" asp-controller="OrdenesCompra" asp-action="Index">Órdenes</a>
+
                         <a class="nav-pill cart-pill" asp-controller="Products" asp-action="Index">
                             🛒<span class="cart-badge" id="cartBadge">0</span>
                         </a>
