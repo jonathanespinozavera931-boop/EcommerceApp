@@ -1,4 +1,5 @@
 ﻿using EcommerceApp.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -6,16 +7,17 @@ using Microsoft.AspNetCore.Authentication;
 
 namespace EcommerceApp.Controllers
 {
-    // Constructor primario: userManager y signInManager quedan disponibles
-    // en toda la clase sin declarar campos ni constructor explícito.
     public class AccountController(
         UserManager<ApplicationUser> userManager,
         SignInManager<ApplicationUser> signInManager) : Controller
     {
+        // ==================== LOGIN ====================
         [HttpGet]
+        [AllowAnonymous]
         public IActionResult Login() => View();
 
         [HttpPost]
+        [AllowAnonymous]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
@@ -31,10 +33,13 @@ namespace EcommerceApp.Controllers
             return View(model);
         }
 
+        // ==================== REGISTER ====================
         [HttpGet]
+        [AllowAnonymous]
         public IActionResult Register() => View();
 
         [HttpPost]
+        [AllowAnonymous]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterViewModel model)
         {
@@ -45,12 +50,14 @@ namespace EcommerceApp.Controllers
                 UserName = model.Email,
                 Email = model.Email,
                 FullName = model.FullName,
-                Address = model.Address
+                Address = model.Address,
+                EmailConfirmed = true
             };
 
             var result = await userManager.CreateAsync(user, model.Password);
             if (result.Succeeded)
             {
+                await userManager.AddToRoleAsync(user, "User");
                 await signInManager.SignInAsync(user, isPersistent: false);
                 return RedirectToAction("Index", "Products");
             }
@@ -61,6 +68,7 @@ namespace EcommerceApp.Controllers
             return View(model);
         }
 
+        // ==================== LOGOUT ====================
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout()
@@ -68,8 +76,11 @@ namespace EcommerceApp.Controllers
             await signInManager.SignOutAsync();
             return RedirectToAction("Index", "Home");
         }
-    
-    [HttpGet]
+
+        // ==================== LOGIN CON GOOGLE ====================
+        [HttpPost]  // ⬅️ CLAVE: acepta POST (el botón manda POST)
+        [HttpGet]
+        [AllowAnonymous]
         public IActionResult ExternalLogin(string provider = "Google")
         {
             var redirectUrl = Url.Action("ExternalLoginCallback", "Account");
@@ -78,6 +89,7 @@ namespace EcommerceApp.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> ExternalLoginCallback()
         {
             var info = await signInManager.GetExternalLoginInfoAsync();
@@ -87,15 +99,21 @@ namespace EcommerceApp.Controllers
             if (result.Succeeded)
                 return RedirectToAction("Index", "Products");
 
-            var email = info.Principal.FindFirstValue(System.Security.Claims.ClaimTypes.Email);
-            var name = info.Principal.FindFirstValue(System.Security.Claims.ClaimTypes.Name);
+            var email = info.Principal.FindFirstValue(ClaimTypes.Email);
+            var name = info.Principal.FindFirstValue(ClaimTypes.Name);
 
             if (email == null) return RedirectToAction("Login");
 
             var user = await userManager.FindByEmailAsync(email);
             if (user == null)
             {
-                user = new ApplicationUser { UserName = email, Email = email, FullName = name ?? email, EmailConfirmed = true };
+                user = new ApplicationUser
+                {
+                    UserName = email,
+                    Email = email,
+                    FullName = name ?? email,
+                    EmailConfirmed = true
+                };
                 await userManager.CreateAsync(user);
                 await userManager.AddToRoleAsync(user, "User");
             }

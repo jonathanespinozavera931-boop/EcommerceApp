@@ -8,14 +8,13 @@ namespace EcommerceApp.Models
         [Key]
         public int Id { get; set; }
 
-        public DateTime Fecha { get; set; } = DateTime.Now;
+        // ⬇️ CAMBIA DateTime.Now por DateTime.UtcNow
+        public DateTime Fecha { get; set; } = DateTime.UtcNow;
 
-        // Relación con Cliente
         public int ClienteId { get; set; }
         [ForeignKey("ClienteId")]
         public Cliente? Cliente { get; set; }
 
-        // Relación con Producto (Componente)
         public int ProductoId { get; set; }
         [ForeignKey("ProductoId")]
         public Product? Producto { get; set; }
@@ -25,6 +24,6 @@ namespace EcommerceApp.Models
         [Column(TypeName = "decimal(18,2)")]
         public decimal Total { get; set; }
 
-        public string Estado { get; set; } = "Pendiente"; // Ej: Pendiente, Pagado, Enviado
+        public string Estado { get; set; } = "Pendiente";
     }
 }

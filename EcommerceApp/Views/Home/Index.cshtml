@@ -6,10 +6,23 @@
     <p class="eyebrow">BIENVENIDO A:</p>
     <h1 class="site-name">NexHard</h1>
     <p class="tagline">Tu tienda de componentes de PC — GPUs, procesadores, memorias y más, curados para gamers y makers.</p>
+
     <div class="cta-row">
-        <a class="cta-btn" asp-controller="Account" asp-action="Login">Iniciar sesión</a>
-        <a class="cta-btn outline" asp-controller="Account" asp-action="Register">Crear cuenta</a>
+        @if (User.Identity != null && User.Identity.IsAuthenticated)
+        {
+            <!-- Si YA está logueado: muestra botón para ver el catálogo -->
+            <a class="cta-btn" asp-controller="Products" asp-action="Index">
+                Ver Componentes →
+            </a>
+        }
+        else
+        {
+            <!-- Si NO está logueado: muestra login y registro -->
+            <a class="cta-btn" asp-controller="Account" asp-action="Login">Iniciar sesión</a>
+            <a class="cta-btn outline" asp-controller="Account" asp-action="Register">Crear cuenta</a>
+        }
     </div>
+
     <div class="contact-row">
         <span>www.nexhard.com</span>
         <span>contacto@nexhard.com</span>

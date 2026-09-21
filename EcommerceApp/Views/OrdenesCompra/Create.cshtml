@@ -1,72 +1,72 @@
 @model EcommerceApp.Models.OrdenCompra
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Crear Orden";
 }
 
-<h1>Create</h1>
+<h1>Crear Orden de Compra</h1>
 
-<h4>OrdenCompra</h4>
 <hr />
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-6">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-            <div class="form-group">
-                <label asp-for="Fecha" class="control-label"></label>
-                <input asp-for="Fecha" class="form-control" />
+            <div class="form-group mb-3">
+                <label asp-for="Fecha" class="control-label">Fecha</label>
+                <input asp-for="Fecha" class="form-control" type="datetime-local" asp-format="{0:yyyy-MM-ddTHH:mm}" />
                 <span asp-validation-for="Fecha" class="text-danger"></span>
             </div>
 
-            <div class="form-group">
-                <label asp-for="ClienteId" class="control-label"></label>
-                <input asp-for="ClienteId" class="form-control" />
+            <div class="form-group mb-3">
+                <label asp-for="ClienteId" class="control-label">Cliente</label>
+                <select asp-for="ClienteId" class="form-control" asp-items="ViewBag.ClienteId">
+                    <option value="">-- Seleccione un Cliente --</option>
+                </select>
                 <span asp-validation-for="ClienteId" class="text-danger"></span>
             </div>
 
-            <div class="form-group">
-                <label asp-for="Cliente" class="control-label"></label>
-                <input asp-for="Cliente" class="form-control" />
-                <span asp-validation-for="Cliente" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="ProductoId" class="control-label"></label>
-                <input asp-for="ProductoId" class="form-control" />
+            <div class="form-group mb-3">
+                <label asp-for="ProductoId" class="control-label">Producto</label>
+                <select asp-for="ProductoId" class="form-control" asp-items="ViewBag.ProductoId">
+                    <option value="">-- Seleccione un Producto --</option>
+                </select>
                 <span asp-validation-for="ProductoId" class="text-danger"></span>
             </div>
 
-            <div class="form-group">
-                <label asp-for="Producto" class="control-label"></label>
-                <input asp-for="Producto" class="form-control" />
-                <span asp-validation-for="Producto" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="Cantidad" class="control-label"></label>
-                <input asp-for="Cantidad" class="form-control" />
+            <div class="form-group mb-3">
+                <label asp-for="Cantidad" class="control-label">Cantidad</label>
+                <input asp-for="Cantidad" class="form-control" type="number" min="1" />
                 <span asp-validation-for="Cantidad" class="text-danger"></span>
             </div>
 
-            <div class="form-group">
-                <label asp-for="Total" class="control-label"></label>
-                <input asp-for="Total" class="form-control" />
+            <div class="form-group mb-3">
+                <label asp-for="Total" class="control-label">Total</label>
+                <input asp-for="Total" class="form-control" type="number" step="0.01" />
                 <span asp-validation-for="Total" class="text-danger"></span>
             </div>
 
-            <div class="form-group">
-                <label asp-for="Estado" class="control-label"></label>
-                <input asp-for="Estado" class="form-control" />
+            <div class="form-group mb-3">
+                <label asp-for="Estado" class="control-label">Estado</label>
+                <select asp-for="Estado" class="form-control">
+                    <option value="Pendiente">Pendiente</option>
+                    <option value="Pagado">Pagado</option>
+                    <option value="Enviado">Enviado</option>
+                    <option value="Entregado">Entregado</option>
+                </select>
                 <span asp-validation-for="Estado" class="text-danger"></span>
             </div>
+
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <button type="submit" class="btn btn-primary">Crear Orden</button>
+                <a asp-action="Index" class="btn btn-secondary">Volver a la lista</a>
             </div>
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -1,45 +1,25 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-
-
 namespace EcommerceApp.Models
-
 {
-
     public class RegisterViewModel
-
     {
+        [Required(ErrorMessage = "El nombre es obligatorio")]
+        [Display(Name = "Nombre completo")]
+        public string FullName { get; set; }
 
-        [Required, EmailAddress, Display(Name = "Email")]
+        [Required(ErrorMessage = "El correo es obligatorio")]
+        [EmailAddress(ErrorMessage = "Correo inválido")]
+        [Display(Name = "Correo")]
+        public string Email { get; set; }
 
-        public string Email { get; set; } = string.Empty;
-
-
-
-        [Required, StringLength(100, MinimumLength = 3), DataType(DataType.Password)]
-
-        public string Password { get; set; } = string.Empty;
-
-
-
+        [Required(ErrorMessage = "La contraseña es obligatoria")]
         [DataType(DataType.Password)]
+        [Display(Name = "Contraseña")]
+        public string Password { get; set; }
 
-        [Compare("Password", ErrorMessage = "Las contraseñas no coinciden")]
-
-        public string ConfirmPassword { get; set; } = string.Empty;
-
-
-
-        [Required, Display(Name = "Nombre completo")]
-
-        public string FullName { get; set; } = string.Empty;
-
-
-
+        // ⬇️ Address SIN [Required] para que sea opcional
         [Display(Name = "Dirección")]
-
         public string? Address { get; set; }
-
     }
-
 }

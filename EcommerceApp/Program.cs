@@ -55,8 +55,7 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Products}/{action=Index}/{id?}");
-
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 // Crear roles, productos y usuarios por defecto
 try
 {
@@ -103,10 +102,11 @@ try
             {
                 UserName = "juan@gmail.com",
                 Email = "juan@gmail.com",
-                FullName = "Juan",
+                FullName = "Juan (Admin)",
                 EmailConfirmed = true
             };
-            var result = await userManager.CreateAsync(newUser, "123");
+            // CONTRASEÑA DEL ADMIN
+            var result = await userManager.CreateAsync(newUser, "875353515");
             if (result.Succeeded)
             {
                 await userManager.AddToRoleAsync(newUser, "Admin");
