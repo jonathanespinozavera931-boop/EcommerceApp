@@ -11,6 +11,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="~/css/glass-theme.css" />
+    <link rel="stylesheet" href="~/css/home.css" />
+    @await RenderSectionAsync("Styles", required: false)
 </head>
 <body class="glass-page">
     <div class="blob blob-1"></div>
@@ -26,7 +28,6 @@
 
                     @if (User.Identity != null && User.Identity.IsAuthenticated)
                     {
-                        <!-- Módulos SOLO para Administradores -->
                         @if (User.IsInRole("Admin"))
                         {
                             <a class="nav-pill" asp-controller="Proveedores" asp-action="Index">Proveedores</a>

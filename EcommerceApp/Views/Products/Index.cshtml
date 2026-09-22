@@ -95,17 +95,26 @@
                      data-price="@item.Price" data-stock="@item.Stock" data-desc="@item.Description"
                      data-icon="@IconFor(item.Category)" data-img-class="@ClassFor(item.Category)"
                      data-img-url="@item.ImageUrl">
-                    <div class="pc-top">
-                        <button class="pc-fav" data-id="@item.Id">♡</button>
-                        <button class="pc-quick">👁</button>
+                    <!-- Imagen del producto (fuera del pc-top para que se vea bien) -->
+                    <div class="product-image-wrapper" style="position:relative; height:160px; border-radius:14px; overflow:hidden; margin-bottom:14px; background: linear-gradient(135deg, rgba(0,224,255,0.08), rgba(160,32,240,0.08));">
                         @if (!string.IsNullOrEmpty(item.ImageUrl))
                         {
-                            <div class="product-image" style="background-image:url('@item.ImageUrl'); height:140px; border-radius:14px; margin-bottom:16px;"></div>
+                            <img src="@item.ImageUrl" alt="@item.Name"
+                                 style="width:100%; height:100%; object-fit:cover; display:block;"
+                                 onerror="this.style.display='none'; this.parentElement.innerHTML='<div style=\'display:flex;align-items:center;justify-content:center;height:100%;font-size:3.5rem;opacity:0.5;\'>@IconFor(item.Category)</div>';" />
                         }
                         else
                         {
-                            <div class="product-image @ClassFor(item.Category)" style="height:140px;"><span>@IconFor(item.Category)</span></div>
+                            <div style="display:flex;align-items:center;justify-content:center;height:100%;font-size:3.5rem;opacity:0.5;">
+                                @IconFor(item.Category)
+                            </div>
                         }
+
+                        <!-- Botones flotantes (arriba a la derecha) -->
+                        <div style="position:absolute; top:10px; right:10px; display:flex; gap:6px;">
+                            <button class="pc-fav" data-id="@item.Id" style="background:rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.2); color:#fff; width:34px; height:34px; border-radius:50%; cursor:pointer;">♡</button>
+                            <button class="pc-quick" style="background:rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.2); color:#fff; width:34px; height:34px; border-radius:50%; cursor:pointer;">👁</button>
+                        </div>
                     </div>
                     <span class="category-badge">@IconFor(item.Category) @item.Category</span>
                     <h3>@item.Name</h3>
