@@ -1,0 +1,169 @@
+﻿@model List<EcommerceApp.Models.CartItem>
+@{
+    ViewData["Title"] = "Mi Carrito";
+    decimal subtotal = Model.Sum(c => c.Subtotal);
+    decimal envio = subtotal >= 500 ? 0 : (subtotal > 0 ? 20 : 0);
+    decimal total = subtotal + envio;
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/cart.css" />
+}
+
+<div class="cart-page">
+    <div class="container">
+
+        <div class="cart-header">
+            <h1>🛒 Mi Carrito</h1>
+            <p class="cart-subtitle">
+                @if (Model.Any())
+                {
+                    <text>Tienes @Model.Sum(c => c.Quantity) producto(s) en tu carrito</text>
+                }
+                else
+                {
+                    <text>Tu carrito está vacío</text>
+                }
+            </p>
+        </div>
+
+        @if (!Model.Any())
+        {
+            <!-- CARRITO VACÍO -->
+            <div class="empty-cart">
+                <div class="empty-cart-icon">🛒</div>
+                <h2>Tu carrito está vacío</h2>
+                <p>Agrega productos para comenzar tu compra</p>
+                <a asp-controller="Products" asp-action="Index" class="btn-hero-primary">
+                    Explorar componentes →
+                </a>
+            </div>
+        }
+        else
+        {
+            <div class="cart-layout">
+                <!-- COLUMNA IZQUIERDA: LISTA DE PRODUCTOS -->
+                <div class="cart-items">
+                    @foreach (var item in Model)
+                    {
+                        <div class="cart-item" data-product-id="@item.ProductId">
+                            <!-- Imagen -->
+                            <div class="cart-item-image">
+                                @if (!string.IsNullOrEmpty(item.ImageUrl))
+                                {
+                                    <img src="@item.ImageUrl" alt="@item.Name"
+                                         onerror="this.parentElement.innerHTML='<div class=&quot;cart-item-placeholder&quot;>🖥️</div>';" />
+                                }
+                                else
+                                {
+                                    <div class="cart-item-placeholder">🖥️</div>
+                                }
+                            </div>
+
+                            <!-- Info -->
+                            <div class="cart-item-info">
+                                <span class="cart-item-category">@item.Category</span>
+                                <h3>@item.Name</h3>
+                                <div class="cart-item-price-unit">
+                                    Bs @item.Price.ToString("N2") c/u
+                                </div>
+                            </div>
+
+                            <!-- Cantidad -->
+                            <div class="cart-item-qty">
+                                <button class="qty-btn qty-minus" data-action="minus" data-id="@item.ProductId">−</button>
+                                <span class="qty-val" id="qty-@item.ProductId">@item.Quantity</span>
+                                <button class="qty-btn qty-plus" data-action="plus" data-id="@item.ProductId">+</button>
+                            </div>
+
+                            <!-- Subtotal del item -->
+                            <div class="cart-item-subtotal">
+                                <span class="subtotal-label">Subtotal</span>
+                                <span class="subtotal-value" id="subtotal-@item.ProductId">
+                                    Bs @item.Subtotal.ToString("N2")
+                                </span>
+                            </div>
+
+                            <!-- Eliminar -->
+                            <button class="cart-item-remove" data-id="@item.ProductId" title="Eliminar">
+                                ✕
+                            </button>
+                        </div>
+                    }
+
+                    <div class="cart-actions">
+                        <a asp-controller="Products" asp-action="Index" class="btn-link">
+                            ← Seguir comprando
+                        </a>
+                        <form asp-action="Clear" method="post" style="display:inline;">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn-link btn-danger"
+                                    onclick="return confirm('¿Vaciar todo el carrito?');">
+                                🗑 Vaciar carrito
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- COLUMNA DERECHA: RESUMEN -->
+                <aside class="cart-summary">
+                    <h2>Resumen de compra</h2>
+
+                    <div class="summary-row">
+                        <span>Subtotal</span>
+                        <span id="summary-subtotal">Bs @subtotal.ToString("N2")</span>
+                    </div>
+
+                    <div class="summary-row">
+                        <span>Envío</span>
+                        <span id="summary-envio">
+                            @if (envio == 0)
+                            {
+                                <span class="envio-gratis">🎉 ¡GRATIS!</span>
+                            }
+                            else
+                            {
+                                <text>Bs @envio.ToString("N2")</text>
+                            }
+                        </span>
+                    </div>
+
+                    @if (envio > 0)
+                    {
+                        <div class="envio-info">
+                            🚚 Te faltan <strong>Bs @((500 - subtotal).ToString("N2"))</strong> para envío gratis
+                        </div>
+                    }
+
+                    <div class="summary-divider"></div>
+
+                    <div class="summary-row summary-total">
+                        <span>Total</span>
+                        <span id="summary-total">Bs @total.ToString("N2")</span>
+                    </div>
+
+                    <a asp-controller="Checkout" asp-action="Index" class="btn-checkout">
+                        🛍 Proceder al pago
+                    </a>
+
+                    <div class="summary-guarantees">
+                        <div class="guarantee-item">
+                            <span>🔒</span> Pago 100% seguro
+                        </div>
+                        <div class="guarantee-item">
+                            <span>🚚</span> Envíos a todo Bolivia
+                        </div>
+                        <div class="guarantee-item">
+                            <span>↩️</span> Devolución en 7 días
+                        </div>
+                    </div>
+                </aside>
+            </div>
+        }
+
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/cart.js"></script>
+}

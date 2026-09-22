@@ -32,10 +32,12 @@
                         {
                             <a class="nav-pill" asp-controller="Proveedores" asp-action="Index">Proveedores</a>
                             <a class="nav-pill" asp-controller="Clientes" asp-action="Index">Clientes</a>
-                            <a class="nav-pill" asp-controller="OrdenesCompra" asp-action="Index">Órdenes</a>
+                            <a class="nav-pill" asp-controller="Orders" asp-action="AllOrders">📋 Pedidos</a>
+                            <a class="nav-pill" asp-controller="Reports" asp-action="Index">📊 Reportes</a>
                         }
 
-                        <a class="nav-pill cart-pill" asp-controller="Products" asp-action="Index">
+                        <a class="nav-pill cart-pill" asp-controller="Cart" asp-action="Index" title="Ver carrito">
+                        <a class="nav-pill" asp-controller="Orders" asp-action="MyOrders">📦 Mis Pedidos</a>
                             🛒<span class="cart-badge" id="cartBadge">0</span>
                         </a>
                         <span class="nav-pill">Hola, @User.Identity.Name</span>
@@ -68,6 +70,7 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/cart-badge.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

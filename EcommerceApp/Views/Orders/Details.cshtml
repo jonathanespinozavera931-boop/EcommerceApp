@@ -1,0 +1,198 @@
+﻿@model EcommerceApp.Models.Order
+@{
+    ViewData["Title"] = $"Pedido {Model.NumeroOrden}";
+    bool isAdmin = ViewBag.IsAdmin ?? false;
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/orders.css" />
+}
+
+<div class="order-detail-page">
+    <div class="container">
+        @if (isAdmin)
+        {
+            <a asp-action="AllOrders" class="back-link">← Volver a todos los pedidos</a>
+        }
+        else
+        {
+            <a asp-action="MyOrders" class="back-link">← Volver a mis pedidos</a>
+        }
+
+        <div class="order-detail-header">
+            <div>
+                <h1>Pedido @Model.NumeroOrden</h1>
+                <p>Realizado el @Model.Fecha.ToLocalTime().ToString("dd/MM/yyyy 'a las' HH:mm")</p>
+            </div>
+            <span class="status-badge status-@Model.Estado.ToLower()">
+                @Model.Estado
+            </span>
+        </div>
+
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert-success">✅ @TempData["Success"]</div>
+        }
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert-error">⚠️ @TempData["Error"]</div>
+        }
+
+        <div class="order-detail-layout">
+            <!-- IZQUIERDA: PRODUCTOS Y DATOS -->
+            <div class="order-detail-main">
+                @if (isAdmin)
+                {
+                    <div class="detail-card admin-client-card">
+                        <h2>👤 Cliente</h2>
+                        <div class="detail-row">
+                            <span>Email</span>
+                            <span>@(Model.User?.Email ?? "N/A")</span>
+                        </div>
+                        <div class="detail-row">
+                            <span>Nombre</span>
+                            <span>@(Model.User?.FullName ?? "N/A")</span>
+                        </div>
+                    </div>
+                }
+
+                <div class="detail-card">
+                    <h2>Productos</h2>
+                    @foreach (var item in Model.Details)
+                    {
+                        <div class="detail-product">
+                            <div class="detail-product-image">
+                                @if (!string.IsNullOrEmpty(item.ProductImage))
+                                {
+                                    <img src="@item.ProductImage" alt="@item.ProductName"
+                                         onerror="this.parentElement.innerHTML='<div class=&quot;detail-placeholder&quot;>🖥️</div>';" />
+                                }
+                                else
+                                {
+                                    <div class="detail-placeholder">🖥️</div>
+                                }
+                            </div>
+                            <div class="detail-product-info">
+                                <h3>@item.ProductName</h3>
+                                <p>@item.Quantity × Bs @item.Price.ToString("N2")</p>
+                            </div>
+                            <div class="detail-product-subtotal">
+                                Bs @item.Subtotal.ToString("N2")
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                <div class="detail-card">
+                    <h2>📍 Datos de envío</h2>
+                    <div class="detail-row">
+                        <span>Dirección</span>
+                        <span>@Model.DireccionEnvio</span>
+                    </div>
+                    @if (!string.IsNullOrEmpty(Model.Ciudad))
+                    {
+                        <div class="detail-row">
+                            <span>Ciudad</span>
+                            <span>@Model.Ciudad</span>
+                        </div>
+                    }
+                    <div class="detail-row">
+                        <span>Teléfono</span>
+                        <span>@Model.Telefono</span>
+                    </div>
+                    <div class="detail-row">
+                        <span>Método de pago</span>
+                        <span>@Model.MetodoPago</span>
+                    </div>
+                    @if (!string.IsNullOrEmpty(Model.Notas))
+                    {
+                        <div class="detail-row">
+                            <span>Notas</span>
+                            <span>@Model.Notas</span>
+                        </div>
+                    }
+                </div>
+
+                @if (isAdmin)
+                {
+                    <div class="detail-card">
+                        <h2>⚙️ Cambiar estado del pedido</h2>
+                        <form asp-action="UpdateStatus" method="post" class="status-form">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="id" value="@Model.Id" />
+
+                            <div class="status-buttons">
+                                <button type="submit" name="nuevoEstado" value="Pendiente"
+                                        class="status-btn status-btn-pendiente @(Model.Estado == "Pendiente" ? "active" : "")">
+                                    🟡 Pendiente
+                                </button>
+                                <button type="submit" name="nuevoEstado" value="Pagado"
+                                        class="status-btn status-btn-pagado @(Model.Estado == "Pagado" ? "active" : "")">
+                                    🔵 Pagado
+                                </button>
+                                <button type="submit" name="nuevoEstado" value="Enviado"
+                                        class="status-btn status-btn-enviado @(Model.Estado == "Enviado" ? "active" : "")">
+                                    🟠 Enviado
+                                </button>
+                                <button type="submit" name="nuevoEstado" value="Entregado"
+                                        class="status-btn status-btn-entregado @(Model.Estado == "Entregado" ? "active" : "")">
+                                    🟢 Entregado
+                                </button>
+                                <button type="submit" name="nuevoEstado" value="Cancelado"
+                                        class="status-btn status-btn-cancelado @(Model.Estado == "Cancelado" ? "active" : "")"
+                                        onclick="return confirm('¿Cancelar este pedido?');">
+                                    🔴 Cancelado
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                }
+            </div>
+
+            <!-- DERECHA: RESUMEN -->
+            <aside class="order-detail-summary">
+                <h2>Resumen</h2>
+                <div class="summary-row">
+                    <span>Subtotal</span>
+                    <span>Bs @Model.Subtotal.ToString("N2")</span>
+                </div>
+                <div class="summary-row">
+                    <span>Envío</span>
+                    <span>
+                        @if (Model.Envio == 0)
+                        {
+                            <span class="envio-gratis">🎉 ¡GRATIS!</span>
+                        }
+                        else
+                        {
+                            <text>Bs @Model.Envio.ToString("N2")</text>
+                        }
+                    </span>
+                </div>
+                @if (Model.Descuento > 0)
+                {
+                    <div class="summary-row">
+                        <span>Descuento</span>
+                        <span style="color:#00e676;">- Bs @Model.Descuento.ToString("N2")</span>
+                    </div>
+                }
+                <div class="summary-divider"></div>
+                <div class="summary-total">
+                    <span>Total</span>
+                    <strong>Bs @Model.Total.ToString("N2")</strong>
+                </div>
+
+                <div class="summary-info">
+                    @if (isAdmin)
+                    {
+                        <text>👤 Vista de administrador</text>
+                    }
+                    else
+                    {
+                        <text>💡 Guarda tu número de pedido para cualquier consulta</text>
+                    }
+                </div>
+            </aside>
+        </div>
+    </div>
+</div>

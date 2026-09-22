@@ -1,0 +1,390 @@
+﻿/* ============================================
+   NEXHARD - REPORTES
+   ============================================ */
+
+.reports-page {
+    padding: 40px 0 80px;
+    min-height: 70vh;
+}
+
+/* ============= KPI CARDS ============= */
+.kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 18px;
+    margin-bottom: 24px;
+}
+
+.kpi-card {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 24px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    transition: all 0.3s;
+}
+
+    .kpi-card:hover {
+        transform: translateY(-4px);
+        border-color: rgba(0, 224, 255, 0.3);
+        box-shadow: 0 15px 35px rgba(0, 224, 255, 0.15);
+    }
+
+    .kpi-card.kpi-primary {
+        background: linear-gradient(135deg, rgba(0, 224, 255, 0.1), rgba(160, 32, 240, 0.1));
+        border-color: rgba(0, 224, 255, 0.3);
+    }
+
+.kpi-icon {
+    font-size: 2.2rem;
+    flex-shrink: 0;
+}
+
+.kpi-info {
+    min-width: 0;
+}
+
+.kpi-label {
+    color: #8892a0;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.kpi-value {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.6rem;
+    font-weight: 700;
+    background: linear-gradient(90deg, #00e0ff, #a020f0);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1.2;
+}
+
+/* ============= TODAY STATS ============= */
+.today-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    margin-bottom: 30px;
+}
+
+.today-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 18px 22px;
+    background: rgba(0, 224, 255, 0.05);
+    border: 1px solid rgba(0, 224, 255, 0.2);
+    border-radius: 14px;
+}
+
+.today-icon {
+    font-size: 1.8rem;
+}
+
+.today-label {
+    color: #8892a0;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+}
+
+.today-value {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #00e0ff;
+}
+
+/* ============= GRÁFICOS ============= */
+.charts-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 22px;
+    margin-bottom: 22px;
+}
+
+.chart-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 22px;
+}
+
+    .chart-card h3 {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 1.1rem;
+        color: #fff;
+        margin: 0 0 20px;
+        padding-bottom: 14px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+.chart-container {
+    position: relative;
+    height: 280px;
+}
+
+.chart-line {
+    height: 320px;
+}
+
+.chart-full {
+    width: 100%;
+}
+
+/* ============= ESTADOS DE PEDIDO ============= */
+.status-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 14px;
+}
+
+.status-card {
+    padding: 20px;
+    border-radius: 14px;
+    text-align: center;
+    transition: all 0.3s;
+    border: 1px solid;
+}
+
+    .status-card:hover {
+        transform: translateY(-4px);
+    }
+
+.status-pendiente-bg {
+    background: rgba(255, 193, 7, 0.08);
+    border-color: rgba(255, 193, 7, 0.3);
+}
+
+.status-pagado-bg {
+    background: rgba(0, 224, 255, 0.08);
+    border-color: rgba(0, 224, 255, 0.3);
+}
+
+.status-enviado-bg {
+    background: rgba(255, 152, 0, 0.08);
+    border-color: rgba(255, 152, 0, 0.3);
+}
+
+.status-entregado-bg {
+    background: rgba(0, 230, 118, 0.08);
+    border-color: rgba(0, 230, 118, 0.3);
+}
+
+.status-cancelado-bg {
+    background: rgba(255, 68, 68, 0.08);
+    border-color: rgba(255, 68, 68, 0.3);
+}
+
+.status-count {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 6px;
+}
+
+.status-pendiente-bg .status-count {
+    color: #ffc107;
+}
+
+.status-pagado-bg .status-count {
+    color: #00e0ff;
+}
+
+.status-enviado-bg .status-count {
+    color: #ff9800;
+}
+
+.status-entregado-bg .status-count {
+    color: #00e676;
+}
+
+.status-cancelado-bg .status-count {
+    color: #ff4444;
+}
+
+.status-name {
+    color: #8892a0;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+/* ============= TABLAS DE REPORTES ============= */
+.tables-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 22px;
+}
+
+.table-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 24px;
+}
+
+    .table-card h3 {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 1.1rem;
+        color: #fff;
+        margin: 0 0 20px;
+        padding-bottom: 14px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+.table-responsive {
+    overflow-x: auto;
+}
+
+.report-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+    .report-table thead th {
+        padding: 10px 12px;
+        text-align: left;
+        color: #8892a0;
+        font-size: 0.7rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .report-table tbody td {
+        padding: 12px;
+        color: #c5cbd4;
+        font-size: 0.85rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    }
+
+    .report-table tbody tr:hover {
+        background: rgba(0, 224, 255, 0.04);
+    }
+
+.rank-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: rgba(0, 224, 255, 0.15);
+    color: #00e0ff;
+    font-weight: 700;
+    font-size: 0.75rem;
+}
+
+.report-table tbody tr:nth-child(1) .rank-badge {
+    background: rgba(255, 215, 0, 0.2);
+    color: #ffd700;
+}
+
+.report-table tbody tr:nth-child(2) .rank-badge {
+    background: rgba(192, 192, 192, 0.2);
+    color: #c0c0c0;
+}
+
+.report-table tbody tr:nth-child(3) .rank-badge {
+    background: rgba(205, 127, 50, 0.2);
+    color: #cd7f32;
+}
+
+.product-name-cell {
+    color: #fff !important;
+    font-weight: 500;
+}
+
+.money-cell {
+    font-family: 'Space Grotesk', sans-serif;
+    color: #00e0ff !important;
+    font-weight: 700;
+}
+
+/* ============= NO DATA ============= */
+.no-data {
+    text-align: center;
+    padding: 40px 20px;
+    color: #8892a0;
+    font-size: 0.9rem;
+    font-style: italic;
+}
+
+/* ============= RESPONSIVE ============= */
+@media (max-width: 992px) {
+    .charts-grid,
+    .tables-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 600px) {
+    .kpi-value {
+        font-size: 1.3rem;
+    }
+
+    .status-count {
+        font-size: 1.5rem;
+    }
+
+    .chart-container {
+        height: 220px;
+    }
+}
+
+/* ============================================
+   BOTÓN DESCARGAR PDF
+   ============================================ */
+.admin-header-with-action {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+    .admin-header-with-action h1 {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 2.2rem;
+        color: #fff;
+        margin: 0 0 6px;
+    }
+
+    .admin-header-with-action p {
+        color: #8892a0;
+        margin: 0;
+    }
+
+.btn-download-pdf {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 28px;
+    background: linear-gradient(90deg, #00e0ff, #a020f0);
+    color: #fff;
+    text-decoration: none;
+    border-radius: 12px;
+    font-weight: 700;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.95rem;
+    box-shadow: 0 10px 30px rgba(0, 224, 255, 0.3);
+    transition: all 0.3s;
+    white-space: nowrap;
+}
+
+    .btn-download-pdf:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 40px rgba(0, 224, 255, 0.5);
+        color: #fff;
+    }

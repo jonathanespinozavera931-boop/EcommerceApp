@@ -1,0 +1,152 @@
+﻿@{
+    ViewData["Title"] = "Finalizar Compra";
+}
+
+@section Styles {
+<link rel="stylesheet" href="~/css/checkout.css" />
+}
+
+<div class="checkout-page">
+    <div class="container">
+        <div class="checkout-header">
+            <h1>🛍️ Finalizar Compra</h1>
+            <p>Completa tus datos para confirmar el pedido</p>
+        </div>
+
+        <form asp-action="Confirm" method="post" class="checkout-form">
+            @Html.AntiForgeryToken()
+
+            <div class="checkout-layout">
+                <!-- COLUMNA IZQUIERDA: DATOS DE ENVÍO -->
+                <div class="checkout-main">
+                    <div class="checkout-card">
+                        <h2>📍 Dirección de envío</h2>
+
+                        <div class="form-group">
+                            <label for="direccionEnvio">Dirección completa *</label>
+                            <input type="text" id="direccionEnvio" name="direccionEnvio"
+                                   class="form-control" placeholder="Ej: Av. América #123, Zona Centro" required />
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="ciudad">Ciudad</label>
+                                <input type="text" id="ciudad" name="ciudad"
+                                       class="form-control" placeholder="Ej: Cochabamba" />
+                            </div>
+
+                            <div class="form-group">
+                                <label for="telefono">Teléfono *</label>
+                                <input type="tel" id="telefono" name="telefono"
+                                       class="form-control" placeholder="Ej: 77777777" required />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="notas">Notas adicionales (opcional)</label>
+                            <textarea id="notas" name="notas" class="form-control" rows="3"
+                                      placeholder="Ej: Entregar por la tarde, timbre rojo..."></textarea>
+                        </div>
+                    </div>
+
+                    <div class="checkout-card">
+                        <h2>💳 Método de pago</h2>
+
+                        <div class="payment-options">
+                            <label class="payment-option">
+                                <input type="radio" name="metodoPago" value="QR" checked />
+                                <div class="payment-content">
+                                    <span class="payment-icon">📱</span>
+                                    <div>
+                                        <strong>Pago con QR</strong>
+                                        <span>Escanea el código y paga desde tu app bancaria</span>
+                                    </div>
+                                </div>
+                            </label>
+
+                            <label class="payment-option">
+                                <input type="radio" name="metodoPago" value="Tarjeta" />
+                                <div class="payment-content">
+                                    <span class="payment-icon">💳</span>
+                                    <div>
+                                        <strong>Tarjeta de crédito/débito</strong>
+                                        <span>Pago seguro con encriptación SSL</span>
+                                    </div>
+                                </div>
+                            </label>
+
+                            <label class="payment-option">
+                                <input type="radio" name="metodoPago" value="Contra-entrega" />
+                                <div class="payment-content">
+                                    <span class="payment-icon">🚚</span>
+                                    <div>
+                                        <strong>Contra-entrega</strong>
+                                        <span>Paga al recibir tu pedido</span>
+                                    </div>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- COLUMNA DERECHA: RESUMEN -->
+                <aside class="checkout-summary">
+                    <h2>Resumen del pedido</h2>
+
+                    <div id="checkout-items">
+                        <!-- Se llena con JavaScript -->
+                    </div>
+
+                    <div class="summary-divider"></div>
+
+                    <div class="summary-row">
+                        <span>Subtotal</span>
+                        <span id="checkout-subtotal">Bs 0.00</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Envío</span>
+                        <span id="checkout-envio">Bs 0.00</span>
+                    </div>
+
+                    <div class="summary-divider"></div>
+
+                    <div class="summary-row summary-total">
+                        <span>Total</span>
+                        <span id="checkout-total">Bs 0.00</span>
+                    </div>
+
+                    <button type="submit" class="btn-confirm">
+                        ✅ Confirmar pedido
+                    </button>
+
+                    <a asp-controller="Cart" asp-action="Index" class="btn-back">
+                        ← Volver al carrito
+                    </a>
+                </aside>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+        // Cargar el resumen del carrito vía fetch
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('/Cart/GetTotal')
+                .then(r => r.json())
+                .then(data => {
+                    // Ahora llamar a un endpoint para ver el detalle
+                    // Como no tenemos endpoint, mostramos solo el total
+                    const subtotal = data.subtotal;
+                    const envio = subtotal >= 500 ? 0 : (subtotal > 0 ? 20 : 0);
+                    const total = subtotal + envio;
+
+                    document.getElementById('checkout-subtotal').textContent = 'Bs ' + subtotal.toFixed(2);
+                    document.getElementById('checkout-envio').innerHTML = envio === 0
+                        ? '<span class="envio-gratis">🎉 ¡GRATIS!</span>'
+                        : 'Bs ' + envio.toFixed(2);
+                    document.getElementById('checkout-total').textContent = 'Bs ' + total.toFixed(2);
+                });
+        });
+</script>
+}

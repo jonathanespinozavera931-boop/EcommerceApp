@@ -1,0 +1,68 @@
+﻿@model EcommerceApp.Models.Order
+@{
+    ViewData["Title"] = "¡Pedido confirmado!";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/checkout.css" />
+}
+
+<div class="success-page">
+    <div class="container">
+        <div class="success-card">
+            <div class="success-icon">🎉</div>
+            <h1>¡Pedido confirmado!</h1>
+            <p class="success-message">Gracias por tu compra. Te contactaremos pronto para coordinar la entrega.</p>
+
+            <div class="success-order-number">
+                <span>Número de orden:</span>
+                <strong>@Model.NumeroOrden</strong>
+            </div>
+
+            <div class="success-details">
+                <div class="success-row">
+                    <span>📅 Fecha</span>
+                    <span>@Model.Fecha.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</span>
+                </div>
+                <div class="success-row">
+                    <span>📍 Dirección</span>
+                    <span>@Model.DireccionEnvio</span>
+                </div>
+                <div class="success-row">
+                    <span>📱 Teléfono</span>
+                    <span>@Model.Telefono</span>
+                </div>
+                <div class="success-row">
+                    <span>💳 Método de pago</span>
+                    <span>@Model.MetodoPago</span>
+                </div>
+                <div class="success-row">
+                    <span>📦 Estado</span>
+                    <span class="status-badge status-pendiente">@Model.Estado</span>
+                </div>
+            </div>
+
+            <div class="success-products">
+                <h3>Productos</h3>
+                @foreach (var detail in Model.Details)
+                {
+                    <div class="success-product">
+                        <span>@detail.Quantity × @detail.ProductName</span>
+                        <span>Bs @detail.Subtotal.ToString("N2")</span>
+                    </div>
+                }
+            </div>
+
+            <div class="success-total">
+                <span>Total pagado</span>
+                <strong>Bs @Model.Total.ToString("N2")</strong>
+            </div>
+
+            <div class="success-actions">
+                <a asp-controller="Products" asp-action="Index" class="btn-primary">
+                    Seguir comprando
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

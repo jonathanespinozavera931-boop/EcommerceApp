@@ -1,0 +1,150 @@
+﻿@model List<EcommerceApp.Models.Order>
+@{
+    ViewData["Title"] = "Todos los Pedidos";
+    var estadoFiltro = ViewBag.EstadoFiltro as string;
+    var buscar = ViewBag.Buscar as string;
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/orders.css" />
+    <link rel="stylesheet" href="~/css/admin.css" />
+}
+
+<div class="admin-orders-page">
+    <div class="container">
+        <div class="admin-header">
+            <div>
+                <h1>📋 Todos los Pedidos</h1>
+                <p>Gestiona los pedidos de todos los clientes</p>
+            </div>
+        </div>
+
+        <!-- ESTADÍSTICAS RÁPIDAS -->
+        <div class="admin-stats-grid">
+            <div class="admin-stat-card">
+                <div class="stat-icon">📦</div>
+                <div>
+                    <div class="stat-value">@ViewBag.TotalPedidos</div>
+                    <div class="stat-label">Total Pedidos</div>
+                </div>
+            </div>
+            <div class="admin-stat-card">
+                <div class="stat-icon">💰</div>
+                <div>
+                    <div class="stat-value">Bs @ViewBag.TotalIngresos.ToString("N0")</div>
+                    <div class="stat-label">Ingresos Totales</div>
+                </div>
+            </div>
+            <div class="admin-stat-card stat-warning">
+                <div class="stat-icon">🟡</div>
+                <div>
+                    <div class="stat-value">@ViewBag.Pendientes</div>
+                    <div class="stat-label">Pendientes</div>
+                </div>
+            </div>
+            <div class="admin-stat-card stat-success">
+                <div class="stat-icon">🟢</div>
+                <div>
+                    <div class="stat-value">@ViewBag.Entregados</div>
+                    <div class="stat-label">Entregados</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- FILTROS Y BÚSQUEDA -->
+        <div class="admin-toolbar">
+            <div class="filters-row">
+                <a asp-action="AllOrders" class="filter-chip @(estadoFiltro == null ? "active" : "")">
+                    Todos
+                </a>
+                <a asp-action="AllOrders" asp-route-estado="Pendiente"
+                   class="filter-chip @(estadoFiltro == "Pendiente" ? "active" : "")">
+                    🟡 Pendientes
+                </a>
+                <a asp-action="AllOrders" asp-route-estado="Pagado"
+                   class="filter-chip @(estadoFiltro == "Pagado" ? "active" : "")">
+                    🔵 Pagados
+                </a>
+                <a asp-action="AllOrders" asp-route-estado="Enviado"
+                   class="filter-chip @(estadoFiltro == "Enviado" ? "active" : "")">
+                    🟠 Enviados
+                </a>
+                <a asp-action="AllOrders" asp-route-estado="Entregado"
+                   class="filter-chip @(estadoFiltro == "Entregado" ? "active" : "")">
+                    🟢 Entregados
+                </a>
+            </div>
+
+            <form asp-action="AllOrders" method="get" class="search-form">
+                <input type="text" name="buscar" value="@buscar"
+                       placeholder="🔍 Buscar por orden o email..." class="search-input-admin" />
+                <button type="submit" class="btn-search">Buscar</button>
+            </form>
+        </div>
+
+        @if (!Model.Any())
+        {
+            <div class="empty-orders">
+                <div class="empty-icon">📭</div>
+                <h2>No hay pedidos</h2>
+                <p>No se encontraron pedidos con los filtros seleccionados</p>
+            </div>
+        }
+        else
+        {
+            <div class="admin-orders-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Orden</th>
+                            <th>Cliente</th>
+                            <th>Fecha</th>
+                            <th>Productos</th>
+                            <th>Total</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var order in Model)
+                        {
+                            <tr>
+                                <td>
+                                    <span class="order-num">@order.NumeroOrden</span>
+                                </td>
+                                <td>
+                                    <div class="client-info">
+                                        <span class="client-email">@(order.User?.Email ?? "N/A")</span>
+                                        <span class="client-name">@(order.User?.FullName ?? "")</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="order-date-small">
+                                        @order.Fecha.ToLocalTime().ToString("dd/MM/yyyy")<br />
+                                        <small>@order.Fecha.ToLocalTime().ToString("HH:mm")</small>
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="product-count">@order.Details.Sum(d => d.Quantity) item(s)</span>
+                                </td>
+                                <td>
+                                    <strong class="order-total-small">Bs @order.Total.ToString("N2")</strong>
+                                </td>
+                                <td>
+                                    <span class="status-badge status-@order.Estado.ToLower()">
+                                        @order.Estado
+                                    </span>
+                                </td>
+                                <td>
+                                    <a asp-action="Details" asp-route-id="@order.Id" class="btn-view-small">
+                                        Ver →
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div>

@@ -1,0 +1,382 @@
+﻿@{
+    ViewData["Title"] = "Reportes";
+    var topProductos = ViewBag.TopProductos as IEnumerable<dynamic>;
+    var topClientes = ViewBag.TopClientes as IEnumerable<dynamic>;
+    var ventasPorCategoria = ViewBag.VentasPorCategoria as IEnumerable<dynamic>;
+    var ventas30Dias = ViewBag.Ventas30Dias as IEnumerable<dynamic>;
+    var metodosPago = ViewBag.MetodosPago as IEnumerable<dynamic>;
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/orders.css" />
+    <link rel="stylesheet" href="~/css/reports.css" />
+}
+
+<div class="reports-page">
+    <div class="container">
+        <div class="admin-header-with-action">
+            <div>
+                <h1>📊 Reportes y Estadísticas</h1>
+                <p>Análisis completo de tu tienda NexHard</p>
+            </div>
+            <a asp-action="DownloadPdf" class="btn-download-pdf">
+                📥 Descargar PDF
+            </a>
+        </div>
+
+        <!-- ============================================
+             ESTADÍSTICAS PRINCIPALES (KPI CARDS)
+             ============================================ -->
+        <div class="kpi-grid">
+            <div class="kpi-card kpi-primary">
+                <div class="kpi-icon">💰</div>
+                <div class="kpi-info">
+                    <div class="kpi-label">Ventas Totales</div>
+                    <div class="kpi-value">Bs @ViewBag.TotalVentas.ToString("N2")</div>
+                </div>
+            </div>
+
+            <div class="kpi-card">
+                <div class="kpi-icon">📦</div>
+                <div class="kpi-info">
+                    <div class="kpi-label">Total Pedidos</div>
+                    <div class="kpi-value">@ViewBag.TotalOrdenes</div>
+                </div>
+            </div>
+
+            <div class="kpi-card">
+                <div class="kpi-icon">🎯</div>
+                <div class="kpi-info">
+                    <div class="kpi-label">Ticket Promedio</div>
+                    <div class="kpi-value">Bs @ViewBag.TicketPromedio.ToString("N2")</div>
+                </div>
+            </div>
+
+            <div class="kpi-card">
+                <div class="kpi-icon">🛒</div>
+                <div class="kpi-info">
+                    <div class="kpi-label">Productos Vendidos</div>
+                    <div class="kpi-value">@ViewBag.TotalProductosVendidos</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================
+             ESTADÍSTICAS DE HOY
+             ============================================ -->
+        <div class="today-stats">
+            <div class="today-card">
+                <span class="today-icon">📅</span>
+                <div>
+                    <div class="today-label">Ventas de Hoy</div>
+                    <div class="today-value">Bs @ViewBag.VentasHoy.ToString("N2")</div>
+                </div>
+            </div>
+            <div class="today-card">
+                <span class="today-icon">🧾</span>
+                <div>
+                    <div class="today-label">Pedidos de Hoy</div>
+                    <div class="today-value">@ViewBag.OrdenesHoy</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================
+             GRÁFICOS (2 columnas)
+             ============================================ -->
+        <div class="charts-grid">
+            <!-- GRÁFICO: Ventas por categoría -->
+            <div class="chart-card">
+                <h3>📊 Ventas por Categoría</h3>
+                <div class="chart-container">
+                    <canvas id="chartCategorias"></canvas>
+                </div>
+            </div>
+
+            <!-- GRÁFICO: Métodos de pago -->
+            <div class="chart-card">
+                <h3>💳 Métodos de Pago</h3>
+                <div class="chart-container">
+                    <canvas id="chartMetodos"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- GRÁFICO DE LÍNEA: Ventas últimos 30 días -->
+        <div class="chart-card chart-full">
+            <h3>📈 Ventas de los últimos 30 días</h3>
+            <div class="chart-container chart-line">
+                <canvas id="chartVentas30"></canvas>
+            </div>
+        </div>
+
+        <!-- ============================================
+             PEDIDOS POR ESTADO
+             ============================================ -->
+        <div class="chart-card">
+            <h3>📦 Pedidos por Estado</h3>
+            <div class="status-grid">
+                <div class="status-card status-pendiente-bg">
+                    <div class="status-count">@ViewBag.Pendientes</div>
+                    <div class="status-name">🟡 Pendientes</div>
+                </div>
+                <div class="status-card status-pagado-bg">
+                    <div class="status-count">@ViewBag.Pagados</div>
+                    <div class="status-name">🔵 Pagados</div>
+                </div>
+                <div class="status-card status-enviado-bg">
+                    <div class="status-count">@ViewBag.Enviados</div>
+                    <div class="status-name">🟠 Enviados</div>
+                </div>
+                <div class="status-card status-entregado-bg">
+                    <div class="status-count">@ViewBag.Entregados</div>
+                    <div class="status-name">🟢 Entregados</div>
+                </div>
+                <div class="status-card status-cancelado-bg">
+                    <div class="status-count">@ViewBag.Cancelados</div>
+                    <div class="status-name">🔴 Cancelados</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================
+             TABLAS: TOP PRODUCTOS Y TOP CLIENTES
+             ============================================ -->
+        <div class="tables-grid">
+            <!-- TOP PRODUCTOS -->
+            <div class="table-card">
+                <h3>🔥 Top 10 Productos Más Vendidos</h3>
+                @if (topProductos != null && topProductos.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="report-table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Producto</th>
+                                    <th>Cantidad</th>
+                                    <th>Ingresos</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{
+                                    int rank = 1;
+                                }
+                                @foreach (var prod in topProductos)
+                                {
+                                    <tr>
+                                        <td><span class="rank-badge">@rank</span></td>
+                                        <td class="product-name-cell">@prod.Nombre</td>
+                                        <td>@prod.CantidadVendida</td>
+                                        <td class="money-cell">Bs @prod.IngresosTotales.ToString("N2")</td>
+                                    </tr>
+                                    rank++;
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="no-data">Sin datos de ventas aún</div>
+                }
+            </div>
+
+            <!-- TOP CLIENTES -->
+            <div class="table-card">
+                <h3>👑 Top 5 Mejores Clientes</h3>
+                @if (topClientes != null && topClientes.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="report-table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Cliente</th>
+                                    <th>Compras</th>
+                                    <th>Total Gastado</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{
+                                    int rank2 = 1;
+                                }
+                                @foreach (var cli in topClientes)
+                                {
+                                    <tr>
+                                        <td><span class="rank-badge">@rank2</span></td>
+                                        <td>
+                                            <div class="client-info">
+                                                <span class="client-email">@cli.Email</span>
+                                                @if (!string.IsNullOrEmpty(cli.Nombre))
+                                                {
+                                                    <span class="client-name">@cli.Nombre</span>
+                                                }
+                                            </div>
+                                        </td>
+                                        <td>@cli.TotalCompras</td>
+                                        <td class="money-cell">Bs @cli.TotalGastado.ToString("N2")</td>
+                                    </tr>
+                                    rank2++;
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="no-data">Sin datos de clientes aún</div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // ============================================
+        // CONFIGURACIÓN GLOBAL DE CHART.JS
+        // ============================================
+        Chart.defaults.color = '#c5cbd4';
+        Chart.defaults.font.family = "'Inter', sans-serif";
+        Chart.defaults.font.size = 12;
+
+        // ============================================
+        // GRÁFICO 1: VENTAS POR CATEGORÍA (BARRAS)
+        // ============================================
+        const categoriasData = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(ViewBag.VentasPorCategoria));
+        const ctxCat = document.getElementById('chartCategorias');
+
+        if (categoriasData && categoriasData.length > 0) {
+            new Chart(ctxCat, {
+                type: 'bar',
+                data: {
+                    labels: categoriasData.map(c => c.Categoria),
+                    datasets: [{
+                        label: 'Ingresos (Bs)',
+                        data: categoriasData.map(c => c.Ingresos),
+                        backgroundColor: 'rgba(0, 224, 255, 0.6)',
+                        borderColor: '#00e0ff',
+                        borderWidth: 2,
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: { color: 'rgba(255, 255, 255, 0.05)' }
+                        },
+                        x: {
+                            grid: { display: false }
+                        }
+                    }
+                }
+            });
+        } else {
+            ctxCat.parentElement.innerHTML = '<div class="no-data">Sin datos de ventas por categoría</div>';
+        }
+
+        // ============================================
+        // GRÁFICO 2: MÉTODOS DE PAGO (DONA)
+        // ============================================
+        const metodosData = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(ViewBag.MetodosPago));
+        const ctxMet = document.getElementById('chartMetodos');
+
+        if (metodosData && metodosData.length > 0) {
+            new Chart(ctxMet, {
+                type: 'doughnut',
+                data: {
+                    labels: metodosData.map(m => m.Metodo),
+                    datasets: [{
+                        data: metodosData.map(m => m.Cantidad),
+                        backgroundColor: [
+                            'rgba(0, 224, 255, 0.7)',
+                            'rgba(160, 32, 240, 0.7)',
+                            'rgba(255, 152, 0, 0.7)',
+                            'rgba(0, 230, 118, 0.7)',
+                            'rgba(255, 68, 68, 0.7)'
+                        ],
+                        borderColor: [
+                            '#00e0ff',
+                            '#a020f0',
+                            '#ff9800',
+                            '#00e676',
+                            '#ff4444'
+                        ],
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: { padding: 15, usePointStyle: true }
+                        }
+                    }
+                }
+            });
+        } else {
+            ctxMet.parentElement.innerHTML = '<div class="no-data">Sin datos de métodos de pago</div>';
+        }
+
+        // ============================================
+        // GRÁFICO 3: VENTAS ÚLTIMOS 30 DÍAS (LÍNEA)
+        // ============================================
+        const ventas30Data = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(ViewBag.Ventas30Dias));
+        const ctx30 = document.getElementById('chartVentas30');
+
+        if (ventas30Data && ventas30Data.length > 0) {
+            const gradient = ctx30.getContext('2d').createLinearGradient(0, 0, 0, 300);
+            gradient.addColorStop(0, 'rgba(0, 224, 255, 0.4)');
+            gradient.addColorStop(1, 'rgba(0, 224, 255, 0)');
+
+            new Chart(ctx30, {
+                type: 'line',
+                data: {
+                    labels: ventas30Data.map(v => v.Fecha),
+                    datasets: [{
+                        label: 'Ventas diarias (Bs)',
+                        data: ventas30Data.map(v => v.Total),
+                        borderColor: '#00e0ff',
+                        backgroundColor: gradient,
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4,
+                        pointBackgroundColor: '#00e0ff',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2,
+                        pointRadius: 4,
+                        pointHoverRadius: 7
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: { color: 'rgba(255, 255, 255, 0.05)' }
+                        },
+                        x: {
+                            grid: { display: false }
+                        }
+                    }
+                }
+            });
+        } else {
+            ctx30.parentElement.innerHTML = '<div class="no-data">Sin datos de ventas</div>';
+        }
+    </script>
+}

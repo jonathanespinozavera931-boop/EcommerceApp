@@ -135,7 +135,11 @@
                         <span class="qty-val">1</span>
                         <button class="qty-btn qty-plus">+</button>
                     </div>
-                    <button class="btn-cart">🛒 Agregar al carrito</button>
+                    <button class="btn-cart add-to-cart-btn"
+                            data-id="@item.Id"
+                            data-name="@item.Name">
+                        🛒 Agregar al carrito
+                    </button>   
                     <div class="card-actions" style="margin-top:8px;">
                         <a asp-action="Details" asp-route-id="@item.Id" class="btn-glass-sm">Ver</a>
                         @if (isAdmin)
@@ -161,6 +165,10 @@
         <p style="color:var(--muted); font-size:13px; margin:6px 0 18px;">Stock: <span id="qvStock"></span></p>
     </div>
 </div>
+<!-- Formulario oculto para el token anti-forgery (necesario para AJAX) -->
+<form id="antiForgeryForm" style="display:none;">
+    @Html.AntiForgeryToken()
+</form>
 
 @section Scripts {
     <script src="~/js/shop.js"></script>

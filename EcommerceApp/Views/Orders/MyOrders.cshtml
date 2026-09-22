@@ -1,0 +1,107 @@
+﻿@model List<EcommerceApp.Models.Order>
+@{
+    ViewData["Title"] = "Mis Pedidos";
+    var estadoFiltro = ViewBag.EstadoFiltro as string;
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/orders.css" />
+}
+
+<div class="orders-page">
+    <div class="container">
+        <div class="orders-header">
+            <h1>📦 Mis Pedidos</h1>
+            <p>Historial completo de tus compras en NexHard</p>
+        </div>
+
+        <!-- FILTROS POR ESTADO -->
+        <div class="orders-filters">
+            <a asp-action="MyOrders" class="filter-chip @(estadoFiltro == null ? "active" : "")">
+                Todos
+            </a>
+            <a asp-action="MyOrders" asp-route-estado="Pendiente"
+               class="filter-chip @(estadoFiltro == "Pendiente" ? "active" : "")">
+                🟡 Pendientes
+            </a>
+            <a asp-action="MyOrders" asp-route-estado="Pagado"
+               class="filter-chip @(estadoFiltro == "Pagado" ? "active" : "")">
+                🔵 Pagados
+            </a>
+            <a asp-action="MyOrders" asp-route-estado="Enviado"
+               class="filter-chip @(estadoFiltro == "Enviado" ? "active" : "")">
+                🟠 Enviados
+            </a>
+            <a asp-action="MyOrders" asp-route-estado="Entregado"
+               class="filter-chip @(estadoFiltro == "Entregado" ? "active" : "")">
+                🟢 Entregados
+            </a>
+        </div>
+
+        @if (!Model.Any())
+        {
+            <div class="empty-orders">
+                <div class="empty-icon">📦</div>
+                <h2>No tienes pedidos aún</h2>
+                <p>Cuando realices tu primera compra, aparecerá aquí</p>
+                <a asp-controller="Products" asp-action="Index" class="btn-hero-primary">
+                    Explorar componentes →
+                </a>
+            </div>
+        }
+        else
+        {
+            <div class="orders-list">
+                @foreach (var order in Model)
+                {
+                    <div class="order-card">
+                        <div class="order-header">
+                            <div class="order-info">
+                                <span class="order-number">@order.NumeroOrden</span>
+                                <span class="order-date">
+                                    📅 @order.Fecha.ToLocalTime().ToString("dd/MM/yyyy HH:mm")
+                                </span>
+                            </div>
+                            <span class="status-badge status-@order.Estado.ToLower()">
+                                @order.Estado
+                            </span>
+                        </div>
+
+                        <div class="order-products">
+                            @foreach (var detail in order.Details.Take(4))
+                            {
+                                <div class="order-product-mini">
+                                    @if (!string.IsNullOrEmpty(detail.ProductImage))
+                                    {
+                                        <img src="@detail.ProductImage" alt="@detail.ProductName"
+                                             onerror="this.style.display='none'; this.parentElement.innerHTML='<div class=&quot;product-mini-placeholder&quot;>🖥️</div>';" />
+                                    }
+                                    else
+                                    {
+                                        <div class="product-mini-placeholder">🖥️</div>
+                                    }
+                                </div>
+                            }
+                            @if (order.Details.Count > 4)
+                            {
+                                <div class="more-products">
+                                    +@(order.Details.Count - 4)
+                                </div>
+                            }
+                        </div>
+
+                        <div class="order-footer">
+                            <div class="order-total">
+                                <span>@order.Details.Sum(d => d.Quantity) producto(s)</span>
+                                <strong>Bs @order.Total.ToString("N2")</strong>
+                            </div>
+                            <a asp-action="Details" asp-route-id="@order.Id" class="btn-order-detail">
+                                Ver detalles →
+                            </a>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</div>
