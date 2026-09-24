@@ -1,8 +1,449 @@
 ﻿@model EcommerceApp.Models.Product
-<h2>@Model.Name</h2>
-<img src="@(Model.ImageUrl ?? "/images/default-product.jpg")" style="max-width:300px" class="mb-3" />
-<p>@Model.Description</p>
-<p><strong>Precio:</strong> @Model.Price.ToString("C")</p>
-<p><strong>Stock:</strong> @Model.Stock</p>
-<p><strong>Categoría:</strong> @Model.Category</p>
-<a href="@Url.Action("Index")" class="btn btn-secondary">Volver</a>
+@{
+    ViewData["Title"] = Model.Name;
+    bool isAdmin = User.IsInRole("Admin");
+
+    string IconFor(string? category) => category switch
+    {
+        "GPU" => "🎮",
+        "CPU" => "🧠",
+        "RAM" => "💾",
+        "Almacenamiento" => "💿",
+        "Placa Madre" => "🔌",
+        "Fuente" => "⚡",
+        "Refrigeración" => "❄️",
+        "Gabinete" => "📦",
+        "Monitor" => "🖥️",
+        "Periférico" => "🖱️",
+        _ => "🔧"
+    };
+}
+
+<div class="iris-product-detail">
+    <div class="container">
+
+        <!-- BREADCRUMB -->
+        <nav class="iris-breadcrumb">
+            <a asp-controller="Home" asp-action="Index">Inicio</a>
+            <span class="sep">›</span>
+            <a asp-controller="Products" asp-action="Index">Productos</a>
+            <span class="sep">›</span>
+            <a asp-controller="Products" asp-action="Index" asp-route-category="@Model.Category">@Model.Category</a>
+            <span class="sep">›</span>
+            <span class="current">@Model.Name</span>
+        </nav>
+
+        <!-- LAYOUT PRINCIPAL -->
+        <div class="iris-detail-main">
+
+            <!-- GALERÍA -->
+            <div class="iris-gallery">
+                <div class="iris-gallery-main">
+                    @if (Model.Stock > 0 && Model.Stock < 15)
+                    {
+                        <span class="iris-gallery-badge">🔥 ÚLTIMAS UNIDADES</span>
+                    }
+                    else if (Model.Price > 1000)
+                    {
+                        <span class="iris-gallery-badge">⭐ PREMIUM</span>
+                    }
+
+                    @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                    {
+                        <img src="@Model.ImageUrl" alt="@Model.Name" id="galleryMain" />
+                    }
+                    else
+                    {
+                        <div class="iris-gallery-placeholder">@IconFor(Model.Category)</div>
+                    }
+                </div>
+
+                <!-- MINIATURAS (repetimos la misma imagen como demo) -->
+                @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                {
+                    <div class="iris-gallery-thumbs">
+                        <div class="iris-gallery-thumb active" onclick="changeImage('@Model.ImageUrl', this)">
+                            <img src="@Model.ImageUrl" alt="Vista 1" />
+                        </div>
+                        <div class="iris-gallery-thumb" onclick="changeImage('@Model.ImageUrl', this)">
+                            <img src="@Model.ImageUrl" alt="Vista 2" />
+                        </div>
+                        <div class="iris-gallery-thumb" onclick="changeImage('@Model.ImageUrl', this)">
+                            <img src="@Model.ImageUrl" alt="Vista 3" />
+                        </div>
+                        <div class="iris-gallery-thumb" onclick="changeImage('@Model.ImageUrl', this)">
+                            <img src="@Model.ImageUrl" alt="Vista 4" />
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <!-- INFO + PANEL COMPRA -->
+            <div class="iris-detail-info">
+                <span class="iris-detail-brand">@Model.Category</span>
+                <h1 class="iris-detail-title">@Model.Name</h1>
+
+                <div class="iris-detail-rating">
+                    <span class="iris-detail-stars">★★★★★</span>
+                    <span>4.8 · 24 reseñas</span>
+                </div>
+
+                <p class="iris-detail-description">
+                    @Model.Description
+                </p>
+
+                <ul class="iris-detail-specs-list">
+                    <li class="iris-detail-spec-item">
+                        <span class="icon">✅</span>
+                        <span><strong>Producto original</strong> y garantizado</span>
+                    </li>
+                    <li class="iris-detail-spec-item">
+                        <span class="icon">🚚</span>
+                        <span>Envío a <strong>todo Bolivia</strong></span>
+                    </li>
+                    <li class="iris-detail-spec-item">
+                        <span class="icon">🛡️</span>
+                        <span>Garantía de <strong>1 año</strong></span>
+                    </li>
+                    <li class="iris-detail-spec-item">
+                        <span class="icon">💬</span>
+                        <span><strong>Soporte técnico</strong> disponible</span>
+                    </li>
+                </ul>
+
+                <!-- PANEL DE COMPRA -->
+                <div class="iris-purchase-panel">
+                    <span class="iris-purchase-label">Precio</span>
+                    <div class="iris-purchase-price">Bs @Model.Price.ToString("N2")</div>
+
+                    @if (Model.Stock > 0)
+                    {
+                        <span class="iris-purchase-stock">✓ En stock · @Model.Stock unidades</span>
+                    }
+                    else
+                    {
+                        <span class="iris-purchase-stock out">✗ Producto agotado</span>
+                    }
+
+                    @if (Model.Stock > 0)
+                    {
+                        <div>
+                            <span class="iris-purchase-label" style="display:block; margin-bottom:8px;">Cantidad</span>
+                            <div class="iris-qty-selector">
+                                <button type="button" id="qtyMinus">−</button>
+                                <input type="number" id="qtyInput" value="1" min="1" max="@Model.Stock" />
+                                <button type="button" id="qtyPlus">+</button>
+                            </div>
+                        </div>
+
+                        <button class="iris-btn-buy-primary" id="addToCartBtn" data-id="@Model.Id" data-name="@Model.Name">
+                            🛒 Agregar al Carrito
+                        </button>
+
+                        <a asp-controller="Cart" asp-action="Index" class="iris-btn-buy-secondary">
+                            Comprar ahora →
+                        </a>
+                    }
+                    else
+                    {
+                        <button class="iris-btn-buy-primary" disabled>
+                            ❌ Producto Agotado
+                        </button>
+                    }
+
+                    <div class="iris-purchase-notice">
+                        <strong>⚠️ Ten en cuenta lo siguiente</strong>
+                        Todos los productos están sujetos a verificación y coordinación de stock y precio.
+                    </div>
+
+                    <div class="iris-purchase-benefits">
+                        <div class="iris-purchase-benefit">
+                            <span class="iris-purchase-benefit-icon">📦</span>
+                            <span>Entregas a domicilio</span>
+                        </div>
+                        <div class="iris-purchase-benefit">
+                            <span class="iris-purchase-benefit-icon">🚚</span>
+                            <span>Envíos a nivel nacional</span>
+                        </div>
+                        <div class="iris-purchase-benefit">
+                            <span class="iris-purchase-benefit-icon">🏪</span>
+                            <span>Recojo en tienda disponible</span>
+                        </div>
+                    </div>
+
+                    <div class="iris-share-row">
+                        <span>📢 Compartir:</span>
+                        <button class="iris-share-btn" title="Facebook">📘</button>
+                        <button class="iris-share-btn" title="WhatsApp">💬</button>
+                        <button class="iris-share-btn" title="Twitter">🐦</button>
+                    </div>
+                </div>
+
+                @if (isAdmin)
+                {
+                    <div style="display:flex; gap:10px; margin-top:20px;">
+                        <a asp-action="Edit" asp-route-id="@Model.Id" class="iris-btn-buy-secondary" style="padding:12px;">✏️ Editar</a>
+                        <a asp-action="Delete" asp-route-id="@Model.Id" class="iris-btn-buy-secondary" style="padding:12px; border-color:var(--danger); color:var(--danger);">🗑️ Eliminar</a>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- TABS DE INFORMACIÓN -->
+        <div class="iris-detail-tabs">
+            <div class="iris-tabs-nav">
+                <button class="iris-tab-btn active" data-tab="caracteristicas">Características Generales</button>
+                <button class="iris-tab-btn" data-tab="especificaciones">Especificaciones Detalladas</button>
+                <button class="iris-tab-btn" data-tab="envio">Envío y Devoluciones</button>
+            </div>
+
+            <div class="iris-tabs-content">
+
+                <!-- CARACTERÍSTICAS -->
+                <div class="iris-tab-panel active" id="tab-caracteristicas">
+                    <div class="iris-specs-grid">
+                        <div class="iris-specs-column">
+                            <h3>Características</h3>
+                            <div class="iris-spec-row">
+                                <span class="iris-spec-key">Marca</span>
+                                <span class="iris-spec-value">@Model.Category</span>
+                            </div>
+                            <div class="iris-spec-row">
+                                <span class="iris-spec-key">Modelo</span>
+                                <span class="iris-spec-value">@Model.Name</span>
+                            </div>
+                            <div class="iris-spec-row">
+                                <span class="iris-spec-key">Tipo</span>
+                                <span class="iris-spec-value">Componente PC</span>
+                            </div>
+                            <div class="iris-spec-row">
+                                <span class="iris-spec-key">Categoría</span>
+                                <span class="iris-spec-value">@Model.Category</span>
+                            </div>
+                            <div class="iris-spec-row">
+                                <span class="iris-spec-key">Stock</span>
+                                <span class="iris-spec-value">@Model.Stock unidades</span>
+                            </div>
+                        </div>
+
+                        <div class="iris-specs-column">
+                            <h3>Información</h3>
+                            <p style="color: var(--text-secondary); line-height: 1.7; margin-bottom: 20px;">
+                                @Model.Description
+                            </p>
+
+                            <div class="iris-trust-badges">
+                                <span class="iris-trust-badge">
+                                    <span class="icon">✓</span> Verificado por NexHard
+                                </span>
+                                <span class="iris-trust-badge">
+                                    <span class="icon">🚚</span> Envíos a nivel nacional
+                                </span>
+                                <span class="iris-trust-badge">
+                                    <span class="icon">🏪</span> Recojo en tienda
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ESPECIFICACIONES -->
+                <div class="iris-tab-panel" id="tab-especificaciones">
+                    <div class="iris-specs-grid" style="grid-template-columns: 1fr;">
+                        <div class="iris-specs-column">
+                            <h3>Especificaciones Técnicas</h3>
+                            <div class="iris-spec-row">
+                                <span class="iris-spec-key">SKU</span>
+                                <span class="iris-spec-value">NX-@Model.Id.ToString("D5")</span>
+                            </div>
+                            <div class="iris-spec-row">
+                                <span class="iris-spec-key">Categoría</span>
+                                <span class="iris-spec-value">@Model.Category</span>
+                            </div>
+                            <div class="iris-spec-row">
+                                <span class="iris-spec-key">Precio</span>
+                                <span class="iris-spec-value">Bs @Model.Price.ToString("N2")</span>
+                            </div>
+                            <div class="iris-spec-row">
+                                <span class="iris-spec-key">Garantía</span>
+                                <span class="iris-spec-value">1 año</span>
+                            </div>
+                            <div class="iris-spec-row">
+                                <span class="iris-spec-key">Disponibilidad</span>
+                                <span class="iris-spec-value">@Model.Stock unidades</span>
+                            </div>
+                            <div class="iris-spec-row">
+                                <span class="iris-spec-key">Creado</span>
+                                <span class="iris-spec-value">@Model.CreatedAt.ToString("dd/MM/yyyy")</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ENVÍO -->
+                <div class="iris-tab-panel" id="tab-envio">
+                    <div class="iris-specs-grid" style="grid-template-columns: 1fr;">
+                        <div class="iris-specs-column">
+                            <h3>Envío y Devoluciones</h3>
+                            <div class="iris-spec-row">
+                                <span class="iris-spec-key">Envío nacional</span>
+                                <span class="iris-spec-value">A todos los departamentos de Bolivia</span>
+                            </div>
+                            <div class="iris-spec-row">
+                                <span class="iris-spec-key">Envío gratis</span>
+                                <span class="iris-spec-value">En compras mayores a Bs 500</span>
+                            </div>
+                            <div class="iris-spec-row">
+                                <span class="iris-spec-key">Tiempo de entrega</span>
+                                <span class="iris-spec-value">3 a 7 días hábiles</span>
+                            </div>
+                            <div class="iris-spec-row">
+                                <span class="iris-spec-key">Devoluciones</span>
+                                <span class="iris-spec-value">Hasta 7 días después de recibir</span>
+                            </div>
+                            <div class="iris-spec-row">
+                                <span class="iris-spec-key">Recojo en tienda</span>
+                                <span class="iris-spec-value">Disponible sin costo</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- PRODUCTOS RELACIONADOS -->
+        <div class="iris-related-section">
+            <h2 class="iris-related-title">Productos Relacionados</h2>
+
+            <div class="iris-related-grid">
+                <a class="iris-related-card" asp-action="Index" asp-route-category="@Model.Category">
+                    <div class="iris-related-card-img">
+                        <div class="iris-related-card-placeholder">@IconFor(Model.Category)</div>
+                    </div>
+                    <div class="iris-related-card-body">
+                        <h3 class="iris-related-card-name">Ver más @Model.Category</h3>
+                        <div class="iris-related-card-price">Explorar →</div>
+                    </div>
+                </a>
+
+                <a class="iris-related-card" asp-action="Index" asp-route-category="GPU">
+                    <div class="iris-related-card-img">
+                        <div class="iris-related-card-placeholder">🎮</div>
+                    </div>
+                    <div class="iris-related-card-body">
+                        <h3 class="iris-related-card-name">Tarjetas de Video</h3>
+                        <div class="iris-related-card-price">Ver GPUs →</div>
+                    </div>
+                </a>
+
+                <a class="iris-related-card" asp-action="Index" asp-route-category="CPU">
+                    <div class="iris-related-card-img">
+                        <div class="iris-related-card-placeholder">🧠</div>
+                    </div>
+                    <div class="iris-related-card-body">
+                        <h3 class="iris-related-card-name">Procesadores</h3>
+                        <div class="iris-related-card-price">Ver CPUs →</div>
+                    </div>
+                </a>
+
+                <a class="iris-related-card" asp-action="Index" asp-route-category="RAM">
+                    <div class="iris-related-card-img">
+                        <div class="iris-related-card-placeholder">💾</div>
+                    </div>
+                    <div class="iris-related-card-body">
+                        <h3 class="iris-related-card-name">Memorias RAM</h3>
+                        <div class="iris-related-card-price">Ver RAMs →</div>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- Formulario oculto anti-forgery -->
+<form id="antiForgeryForm" style="display:none;">
+    @Html.AntiForgeryToken()
+</form>
+
+@section Scripts {
+    <script>
+        // ============ CANTIDAD ============
+        const qtyInput = document.getElementById('qtyInput');
+        const maxStock = @Model.Stock;
+
+        document.getElementById('qtyMinus')?.addEventListener('click', () => {
+            let q = parseInt(qtyInput.value);
+            if (q > 1) qtyInput.value = q - 1;
+        });
+
+        document.getElementById('qtyPlus')?.addEventListener('click', () => {
+            let q = parseInt(qtyInput.value);
+            if (q < maxStock) qtyInput.value = q + 1;
+        });
+
+        // ============ AGREGAR AL CARRITO ============
+        document.getElementById('addToCartBtn')?.addEventListener('click', function () {
+            const token = document.querySelector('#antiForgeryForm input[name="__RequestVerificationToken"]').value;
+            const qty = parseInt(qtyInput.value);
+            const btn = this;
+
+            const formData = new FormData();
+            formData.append('productId', '@Model.Id');
+            formData.append('quantity', qty);
+            formData.append('__RequestVerificationToken', token);
+
+            btn.disabled = true;
+            btn.innerHTML = '⏳ Agregando...';
+
+            fetch('/Cart/Add', { method: 'POST', body: formData })
+                .then(r => r.json())
+                .then(data => {
+                    if (data.success) {
+                        btn.classList.add('added');
+                        btn.innerHTML = '✓ Agregado al carrito';
+
+                        if (typeof showToast === 'function') {
+                            showToast('"@Model.Name" agregado', 'success');
+                        }
+                        if (typeof updateCartBadge === 'function') {
+                            updateCartBadge();
+                        }
+
+                        setTimeout(() => {
+                            btn.disabled = false;
+                            btn.classList.remove('added');
+                            btn.innerHTML = '🛒 Agregar al Carrito';
+                        }, 2000);
+                    } else {
+                        alert(data.message);
+                        btn.disabled = false;
+                        btn.innerHTML = '🛒 Agregar al Carrito';
+                    }
+                });
+        });
+
+        // ============ TABS ============
+        document.querySelectorAll('.iris-tab-btn').forEach(btn => {
+            btn.addEventListener('click', function () {
+                const tab = this.dataset.tab;
+
+                document.querySelectorAll('.iris-tab-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.iris-tab-panel').forEach(p => p.classList.remove('active'));
+
+                this.classList.add('active');
+                document.getElementById('tab-' + tab)?.classList.add('active');
+            });
+        });
+
+        // ============ GALERÍA ============
+        function changeImage(url, thumb) {
+            const mainImg = document.getElementById('galleryMain');
+            if (mainImg) mainImg.src = url;
+
+            document.querySelectorAll('.iris-gallery-thumb').forEach(t => t.classList.remove('active'));
+            thumb.classList.add('active');
+        }
+    </script>
+}

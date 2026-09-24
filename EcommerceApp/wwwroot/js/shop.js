@@ -7,9 +7,14 @@ document.addEventListener('DOMContentLoaded', function () {
     document.querySelectorAll('.add-to-cart-btn').forEach(btn => {
         btn.addEventListener('click', function (e) {
             e.preventDefault();
+
             const productId = this.dataset.id;
             const productName = this.dataset.name;
-            const quantity = 1; // Por ahora siempre 1
+
+            // Obtener cantidad seleccionada en el card
+            const qtySpan = document.getElementById(`qty-${productId}`);
+            const quantity = qtySpan ? parseInt(qtySpan.textContent) : 1;
+
             addToCart(productId, quantity, productName, this);
         });
     });
@@ -26,13 +31,12 @@ function addToCart(productId, quantity, productName, button) {
     formData.append('quantity', quantity);
     formData.append('__RequestVerificationToken', token);
 
-    // Deshabilitar botón temporalmente para evitar doble clic
+    // Deshabilitar botón temporalmente
     if (button) {
         button.disabled = true;
         const originalHTML = button.innerHTML;
-        button.innerHTML = '⏳ Agregando...';
+        button.innerHTML = '<span>⏳ Agregando...</span>';
 
-        // Restaurar después de la petición
         setTimeout(() => {
             button.disabled = false;
             button.innerHTML = originalHTML;
@@ -46,20 +50,31 @@ function addToCart(productId, quantity, productName, button) {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                // Mostrar toast de éxito
-                if (typeof showToast === 'function') {
-                    showToast(`"${productName}" agregado al carrito ✅`, 'success');
+                // Feedback visual en el botón
+                if (button) {
+                    const originalHTML = button.innerHTML;
+                    button.classList.add('rog-added');
+                    button.innerHTML = '<span>✓ Agregado</span>';
+
+                    setTimeout(() => {
+                        button.classList.remove('rog-added');
+                        button.innerHTML = originalHTML;
+                    }, 1500);
                 }
 
-                // Actualizar el badge del navbar
+                // Toast
+                if (typeof showToast === 'function') {
+                    showToast(`"${productName}" agregado al carrito`, 'success');
+                }
+
+                // Actualizar badge del navbar
                 if (typeof updateCartBadge === 'function') {
                     updateCartBadge();
                 }
 
-                // Opcional: animar el ícono del carrito
+                // Animación del ícono del carrito
                 animateCartIcon();
             } else {
-                // Mostrar error
                 if (typeof showToast === 'function') {
                     showToast(data.message || 'Error al agregar', 'error');
                 } else {
@@ -76,31 +91,24 @@ function addToCart(productId, quantity, productName, button) {
 }
 
 // ============================================
-// Obtener el token anti-forgery
+// Obtener token anti-forgery
 // ============================================
 function getAntiForgeryToken() {
-    // Buscar en cualquier formulario de la página
-    const tokenInput = document.querySelector('input[name="__RequestVerificationToken"]');
-    if (tokenInput) return tokenInput.value;
-
-    // Si no hay formulario con token, buscar en meta tags (fallback)
-    const meta = document.querySelector('meta[name="csrf-token"]');
-    if (meta) return meta.content;
-
-    return '';
+    const tokenInput = document.querySelector('#antiForgeryForm input[name="__RequestVerificationToken"]');
+    return tokenInput ? tokenInput.value : '';
 }
 
 // ============================================
-// Animación del ícono del carrito al agregar
+// Animación del ícono del carrito
 // ============================================
 function animateCartIcon() {
-    const cartIcon = document.querySelector('.cart-pill');
+    const cartIcon = document.querySelector('.rog-nav-cart') || document.querySelector('.cart-pill');
     if (!cartIcon) return;
 
     cartIcon.style.transition = 'transform 0.3s';
-    cartIcon.style.transform = 'scale(1.3) rotate(-10deg)';
+    cartIcon.style.transform = 'scale(1.3)';
 
     setTimeout(() => {
-        cartIcon.style.transform = 'scale(1) rotate(0)';
+        cartIcon.style.transform = 'scale(1)';
     }, 400);
 }

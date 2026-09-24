@@ -1,10 +1,10 @@
 ﻿@model IEnumerable<EcommerceApp.Models.Product>
 @{
-    ViewData["Title"] = "Componentes";
+    ViewData["Title"] = "Productos";
     bool isAdmin = User.IsInRole("Admin");
-    var categories = Model.Select(p => p.Category).Distinct().OrderBy(c => c).ToList();
-    var featured = Model.OrderByDescending(p => p.Price).Take(3).ToList();
-    var tags = new[] { "🔥 Más vendido", "⭐ Mejor valorado", "🆕 Nuevo" };
+    var categoriaActual = ViewBag.CategoriaActual as string;
+    var categorias = ViewBag.Categorias as List<string> ?? new List<string>();
+    var productos = Model.ToList();
 
     string IconFor(string? category) => category switch
     {
@@ -15,161 +15,237 @@
         "Placa Madre" => "🔌",
         "Fuente" => "⚡",
         "Refrigeración" => "❄️",
-        "Gabinete" => "🖥️",
-        "Monitor" => "🖵",
+        "Gabinete" => "📦",
+        "Monitor" => "🖥️",
         "Periférico" => "🖱️",
         _ => "🔧"
     };
-    string ClassFor(string? category) => "cat-" + (category ?? "").Replace(" ", "").ToLower();
 }
 
-<div class="catalog-hero">
-    <span class="hero-eyebrow">⚙ COMPONENTES PARA PC</span>
-    <h1>Construí la máquina de <span class="grad-text">tus sueños</span></h1>
-    <p>Encontrá el hardware ideal para tu próxima configuración.</p>
-</div>
+<div class="iris-catalog">
+    <div class="container">
 
-<button id="mobileFilterBtn" class="btn-secondary mobile-filter-btn" style="margin-bottom:16px;">☰ Filtros</button>
+        <!-- BOTÓN FILTRO MÓVIL -->
+        <button id="mobileFilterBtn" class="iris-mobile-filter">☰ Categorías</button>
 
-<div class="catalog-layout">
-    <aside class="catalog-sidebar" id="filterSidebar">
-        <div class="d-flex justify-content-between align-items-center mb-2">
-            <h3>Filtros</h3>
-            <button id="closeMobileFilter" class="mobile-filter-btn btn-secondary" style="padding:4px 10px;">✕</button>
-        </div>
-        <div class="filter-group">
-            <label>Categoría</label>
-            <div class="filter-options">
-                <button class="filter-chip active" data-cat="all">Todos los componentes</button>
-                @foreach (var cat in categories)
-                {
-                    <button class="filter-chip" data-cat="@cat">@IconFor(cat) @cat</button>
-                }
-            </div>
-        </div>
-        <button id="clearFilters" class="btn-secondary" style="width:100%;">Limpiar filtros</button>
-    </aside>
+        <div class="iris-catalog-layout">
 
-    <div class="catalog-main">
-        <div class="catalog-toolbar">
-            <input id="searchInput" class="form-control search-input" placeholder="Buscar por nombre..." />
-            <select id="sortSelect" class="form-control sort-select">
-                <option value="relevance">Más relevantes</option>
-                <option value="price-asc">Precio: menor a mayor</option>
-                <option value="price-desc">Precio: mayor a menor</option>
-                <option value="name">Nombre A-Z</option>
-            </select>
-        </div>
+            <!-- ============ SIDEBAR ============ -->
+            <aside class="iris-catalog-sidebar" id="irisSidebar">
+                <h3 class="iris-sidebar-title">📦 Productos</h3>
 
-        @if (featured.Any())
-        {
-            <h2 class="section-title">🔥 Productos destacados</h2>
-            <div class="featured-grid">
-                @for (int i = 0; i < featured.Count; i++)
-                {
-                    var p = featured[i];
-                    <div class="featured-card @ClassFor(p.Category)">
-                        <span class="fc-tag">@tags[i % tags.Length]</span>
-                        <span class="fc-icon">@IconFor(p.Category)</span>
-                        <h4>@p.Name</h4>
-                        <div class="price">Bs @p.Price.ToString("N2")</div>
-                        <a asp-action="Details" asp-route-id="@p.Id" class="btn-glass-sm primary" style="margin-top:10px; width:fit-content; padding:8px 18px;">Comprar ahora →</a>
-                    </div>
-                }
-            </div>
-        }
+                <ul class="iris-category-list">
+                    <li>
+                        <a class="iris-category-link @(string.IsNullOrEmpty(categoriaActual) ? "active" : "")"
+                           asp-action="Index">
+                            <span class="iris-category-link-text">
+                                <span>🔧</span> Todos los productos
+                            </span>
+                            <span class="iris-category-count-badge">@productos.Count</span>
+                        </a>
+                    </li>
 
-        <div class="page-header">
-            <h2 class="section-title" style="margin:0;">Todo el catálogo</h2>
-            @if (isAdmin)
-            {
-                <a asp-action="Create" class="btn-glass-sm primary" style="flex:none; padding:10px 18px;">+ Crear Producto</a>
-            }
-        </div>
+                    @foreach (var cat in categorias)
+                    {
+                        var count = productos.Count(p => p.Category == cat);
+                        <li>
+                            <a class="iris-category-link @(categoriaActual == cat ? "active" : "")"
+                               asp-action="Index" asp-route-category="@cat">
+                                <span class="iris-category-link-text">
+                                    <span>@IconFor(cat)</span> @cat
+                                </span>
+                                <span class="iris-category-count-badge">@count</span>
+                            </a>
+                        </li>
+                    }
+                </ul>
 
-        <div class="product-grid" id="productGrid">
-            @foreach (var item in Model)
-            {
-                <div class="product-card"
-                     data-id="@item.Id" data-category="@item.Category" data-name="@item.Name"
-                     data-price="@item.Price" data-stock="@item.Stock" data-desc="@item.Description"
-                     data-icon="@IconFor(item.Category)" data-img-class="@ClassFor(item.Category)"
-                     data-img-url="@item.ImageUrl">
-                    <!-- Imagen del producto (fuera del pc-top para que se vea bien) -->
-                    <div class="product-image-wrapper" style="position:relative; height:160px; border-radius:14px; overflow:hidden; margin-bottom:14px; background: linear-gradient(135deg, rgba(0,224,255,0.08), rgba(160,32,240,0.08));">
-                        @if (!string.IsNullOrEmpty(item.ImageUrl))
-                        {
-                            <img src="@item.ImageUrl" alt="@item.Name"
-                                 style="width:100%; height:100%; object-fit:cover; display:block;"
-                                 onerror="this.style.display='none'; this.parentElement.innerHTML='<div style=\'display:flex;align-items:center;justify-content:center;height:100%;font-size:3.5rem;opacity:0.5;\'>@IconFor(item.Category)</div>';" />
-                        }
-                        else
-                        {
-                            <div style="display:flex;align-items:center;justify-content:center;height:100%;font-size:3.5rem;opacity:0.5;">
-                                @IconFor(item.Category)
-                            </div>
-                        }
-
-                        <!-- Botones flotantes (arriba a la derecha) -->
-                        <div style="position:absolute; top:10px; right:10px; display:flex; gap:6px;">
-                            <button class="pc-fav" data-id="@item.Id" style="background:rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.2); color:#fff; width:34px; height:34px; border-radius:50%; cursor:pointer;">♡</button>
-                            <button class="pc-quick" style="background:rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.2); color:#fff; width:34px; height:34px; border-radius:50%; cursor:pointer;">👁</button>
-                        </div>
-                    </div>
-                    <span class="category-badge">@IconFor(item.Category) @item.Category</span>
-                    <h3>@item.Name</h3>
-                    <p class="desc">@item.Description</p>
-                    <div class="product-footer">
-                        <span class="price">Bs @item.Price.ToString("N2")</span>
-                        @if (item.Stock > 0)
-                        {
-                            <span class="stock-badge stock-in">En stock (@item.Stock)</span>
-                        }
-                        else
-                        {
-                            <span class="stock-badge stock-out">Agotado</span>
-                        }
-                    </div>
-                    <div class="qty-row">
-                        <button class="qty-btn qty-minus">−</button>
-                        <span class="qty-val">1</span>
-                        <button class="qty-btn qty-plus">+</button>
-                    </div>
-                    <button class="btn-cart add-to-cart-btn"
-                            data-id="@item.Id"
-                            data-name="@item.Name">
-                        🛒 Agregar al carrito
-                    </button>   
-                    <div class="card-actions" style="margin-top:8px;">
-                        <a asp-action="Details" asp-route-id="@item.Id" class="btn-glass-sm">Ver</a>
-                        @if (isAdmin)
-                        {
-                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn-glass-sm">Editar</a>
-                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn-glass-sm">Borrar</a>
-                        }
+                <!-- Banner promocional -->
+                <div class="iris-sidebar-promo">
+                    <div class="iris-sidebar-promo-content">
+                        <h4 class="iris-sidebar-promo-title">
+                            Juega<br />
+                            <span class="highlight">SIN LÍMITES</span>
+                        </h4>
+                        <p class="iris-sidebar-promo-text">
+                            Descubrí las GPUs más potentes del mercado
+                        </p>
+                        <a asp-action="Index" asp-route-category="GPU" class="iris-sidebar-promo-btn">
+                            Ver GPUs →
+                        </a>
                     </div>
                 </div>
-            }
+            </aside>
+
+            <!-- ============ CONTENIDO ============ -->
+            <div class="iris-catalog-main">
+
+                <!-- Header -->
+                <div class="iris-catalog-header">
+                    <div class="iris-catalog-header-info">
+                        <h1 class="iris-catalog-title">@(categoriaActual ?? "Productos")</h1>
+                        <span class="iris-catalog-count">@productos.Count productos encontrados</span>
+                    </div>
+
+                    <div class="iris-catalog-sort">
+                        <label for="sortSelect">Ordenar por:</label>
+                        <select id="sortSelect">
+                            <option value="relevance">Más relevantes</option>
+                            <option value="price-asc">Precio: menor a mayor</option>
+                            <option value="price-desc">Precio: mayor a menor</option>
+                            <option value="name">Nombre A-Z</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Búsqueda local -->
+                <div class="iris-catalog-search">
+                    <span class="iris-catalog-search-icon">🔍</span>
+                    <input type="text" id="localSearch" placeholder="Buscar dentro de los resultados..." />
+                </div>
+
+                <!-- Grid -->
+                <div class="iris-catalog-grid" id="productGrid">
+
+                    @if (!productos.Any())
+                    {
+                        <div class="iris-catalog-empty">
+                            <div class="iris-catalog-empty-icon">🔍</div>
+                            <h3>Sin resultados</h3>
+                            <p>No se encontraron productos en esta categoría</p>
+                            <a asp-action="Index" class="wt-btn-primary">Ver todos los productos</a>
+                        </div>
+                    }
+                    else
+                    {
+                        @foreach (var item in productos)
+                        {
+                            <div class="iris-catalog-card"
+                                 data-id="@item.Id"
+                                 data-category="@item.Category"
+                                 data-name="@item.Name"
+                                 data-price="@item.Price"
+                                 data-stock="@item.Stock">
+
+                                <!-- IMAGEN -->
+                                <a asp-action="Details" asp-route-id="@item.Id" class="iris-catalog-card-img">
+                                    @if (item.Stock > 0 && item.Stock < 15)
+                                    {
+                                        <span class="iris-catalog-card-badge">🔥 ÚLTIMAS UNIDADES</span>
+                                    }
+                                    else if (item.Price > 1000)
+                                    {
+                                        <span class="iris-catalog-card-badge cyan">⭐ PREMIUM</span>
+                                    }
+
+                                    @if (!string.IsNullOrEmpty(item.ImageUrl))
+                                    {
+                                        <img src="@item.ImageUrl" alt="@item.Name"
+                                             onerror="this.style.display='none'; this.parentElement.innerHTML+='<div class=&quot;iris-catalog-card-placeholder&quot;>@IconFor(item.Category)</div>';" />
+                                    }
+                                    else
+                                    {
+                                        <div class="iris-catalog-card-placeholder">@IconFor(item.Category)</div>
+                                    }
+                                </a>
+
+                                <!-- BODY -->
+                                <div class="iris-catalog-card-body">
+                                    <span class="iris-catalog-card-brand">@item.Category</span>
+
+                                    <h3 class="iris-catalog-card-name">
+                                        <a asp-action="Details" asp-route-id="@item.Id" style="color: inherit; text-decoration: none;">
+                                            @item.Name
+                                        </a>
+                                    </h3>
+
+                                    <p class="iris-catalog-card-desc">@item.Description</p>
+
+                                    <div class="iris-catalog-card-footer">
+                                        <div class="iris-catalog-card-price-block">
+                                            <span class="iris-catalog-card-price">Bs @item.Price.ToString("N2")</span>
+                                            @if (item.Stock > 0)
+                                            {
+                                                <span class="iris-catalog-card-stock in">✓ En stock (@item.Stock)</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="iris-catalog-card-stock out">✗ Agotado</span>
+                                            }
+                                        </div>
+
+                                        <button class="iris-catalog-card-cart add-to-cart-btn"
+                                                data-id="@item.Id"
+                                                data-name="@item.Name"
+                                                title="Agregar al carrito"
+                                            @(item.Stock <= 0 ? "disabled" : "")>
+                                            🛒
+                                        </button>
+                                    </div>
+
+                                    @if (isAdmin)
+                                    {
+                                        <div class="iris-catalog-card-admin">
+                                            <a asp-action="Edit" asp-route-id="@item.Id" class="iris-catalog-admin-btn">✏️ Editar</a>
+                                            <a asp-action="Delete" asp-route-id="@item.Id" class="iris-catalog-admin-btn danger">🗑️ Borrar</a>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
-<div class="quick-view-overlay" id="quickViewOverlay">
-    <div class="quick-view-modal">
-        <button class="qv-close" id="qvClose">✕</button>
-        <div class="qv-image" id="qvImage"></div>
-        <span class="category-badge" id="qvCategory"></span>
-        <h2 id="qvName"></h2>
-        <p class="desc" id="qvDesc" style="-webkit-line-clamp:unset; margin-bottom:16px;"></p>
-        <div class="price" id="qvPrice"></div>
-        <p style="color:var(--muted); font-size:13px; margin:6px 0 18px;">Stock: <span id="qvStock"></span></p>
-    </div>
-</div>
-<!-- Formulario oculto para el token anti-forgery (necesario para AJAX) -->
+<!-- Formulario oculto para token anti-forgery -->
 <form id="antiForgeryForm" style="display:none;">
     @Html.AntiForgeryToken()
 </form>
 
 @section Scripts {
     <script src="~/js/shop.js"></script>
+    <script>
+        // ============ BUSCADOR LOCAL ============
+        document.getElementById('localSearch')?.addEventListener('input', function () {
+            const term = this.value.toLowerCase().trim();
+            document.querySelectorAll('.iris-catalog-card').forEach(card => {
+                const name = card.dataset.name.toLowerCase();
+                card.style.display = name.includes(term) ? '' : 'none';
+            });
+        });
+
+        // ============ ORDENAR ============
+        document.getElementById('sortSelect')?.addEventListener('change', function () {
+            const grid = document.getElementById('productGrid');
+            const cards = Array.from(grid.querySelectorAll('.iris-catalog-card'));
+            const sortBy = this.value;
+
+            cards.sort((a, b) => {
+                if (sortBy === 'price-asc') return parseFloat(a.dataset.price) - parseFloat(b.dataset.price);
+                if (sortBy === 'price-desc') return parseFloat(b.dataset.price) - parseFloat(a.dataset.price);
+                if (sortBy === 'name') return a.dataset.name.localeCompare(b.dataset.name);
+                return 0;
+            });
+
+            cards.forEach(card => grid.appendChild(card));
+        });
+
+        // ============ SIDEBAR MÓVIL ============
+        const mobileBtn = document.getElementById('mobileFilterBtn');
+        const sidebar = document.getElementById('irisSidebar');
+
+        mobileBtn?.addEventListener('click', () => {
+            sidebar.classList.toggle('open');
+        });
+
+        // Cerrar sidebar al hacer clic en una categoría
+        document.querySelectorAll('.iris-category-link').forEach(link => {
+            link.addEventListener('click', () => {
+                sidebar.classList.remove('open');
+            });
+        });
+    </script>
 }

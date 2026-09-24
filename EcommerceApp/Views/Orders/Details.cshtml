@@ -4,164 +4,137 @@
     bool isAdmin = ViewBag.IsAdmin ?? false;
 }
 
-@section Styles {
-    <link rel="stylesheet" href="~/css/orders.css" />
-}
-
-<div class="order-detail-page">
+<div class="wt-order-detail-page">
     <div class="container">
         @if (isAdmin)
         {
-            <a asp-action="AllOrders" class="back-link">← Volver a todos los pedidos</a>
+            <a asp-action="AllOrders" class="wt-back-link">← Volver a todos los pedidos</a>
         }
         else
         {
-            <a asp-action="MyOrders" class="back-link">← Volver a mis pedidos</a>
+            <a asp-action="MyOrders" class="wt-back-link">← Volver a mis pedidos</a>
         }
 
-        <div class="order-detail-header">
+        <div class="wt-order-detail-header">
             <div>
-                <h1>Pedido @Model.NumeroOrden</h1>
-                <p>Realizado el @Model.Fecha.ToLocalTime().ToString("dd/MM/yyyy 'a las' HH:mm")</p>
+                <h1 class="wt-order-detail-title">Pedido @Model.NumeroOrden</h1>
+                <p class="wt-order-detail-date">Realizado el @Model.Fecha.ToLocalTime().ToString("dd/MM/yyyy 'a las' HH:mm")</p>
             </div>
-            <span class="status-badge status-@Model.Estado.ToLower()">
-                @Model.Estado
-            </span>
+            <span class="wt-status wt-status-@Model.Estado.ToLower()">@Model.Estado</span>
         </div>
 
         @if (TempData["Success"] != null)
         {
-            <div class="alert-success">✅ @TempData["Success"]</div>
+            <div class="wt-alert wt-alert-success">✅ @TempData["Success"]</div>
         }
         @if (TempData["Error"] != null)
         {
-            <div class="alert-error">⚠️ @TempData["Error"]</div>
+            <div class="wt-alert wt-alert-error">⚠️ @TempData["Error"]</div>
         }
 
-        <div class="order-detail-layout">
-            <!-- IZQUIERDA: PRODUCTOS Y DATOS -->
-            <div class="order-detail-main">
+        <div class="wt-order-detail-layout">
+            <div class="wt-order-detail-main">
                 @if (isAdmin)
                 {
-                    <div class="detail-card admin-client-card">
+                    <div class="wt-detail-card-box">
                         <h2>👤 Cliente</h2>
-                        <div class="detail-row">
+                        <div class="wt-success-row">
                             <span>Email</span>
-                            <span>@(Model.User?.Email ?? "N/A")</span>
+                            <strong>@(Model.User?.Email ?? "N/A")</strong>
                         </div>
-                        <div class="detail-row">
+                        <div class="wt-success-row">
                             <span>Nombre</span>
-                            <span>@(Model.User?.FullName ?? "N/A")</span>
+                            <strong>@(Model.User?.FullName ?? "N/A")</strong>
                         </div>
                     </div>
                 }
 
-                <div class="detail-card">
-                    <h2>Productos</h2>
+                <div class="wt-detail-card-box">
+                    <h2>📦 Productos</h2>
                     @foreach (var item in Model.Details)
                     {
-                        <div class="detail-product">
-                            <div class="detail-product-image">
+                        <div class="wt-order-product-row">
+                            <div class="wt-order-product-img">
                                 @if (!string.IsNullOrEmpty(item.ProductImage))
                                 {
                                     <img src="@item.ProductImage" alt="@item.ProductName"
-                                         onerror="this.parentElement.innerHTML='<div class=&quot;detail-placeholder&quot;>🖥️</div>';" />
+                                         onerror="this.parentElement.innerHTML='<div class=&quot;wt-order-prod-placeholder&quot;>🖥️</div>';" />
                                 }
                                 else
                                 {
-                                    <div class="detail-placeholder">🖥️</div>
+                                    <div class="wt-order-prod-placeholder">🖥️</div>
                                 }
                             </div>
-                            <div class="detail-product-info">
+                            <div class="wt-order-product-info">
                                 <h3>@item.ProductName</h3>
                                 <p>@item.Quantity × Bs @item.Price.ToString("N2")</p>
                             </div>
-                            <div class="detail-product-subtotal">
-                                Bs @item.Subtotal.ToString("N2")
-                            </div>
+                            <div class="wt-order-product-subtotal">Bs @item.Subtotal.ToString("N2")</div>
                         </div>
                     }
                 </div>
 
-                <div class="detail-card">
-                    <h2>📍 Datos de envío</h2>
-                    <div class="detail-row">
+                <div class="wt-detail-card-box">
+                    <h2>📍 Datos de Envío</h2>
+                    <div class="wt-success-row">
                         <span>Dirección</span>
-                        <span>@Model.DireccionEnvio</span>
+                        <strong>@Model.DireccionEnvio</strong>
                     </div>
                     @if (!string.IsNullOrEmpty(Model.Ciudad))
                     {
-                        <div class="detail-row">
+                        <div class="wt-success-row">
                             <span>Ciudad</span>
-                            <span>@Model.Ciudad</span>
+                            <strong>@Model.Ciudad</strong>
                         </div>
                     }
-                    <div class="detail-row">
+                    <div class="wt-success-row">
                         <span>Teléfono</span>
-                        <span>@Model.Telefono</span>
+                        <strong>@Model.Telefono</strong>
                     </div>
-                    <div class="detail-row">
+                    <div class="wt-success-row">
                         <span>Método de pago</span>
-                        <span>@Model.MetodoPago</span>
+                        <strong>@Model.MetodoPago</strong>
                     </div>
                     @if (!string.IsNullOrEmpty(Model.Notas))
                     {
-                        <div class="detail-row">
+                        <div class="wt-success-row">
                             <span>Notas</span>
-                            <span>@Model.Notas</span>
+                            <strong>@Model.Notas</strong>
                         </div>
                     }
                 </div>
 
                 @if (isAdmin)
                 {
-                    <div class="detail-card">
-                        <h2>⚙️ Cambiar estado del pedido</h2>
-                        <form asp-action="UpdateStatus" method="post" class="status-form">
+                    <div class="wt-detail-card-box">
+                        <h2>⚙️ Cambiar Estado</h2>
+                        <form asp-action="UpdateStatus" method="post">
                             @Html.AntiForgeryToken()
                             <input type="hidden" name="id" value="@Model.Id" />
-
-                            <div class="status-buttons">
-                                <button type="submit" name="nuevoEstado" value="Pendiente"
-                                        class="status-btn status-btn-pendiente @(Model.Estado == "Pendiente" ? "active" : "")">
-                                    🟡 Pendiente
-                                </button>
-                                <button type="submit" name="nuevoEstado" value="Pagado"
-                                        class="status-btn status-btn-pagado @(Model.Estado == "Pagado" ? "active" : "")">
-                                    🔵 Pagado
-                                </button>
-                                <button type="submit" name="nuevoEstado" value="Enviado"
-                                        class="status-btn status-btn-enviado @(Model.Estado == "Enviado" ? "active" : "")">
-                                    🟠 Enviado
-                                </button>
-                                <button type="submit" name="nuevoEstado" value="Entregado"
-                                        class="status-btn status-btn-entregado @(Model.Estado == "Entregado" ? "active" : "")">
-                                    🟢 Entregado
-                                </button>
-                                <button type="submit" name="nuevoEstado" value="Cancelado"
-                                        class="status-btn status-btn-cancelado @(Model.Estado == "Cancelado" ? "active" : "")"
-                                        onclick="return confirm('¿Cancelar este pedido?');">
-                                    🔴 Cancelado
-                                </button>
+                            <div class="wt-status-buttons">
+                                <button type="submit" name="nuevoEstado" value="Pendiente" class="wt-status-btn wt-status-btn-pendiente @(Model.Estado == "Pendiente" ? "active" : "")">🟡 Pendiente</button>
+                                <button type="submit" name="nuevoEstado" value="Pagado" class="wt-status-btn wt-status-btn-pagado @(Model.Estado == "Pagado" ? "active" : "")">🔵 Pagado</button>
+                                <button type="submit" name="nuevoEstado" value="Enviado" class="wt-status-btn wt-status-btn-enviado @(Model.Estado == "Enviado" ? "active" : "")">🟠 Enviado</button>
+                                <button type="submit" name="nuevoEstado" value="Entregado" class="wt-status-btn wt-status-btn-entregado @(Model.Estado == "Entregado" ? "active" : "")">🟢 Entregado</button>
+                                <button type="submit" name="nuevoEstado" value="Cancelado" class="wt-status-btn wt-status-btn-cancelado @(Model.Estado == "Cancelado" ? "active" : "")" onclick="return confirm('¿Cancelar este pedido?');">🔴 Cancelado</button>
                             </div>
                         </form>
                     </div>
                 }
             </div>
 
-            <!-- DERECHA: RESUMEN -->
-            <aside class="order-detail-summary">
-                <h2>Resumen</h2>
-                <div class="summary-row">
+            <aside class="wt-checkout-summary">
+                <h2 class="wt-cart-summary-title">Resumen</h2>
+                <div class="wt-summary-row">
                     <span>Subtotal</span>
                     <span>Bs @Model.Subtotal.ToString("N2")</span>
                 </div>
-                <div class="summary-row">
+                <div class="wt-summary-row">
                     <span>Envío</span>
                     <span>
                         @if (Model.Envio == 0)
                         {
-                            <span class="envio-gratis">🎉 ¡GRATIS!</span>
+                            <span class="wt-envio-gratis">🎉 ¡GRATIS!</span>
                         }
                         else
                         {
@@ -169,27 +142,19 @@
                         }
                     </span>
                 </div>
-                @if (Model.Descuento > 0)
-                {
-                    <div class="summary-row">
-                        <span>Descuento</span>
-                        <span style="color:#00e676;">- Bs @Model.Descuento.ToString("N2")</span>
-                    </div>
-                }
-                <div class="summary-divider"></div>
-                <div class="summary-total">
-                    <span>Total</span>
-                    <strong>Bs @Model.Total.ToString("N2")</strong>
+                <div class="wt-summary-divider"></div>
+                <div class="wt-summary-total">
+                    <span class="wt-summary-total-label">Total</span>
+                    <span class="wt-summary-total-value">Bs @Model.Total.ToString("N2")</span>
                 </div>
-
-                <div class="summary-info">
+                <div class="wt-envio-info" style="text-align:center;">
                     @if (isAdmin)
                     {
                         <text>👤 Vista de administrador</text>
                     }
                     else
                     {
-                        <text>💡 Guarda tu número de pedido para cualquier consulta</text>
+                        <text>💡 Guarda tu número de pedido</text>
                     }
                 </div>
             </aside>

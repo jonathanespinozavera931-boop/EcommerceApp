@@ -6,16 +6,12 @@
     decimal total = subtotal + envio;
 }
 
-@section Styles {
-    <link rel="stylesheet" href="~/css/cart.css" />
-}
-
-<div class="cart-page">
+<div class="wt-cart-page">
     <div class="container">
 
-        <div class="cart-header">
-            <h1>🛒 Mi Carrito</h1>
-            <p class="cart-subtitle">
+        <div class="wt-cart-header">
+            <h1 class="wt-cart-title">🛒 Mi Carrito</h1>
+            <p class="wt-cart-subtitle">
                 @if (Model.Any())
                 {
                     <text>Tienes @Model.Sum(c => c.Quantity) producto(s) en tu carrito</text>
@@ -29,75 +25,67 @@
 
         @if (!Model.Any())
         {
-            <!-- CARRITO VACÍO -->
-            <div class="empty-cart">
-                <div class="empty-cart-icon">🛒</div>
+            <div class="wt-empty-cart">
+                <div class="wt-empty-cart-icon">🛒</div>
                 <h2>Tu carrito está vacío</h2>
                 <p>Agrega productos para comenzar tu compra</p>
-                <a asp-controller="Products" asp-action="Index" class="btn-hero-primary">
-                    Explorar componentes →
+                <a asp-controller="Products" asp-action="Index" class="wt-btn-primary">
+                    Explorar Componentes →
                 </a>
             </div>
         }
         else
         {
-            <div class="cart-layout">
-                <!-- COLUMNA IZQUIERDA: LISTA DE PRODUCTOS -->
-                <div class="cart-items">
+            <div class="wt-cart-layout">
+                <!-- LISTA DE PRODUCTOS -->
+                <div class="wt-cart-items">
                     @foreach (var item in Model)
                     {
-                        <div class="cart-item" data-product-id="@item.ProductId">
-                            <!-- Imagen -->
-                            <div class="cart-item-image">
+                        <div class="wt-cart-item" data-product-id="@item.ProductId">
+                            <div class="wt-cart-item-image">
                                 @if (!string.IsNullOrEmpty(item.ImageUrl))
                                 {
                                     <img src="@item.ImageUrl" alt="@item.Name"
-                                         onerror="this.parentElement.innerHTML='<div class=&quot;cart-item-placeholder&quot;>🖥️</div>';" />
+                                         onerror="this.parentElement.innerHTML='<div class=&quot;wt-cart-item-placeholder&quot;>🖥️</div>';" />
                                 }
                                 else
                                 {
-                                    <div class="cart-item-placeholder">🖥️</div>
+                                    <div class="wt-cart-item-placeholder">🖥️</div>
                                 }
                             </div>
 
-                            <!-- Info -->
-                            <div class="cart-item-info">
-                                <span class="cart-item-category">@item.Category</span>
-                                <h3>@item.Name</h3>
-                                <div class="cart-item-price-unit">
+                            <div class="wt-cart-item-info">
+                                <span class="wt-cart-item-cat">@item.Category</span>
+                                <h3 class="wt-cart-item-name">@item.Name</h3>
+                                <div class="wt-cart-item-price">
                                     Bs @item.Price.ToString("N2") c/u
                                 </div>
                             </div>
 
-                            <!-- Cantidad -->
-                            <div class="cart-item-qty">
-                                <button class="qty-btn qty-minus" data-action="minus" data-id="@item.ProductId">−</button>
-                                <span class="qty-val" id="qty-@item.ProductId">@item.Quantity</span>
-                                <button class="qty-btn qty-plus" data-action="plus" data-id="@item.ProductId">+</button>
+                            <div class="wt-cart-qty">
+                                <button class="wt-cart-qty-btn" data-action="minus" data-id="@item.ProductId">−</button>
+                                <span class="wt-cart-qty-val" id="qty-@item.ProductId">@item.Quantity</span>
+                                <button class="wt-cart-qty-btn" data-action="plus" data-id="@item.ProductId">+</button>
                             </div>
 
-                            <!-- Subtotal del item -->
-                            <div class="cart-item-subtotal">
-                                <span class="subtotal-label">Subtotal</span>
-                                <span class="subtotal-value" id="subtotal-@item.ProductId">
+                            <div class="wt-cart-subtotal">
+                                <span class="wt-cart-subtotal-label">Subtotal</span>
+                                <span class="wt-cart-subtotal-value" id="subtotal-@item.ProductId">
                                     Bs @item.Subtotal.ToString("N2")
                                 </span>
                             </div>
 
-                            <!-- Eliminar -->
-                            <button class="cart-item-remove" data-id="@item.ProductId" title="Eliminar">
-                                ✕
-                            </button>
+                            <button class="wt-cart-remove" data-id="@item.ProductId" title="Eliminar">✕</button>
                         </div>
                     }
 
-                    <div class="cart-actions">
-                        <a asp-controller="Products" asp-action="Index" class="btn-link">
+                    <div class="wt-cart-actions">
+                        <a asp-controller="Products" asp-action="Index" class="wt-cart-link">
                             ← Seguir comprando
                         </a>
                         <form asp-action="Clear" method="post" style="display:inline;">
                             @Html.AntiForgeryToken()
-                            <button type="submit" class="btn-link btn-danger"
+                            <button type="submit" class="wt-cart-link danger"
                                     onclick="return confirm('¿Vaciar todo el carrito?');">
                                 🗑 Vaciar carrito
                             </button>
@@ -105,21 +93,21 @@
                     </div>
                 </div>
 
-                <!-- COLUMNA DERECHA: RESUMEN -->
-                <aside class="cart-summary">
-                    <h2>Resumen de compra</h2>
+                <!-- RESUMEN -->
+                <aside class="wt-cart-summary">
+                    <h2 class="wt-cart-summary-title">Resumen de Compra</h2>
 
-                    <div class="summary-row">
+                    <div class="wt-summary-row">
                         <span>Subtotal</span>
                         <span id="summary-subtotal">Bs @subtotal.ToString("N2")</span>
                     </div>
 
-                    <div class="summary-row">
+                    <div class="wt-summary-row">
                         <span>Envío</span>
                         <span id="summary-envio">
                             @if (envio == 0)
                             {
-                                <span class="envio-gratis">🎉 ¡GRATIS!</span>
+                                <span class="wt-envio-gratis">🎉 ¡GRATIS!</span>
                             }
                             else
                             {
@@ -130,40 +118,142 @@
 
                     @if (envio > 0)
                     {
-                        <div class="envio-info">
+                        <div class="wt-envio-info">
                             🚚 Te faltan <strong>Bs @((500 - subtotal).ToString("N2"))</strong> para envío gratis
                         </div>
                     }
 
-                    <div class="summary-divider"></div>
+                    <div class="wt-summary-divider"></div>
 
-                    <div class="summary-row summary-total">
-                        <span>Total</span>
-                        <span id="summary-total">Bs @total.ToString("N2")</span>
+                    <div class="wt-summary-total">
+                        <span class="wt-summary-total-label">Total</span>
+                        <span class="wt-summary-total-value" id="summary-total">Bs @total.ToString("N2")</span>
                     </div>
 
-                    <a asp-controller="Checkout" asp-action="Index" class="btn-checkout">
-                        🛍 Proceder al pago
+                    <a asp-controller="Checkout" asp-action="Index" class="wt-btn-checkout">
+                        🛍 Proceder al Pago
                     </a>
 
-                    <div class="summary-guarantees">
-                        <div class="guarantee-item">
-                            <span>🔒</span> Pago 100% seguro
-                        </div>
-                        <div class="guarantee-item">
-                            <span>🚚</span> Envíos a todo Bolivia
-                        </div>
-                        <div class="guarantee-item">
-                            <span>↩️</span> Devolución en 7 días
-                        </div>
+                    <div class="wt-summary-guarantees">
+                        <div class="wt-guarantee-item"><span>🔒</span> Pago 100% seguro</div>
+                        <div class="wt-guarantee-item"><span>🚚</span> Envíos a todo Bolivia</div>
+                        <div class="wt-guarantee-item"><span>↩️</span> Devolución en 7 días</div>
                     </div>
                 </aside>
             </div>
         }
-
     </div>
 </div>
 
+<form id="antiForgeryForm" style="display:none;">
+    @Html.AntiForgeryToken()
+</form>
+
 @section Scripts {
-    <script src="~/js/cart.js"></script>
+    <script>
+        function getAntiForgeryToken() {
+            const tokenInput = document.querySelector('#antiForgeryForm input[name="__RequestVerificationToken"]');
+            return tokenInput ? tokenInput.value : '';
+        }
+
+        // CANTIDAD
+        document.querySelectorAll('.wt-cart-qty-btn').forEach(btn => {
+            btn.addEventListener('click', function () {
+                const productId = this.dataset.id;
+                const action = this.dataset.action;
+                const qtySpan = document.getElementById(`qty-${productId}`);
+                let currentQty = parseInt(qtySpan.textContent);
+                let newQty = action === 'plus' ? currentQty + 1 : currentQty - 1;
+
+                if (newQty < 1) {
+                    if (confirm('¿Eliminar este producto del carrito?')) {
+                        removeItem(productId);
+                    }
+                    return;
+                }
+                updateQuantity(productId, newQty);
+            });
+        });
+
+        function updateQuantity(productId, quantity) {
+            const token = getAntiForgeryToken();
+            const formData = new FormData();
+            formData.append('productId', productId);
+            formData.append('quantity', quantity);
+            formData.append('__RequestVerificationToken', token);
+
+            fetch('/Cart/UpdateQuantity', { method: 'POST', body: formData })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        document.getElementById(`qty-${productId}`).textContent = quantity;
+                        document.getElementById(`subtotal-${productId}`).textContent = 'Bs ' + data.itemSubtotal.toFixed(2);
+                        updateSummary(data.subtotal);
+                        if (typeof updateCartBadge === 'function') updateCartBadge();
+                    } else {
+                        alert(data.message);
+                    }
+                });
+        }
+
+        // ELIMINAR
+        document.querySelectorAll('.wt-cart-remove').forEach(btn => {
+            btn.addEventListener('click', function () {
+                const productId = this.dataset.id;
+                if (confirm('¿Eliminar este producto del carrito?')) {
+                    removeItem(productId);
+                }
+            });
+        });
+
+        function removeItem(productId) {
+            const token = getAntiForgeryToken();
+            const formData = new FormData();
+            formData.append('productId', productId);
+            formData.append('__RequestVerificationToken', token);
+
+            fetch('/Cart/Remove', { method: 'POST', body: formData })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const item = document.querySelector(`.wt-cart-item[data-product-id="${productId}"]`);
+                        if (item) {
+                            item.style.transition = 'all 0.3s';
+                            item.style.opacity = '0';
+                            setTimeout(() => {
+                                item.remove();
+                                if (document.querySelectorAll('.wt-cart-item').length === 0) location.reload();
+                            }, 300);
+                        }
+                        updateSummary(data.subtotal);
+                        if (typeof updateCartBadge === 'function') updateCartBadge();
+                    }
+                });
+        }
+
+        // ACTUALIZAR RESUMEN
+        function updateSummary(subtotal) {
+            const ENVIO_GRATIS_DESDE = 500;
+            const ENVIO_COSTO = 20;
+            let envio = subtotal >= ENVIO_GRATIS_DESDE ? 0 : (subtotal > 0 ? ENVIO_COSTO : 0);
+            let envioTexto = envio === 0 ? '<span class="wt-envio-gratis">🎉 ¡GRATIS!</span>' : 'Bs ' + envio.toFixed(2);
+            const total = subtotal + envio;
+
+            const subtotalEl = document.getElementById('summary-subtotal');
+            const envioEl = document.getElementById('summary-envio');
+            const totalEl = document.getElementById('summary-total');
+
+            if (subtotalEl) subtotalEl.textContent = 'Bs ' + subtotal.toFixed(2);
+            if (envioEl) envioEl.innerHTML = envioTexto;
+            if (totalEl) totalEl.textContent = 'Bs ' + total.toFixed(2);
+
+            const envioInfo = document.querySelector('.wt-envio-info');
+            if (subtotal > 0 && subtotal < ENVIO_GRATIS_DESDE) {
+                const faltan = (ENVIO_GRATIS_DESDE - subtotal).toFixed(2);
+                if (envioInfo) envioInfo.innerHTML = `🚚 Te faltan <strong>Bs ${faltan}</strong> para envío gratis`;
+            } else if (envioInfo) {
+                envioInfo.remove();
+            }
+        }
+    </script>
 }

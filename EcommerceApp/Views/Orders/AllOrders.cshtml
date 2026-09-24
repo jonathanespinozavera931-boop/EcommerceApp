@@ -5,95 +5,69 @@
     var buscar = ViewBag.Buscar as string;
 }
 
-@section Styles {
-    <link rel="stylesheet" href="~/css/orders.css" />
-    <link rel="stylesheet" href="~/css/admin.css" />
-}
-
-<div class="admin-orders-page">
+<div class="wt-orders-page">
     <div class="container">
-        <div class="admin-header">
-            <div>
-                <h1>📋 Todos los Pedidos</h1>
-                <p>Gestiona los pedidos de todos los clientes</p>
-            </div>
+        <div class="wt-orders-header">
+            <h1 class="wt-orders-title">📋 Todos los Pedidos</h1>
+            <p class="wt-orders-subtitle">Gestiona los pedidos de todos los clientes</p>
         </div>
 
-        <!-- ESTADÍSTICAS RÁPIDAS -->
-        <div class="admin-stats-grid">
-            <div class="admin-stat-card">
-                <div class="stat-icon">📦</div>
+        <div class="wt-admin-stats-grid">
+            <div class="wt-admin-stat-card">
+                <div class="wt-admin-stat-icon">📦</div>
                 <div>
-                    <div class="stat-value">@ViewBag.TotalPedidos</div>
-                    <div class="stat-label">Total Pedidos</div>
+                    <div class="wt-admin-stat-value">@ViewBag.TotalPedidos</div>
+                    <div class="wt-admin-stat-label">Total Pedidos</div>
                 </div>
             </div>
-            <div class="admin-stat-card">
-                <div class="stat-icon">💰</div>
+            <div class="wt-admin-stat-card">
+                <div class="wt-admin-stat-icon">💰</div>
                 <div>
-                    <div class="stat-value">Bs @ViewBag.TotalIngresos.ToString("N0")</div>
-                    <div class="stat-label">Ingresos Totales</div>
+                    <div class="wt-admin-stat-value">Bs @ViewBag.TotalIngresos.ToString("N0")</div>
+                    <div class="wt-admin-stat-label">Ingresos</div>
                 </div>
             </div>
-            <div class="admin-stat-card stat-warning">
-                <div class="stat-icon">🟡</div>
+            <div class="wt-admin-stat-card">
+                <div class="wt-admin-stat-icon">🟡</div>
                 <div>
-                    <div class="stat-value">@ViewBag.Pendientes</div>
-                    <div class="stat-label">Pendientes</div>
+                    <div class="wt-admin-stat-value">@ViewBag.Pendientes</div>
+                    <div class="wt-admin-stat-label">Pendientes</div>
                 </div>
             </div>
-            <div class="admin-stat-card stat-success">
-                <div class="stat-icon">🟢</div>
+            <div class="wt-admin-stat-card">
+                <div class="wt-admin-stat-icon">🟢</div>
                 <div>
-                    <div class="stat-value">@ViewBag.Entregados</div>
-                    <div class="stat-label">Entregados</div>
+                    <div class="wt-admin-stat-value">@ViewBag.Entregados</div>
+                    <div class="wt-admin-stat-label">Entregados</div>
                 </div>
             </div>
         </div>
 
-        <!-- FILTROS Y BÚSQUEDA -->
-        <div class="admin-toolbar">
-            <div class="filters-row">
-                <a asp-action="AllOrders" class="filter-chip @(estadoFiltro == null ? "active" : "")">
-                    Todos
-                </a>
-                <a asp-action="AllOrders" asp-route-estado="Pendiente"
-                   class="filter-chip @(estadoFiltro == "Pendiente" ? "active" : "")">
-                    🟡 Pendientes
-                </a>
-                <a asp-action="AllOrders" asp-route-estado="Pagado"
-                   class="filter-chip @(estadoFiltro == "Pagado" ? "active" : "")">
-                    🔵 Pagados
-                </a>
-                <a asp-action="AllOrders" asp-route-estado="Enviado"
-                   class="filter-chip @(estadoFiltro == "Enviado" ? "active" : "")">
-                    🟠 Enviados
-                </a>
-                <a asp-action="AllOrders" asp-route-estado="Entregado"
-                   class="filter-chip @(estadoFiltro == "Entregado" ? "active" : "")">
-                    🟢 Entregados
-                </a>
-            </div>
-
-            <form asp-action="AllOrders" method="get" class="search-form">
-                <input type="text" name="buscar" value="@buscar"
-                       placeholder="🔍 Buscar por orden o email..." class="search-input-admin" />
-                <button type="submit" class="btn-search">Buscar</button>
-            </form>
+        <div class="wt-orders-filters">
+            <a asp-action="AllOrders" class="wt-orders-filter-chip @(estadoFiltro == null ? "active" : "")">Todos</a>
+            <a asp-action="AllOrders" asp-route-estado="Pendiente" class="wt-orders-filter-chip @(estadoFiltro == "Pendiente" ? "active" : "")">🟡 Pendientes</a>
+            <a asp-action="AllOrders" asp-route-estado="Pagado" class="wt-orders-filter-chip @(estadoFiltro == "Pagado" ? "active" : "")">🔵 Pagados</a>
+            <a asp-action="AllOrders" asp-route-estado="Enviado" class="wt-orders-filter-chip @(estadoFiltro == "Enviado" ? "active" : "")">🟠 Enviados</a>
+            <a asp-action="AllOrders" asp-route-estado="Entregado" class="wt-orders-filter-chip @(estadoFiltro == "Entregado" ? "active" : "")">🟢 Entregados</a>
         </div>
+
+        <form asp-action="AllOrders" method="get" class="wt-admin-toolbar">
+            <input type="text" name="buscar" value="@buscar" placeholder="🔍 Buscar por orden o email..." class="wt-search-admin" />
+            <button type="submit" class="wt-btn-search">Buscar</button>
+        </form>
 
         @if (!Model.Any())
         {
-            <div class="empty-orders">
-                <div class="empty-icon">📭</div>
+            <div class="wt-empty-orders">
+                <div class="wt-empty-orders-icon">📭</div>
                 <h2>No hay pedidos</h2>
                 <p>No se encontraron pedidos con los filtros seleccionados</p>
             </div>
         }
         else
         {
-            <div class="admin-orders-table">
-                <table>
+            <div class="wt-orders-table-wrapper">
+                <table class="wt-orders-table">
                     <thead>
                         <tr>
                             <th>Orden</th>
@@ -102,44 +76,25 @@
                             <th>Productos</th>
                             <th>Total</th>
                             <th>Estado</th>
-                            <th>Acciones</th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach (var order in Model)
                         {
                             <tr>
+                                <td><span style="font-family: var(--font-display); color: var(--rog-red); font-weight: 800;">@order.NumeroOrden</span></td>
                                 <td>
-                                    <span class="order-num">@order.NumeroOrden</span>
-                                </td>
-                                <td>
-                                    <div class="client-info">
-                                        <span class="client-email">@(order.User?.Email ?? "N/A")</span>
-                                        <span class="client-name">@(order.User?.FullName ?? "")</span>
+                                    <div class="wt-client-info">
+                                        <span class="wt-client-email">@(order.User?.Email ?? "N/A")</span>
+                                        <span class="wt-client-name">@(order.User?.FullName ?? "")</span>
                                     </div>
                                 </td>
-                                <td>
-                                    <span class="order-date-small">
-                                        @order.Fecha.ToLocalTime().ToString("dd/MM/yyyy")<br />
-                                        <small>@order.Fecha.ToLocalTime().ToString("HH:mm")</small>
-                                    </span>
-                                </td>
-                                <td>
-                                    <span class="product-count">@order.Details.Sum(d => d.Quantity) item(s)</span>
-                                </td>
-                                <td>
-                                    <strong class="order-total-small">Bs @order.Total.ToString("N2")</strong>
-                                </td>
-                                <td>
-                                    <span class="status-badge status-@order.Estado.ToLower()">
-                                        @order.Estado
-                                    </span>
-                                </td>
-                                <td>
-                                    <a asp-action="Details" asp-route-id="@order.Id" class="btn-view-small">
-                                        Ver →
-                                    </a>
-                                </td>
+                                <td>@order.Fecha.ToLocalTime().ToString("dd/MM/yyyy")<br /><small style="color: var(--text-light);">@order.Fecha.ToLocalTime().ToString("HH:mm")</small></td>
+                                <td>@order.Details.Sum(d => d.Quantity) item(s)</td>
+                                <td><strong style="color: var(--rog-red);">Bs @order.Total.ToString("N2")</strong></td>
+                                <td><span class="wt-status wt-status-@order.Estado.ToLower()">@order.Estado</span></td>
+                                <td><a asp-action="Details" asp-route-id="@order.Id" class="wt-btn-view-small">Ver →</a></td>
                             </tr>
                         }
                     </tbody>

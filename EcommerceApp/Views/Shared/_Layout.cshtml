@@ -1,76 +1,260 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - NexHard</title>
-    <script type="importmap"></script>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/NexHard.styles.css" asp-append-version="true" />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="~/css/glass-theme.css" />
-    <link rel="stylesheet" href="~/css/home.css" />
-    @await RenderSectionAsync("Styles", required: false)
-</head>
-<body class="glass-page">
-    <div class="blob blob-1"></div>
-    <div class="blob blob-2"></div>
 
-    <div class="app-shell">
-        <nav class="glass-navbar">
-            <div class="container d-flex align-items-center justify-content-between">
-                <a class="brand-gradient" asp-area="" asp-controller="Home" asp-action="Index">NexHard</a>
-                <div class="d-flex align-items-center gap-1 flex-wrap">
-                    <a class="nav-pill" asp-controller="Home" asp-action="Index">Inicio</a>
-                    <a class="nav-pill" asp-controller="Products" asp-action="Index">Componentes</a>
+    <!-- ═══════════════ CSS ═══════════════ -->
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/white-tech.css" asp-append-version="true" />
+    @await RenderSectionAsync("Styles", required: false)
+
+    <!-- ═══════════════ PWA MANIFEST ═══════════════ -->
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#FF003C" />
+    <link rel="apple-touch-icon" href="/images/logo-nexhard.png" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="NexHard" />
+</head>
+
+<body>
+
+    <!-- ==================== NAVBAR PREMIUM ==================== -->
+    <nav class="iris-navbar">
+
+        <!-- ==== FILA SUPERIOR (DARK) ==== -->
+        <div class="iris-nav-top">
+            <div class="iris-nav-top-inner">
+
+                <!-- Hamburguesa -->
+                <button class="iris-hamburger" id="irisHamburger" aria-label="Menú">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
+                </button>
+
+                <!-- Logo -->
+                <a class="iris-logo" asp-controller="Home" asp-action="Index">
+                    <img src="~/images/logo-nexhard.png" alt="NexHard" />
+                </a>
+
+                <!-- Buscador -->
+                <div class="iris-search">
+                    <input type="text" id="irisSearch" placeholder="Buscar productos..." />
+                    <button class="iris-search-btn" id="irisSearchBtn" title="Buscar">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                    </button>
+                    <button type="button" class="iris-search-btn" id="voiceSearchBtn" title="Buscar por voz">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+                            <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                            <line x1="12" y1="19" x2="12" y2="23"></line>
+                            <line x1="8" y1="23" x2="16" y2="23"></line>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Iconos acciones -->
+                <div class="iris-top-actions">
 
                     @if (User.Identity != null && User.Identity.IsAuthenticated)
                     {
-                        @if (User.IsInRole("Admin"))
-                        {
-                            <a class="nav-pill" asp-controller="Proveedores" asp-action="Index">Proveedores</a>
-                            <a class="nav-pill" asp-controller="Clientes" asp-action="Index">Clientes</a>
-                            <a class="nav-pill" asp-controller="Orders" asp-action="AllOrders">📋 Pedidos</a>
-                            <a class="nav-pill" asp-controller="Reports" asp-action="Index">📊 Reportes</a>
-                        }
-
-                        <a class="nav-pill cart-pill" asp-controller="Cart" asp-action="Index" title="Ver carrito">
-                        <a class="nav-pill" asp-controller="Orders" asp-action="MyOrders">📦 Mis Pedidos</a>
-                            🛒<span class="cart-badge" id="cartBadge">0</span>
+                        <a class="iris-user-info" href="#" title="Mi cuenta">
+                            <div class="iris-user-avatar">@User.Identity.Name?.Substring(0, 1).ToUpper()</div>
+                            <span class="iris-user-name">@User.Identity.Name</span>
                         </a>
-                        <span class="nav-pill">Hola, @User.Identity.Name</span>
-                        <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
-                            <button type="submit" class="nav-pill cta">Cerrar sesión</button>
+
+                        <form asp-controller="Account" asp-action="Logout" method="post" style="margin:0;">
+                            <button type="submit" class="iris-btn-logout" title="Cerrar sesión">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                                    <polyline points="16 17 21 12 16 7"></polyline>
+                                    <line x1="21" y1="12" x2="9" y2="12"></line>
+                                </svg>
+                            </button>
                         </form>
                     }
                     else
                     {
-                        <a class="nav-pill" asp-controller="Account" asp-action="Register">Registrarse</a>
-                        <a class="nav-pill cta" asp-controller="Account" asp-action="Login">Iniciar sesión</a>
+                        <a class="iris-top-icon" asp-controller="Account" asp-action="Login" title="Iniciar sesión">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="12" cy="7" r="4"></circle>
+                            </svg>
+                            <span class="iris-top-icon-label">Cuenta</span>
+                        </a>
                     }
+
+                    <a class="iris-top-icon" asp-controller="Home" asp-action="Contact" title="Ubicación">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                            <circle cx="12" cy="10" r="3"></circle>
+                        </svg>
+                        <span class="iris-top-icon-label">Ubicación</span>
+                    </a>
+
+                    <a class="iris-top-icon" asp-controller="Cart" asp-action="Index" title="Carrito">
+                        <svg viewBox="0 0 24 24">
+                            <circle cx="9" cy="21" r="1"></circle>
+                            <circle cx="20" cy="21" r="1"></circle>
+                            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                        </svg>
+                        <span class="iris-cart-badge" id="cartBadge">0</span>
+                        <span class="iris-top-icon-label">Carrito</span>
+                    </a>
                 </div>
             </div>
-        </nav>
-
-        <div class="container">
-            <main role="main" class="pb-3">
-                @RenderBody()
-            </main>
         </div>
 
-        <footer class="border-top footer text-muted" style="border-color:rgba(255,255,255,.1) !important;">
-            <div class="container">
-                &copy; 2026 - NexHard - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-            </div>
-        </footer>
-    </div>
+        <!-- ==== FILA INFERIOR (CATEGORÍAS) ==== -->
+        <div class="iris-nav-bottom">
+            <div class="iris-nav-bottom-inner">
+                <a class="iris-nav-link" asp-controller="Home" asp-action="Index">Inicio</a>
+                <a class="iris-nav-link" asp-controller="Products" asp-action="Index">Productos</a>
+                <a class="iris-nav-link" asp-controller="Products" asp-action="Index" asp-route-category="CPU">Procesadores</a>
+                <a class="iris-nav-link" asp-controller="Products" asp-action="Index" asp-route-category="GPU">Tarjetas de Video</a>
+                <a class="iris-nav-link" asp-controller="Products" asp-action="Index" asp-route-category="RAM">Memoria RAM</a>
+                <a class="iris-nav-link" asp-controller="Products" asp-action="Index" asp-route-category="Monitor">Monitores</a>
+                <a class="iris-nav-link" asp-controller="Products" asp-action="Index" asp-route-category="Periférico">Periféricos</a>
+                <a class="iris-nav-link" asp-controller="Home" asp-action="Contact">Contacto</a>
 
+                @if (User.Identity != null && User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                {
+                    <a class="iris-nav-link" asp-controller="Orders" asp-action="AllOrders">📋 Pedidos</a>
+                    <a class="iris-nav-link" asp-controller="Reports" asp-action="Index">📊 Reportes</a>
+                }
+            </div>
+        </div>
+
+    </nav>
+
+    <!-- ==================== DRAWER MÓVIL ==================== -->
+    <div class="iris-overlay" id="irisOverlay"></div>
+    <aside class="iris-mobile-drawer" id="irisDrawer">
+        <div class="iris-drawer-header">
+            <h3>NEXHARD</h3>
+            <p>Tecnología · Gaming · Productividad</p>
+        </div>
+        <ul class="iris-drawer-links">
+            <li><a class="iris-drawer-link" asp-controller="Home" asp-action="Index"><span class="iris-drawer-link-icon">🏠</span> Inicio</a></li>
+            <li><a class="iris-drawer-link" asp-controller="Products" asp-action="Index"><span class="iris-drawer-link-icon">📦</span> Productos</a></li>
+            <li><a class="iris-drawer-link" asp-controller="Products" asp-action="Index" asp-route-category="CPU"><span class="iris-drawer-link-icon">🧠</span> Procesadores</a></li>
+            <li><a class="iris-drawer-link" asp-controller="Products" asp-action="Index" asp-route-category="GPU"><span class="iris-drawer-link-icon">🎮</span> Tarjetas de Video</a></li>
+            <li><a class="iris-drawer-link" asp-controller="Products" asp-action="Index" asp-route-category="RAM"><span class="iris-drawer-link-icon">💾</span> Memoria RAM</a></li>
+            <li><a class="iris-drawer-link" asp-controller="Products" asp-action="Index" asp-route-category="Monitor"><span class="iris-drawer-link-icon">🖥️</span> Monitores</a></li>
+            <li><a class="iris-drawer-link" asp-controller="Products" asp-action="Index" asp-route-category="Periférico"><span class="iris-drawer-link-icon">🖱️</span> Periféricos</a></li>
+            <li><a class="iris-drawer-link" asp-controller="Home" asp-action="Contact"><span class="iris-drawer-link-icon">📞</span> Contacto</a></li>
+            <li><a class="iris-drawer-link" asp-controller="Cart" asp-action="Index"><span class="iris-drawer-link-icon">🛒</span> Carrito</a></li>
+
+            @if (User.Identity != null && User.Identity.IsAuthenticated)
+            {
+                <li><a class="iris-drawer-link" asp-controller="Orders" asp-action="MyOrders"><span class="iris-drawer-link-icon">📦</span> Mis Pedidos</a></li>
+                <li>
+                    <form asp-controller="Account" asp-action="Logout" method="post" style="margin:0;">
+                        <button type="submit" class="iris-drawer-link" style="width:100%; border:none; background:transparent; cursor:pointer; text-align:left;">
+                            <span class="iris-drawer-link-icon">🚪</span> Cerrar Sesión
+                        </button>
+                    </form>
+                </li>
+            }
+            else
+            {
+                <li><a class="iris-drawer-link" asp-controller="Account" asp-action="Login"><span class="iris-drawer-link-icon">👤</span> Iniciar Sesión</a></li>
+                <li><a class="iris-drawer-link" asp-controller="Account" asp-action="Register"><span class="iris-drawer-link-icon">✍️</span> Registrarse</a></li>
+            }
+        </ul>
+    </aside>
+
+    <!-- ==================== CONTENIDO ==================== -->
+    <main role="main">
+        @RenderBody()
+    </main>
+
+    <!-- ==================== FOOTER ==================== -->
+    <footer class="wt-footer" id="contacto">
+        <div class="container">
+            <div class="wt-footer-content">
+                <div class="wt-footer-copy">
+                    &copy; 2026 <strong style="color: var(--text-primary);">NexHard</strong> · Tu hardware, tu configuración.
+                </div>
+                <div class="wt-footer-links">
+                    <a asp-controller="Home" asp-action="Privacy">Privacidad</a>
+                    <a href="#">Términos</a>
+                    <a asp-controller="Home" asp-action="Contact">Contacto</a>
+                </div>
+            </div>
+            <div class="wt-footer-bottom">
+                Hecho con 💙 en Bolivia · Diseño Clean Tech
+            </div>
+        </div>
+    </footer>
+
+    <!-- ==================== SCRIPTS ==================== -->
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="~/js/cart-badge.js" asp-append-version="true"></script>
+    <script src="~/js/voice-search.js" asp-append-version="true"></script>
+
+    <!-- ═══════════════ SERVICE WORKER (PWA) ═══════════════ -->
+    <script>
+            if ('serviceWorker' in navigator) {
+                window.addEventListener('load', () => {
+                    navigator.serviceWorker.register('/service-worker.js')
+                        .then(reg => console.log('✅ Service Worker registrado:', reg.scope))
+                        .catch(err => console.log('❌ Error SW:', err));
+                });
+            }
+    </script>
+
+    <script>
+            // ============ BUSCADOR ============
+            const searchInput = document.getElementById('irisSearch');
+            const searchBtn = document.getElementById('irisSearchBtn');
+
+            function doSearch() {
+                const term = searchInput.value.trim();
+                if (term) {
+                    window.location.href = '/Products?search=' + encodeURIComponent(term);
+                }
+            }
+
+            searchInput?.addEventListener('keypress', e => {
+                if (e.key === 'Enter') doSearch();
+            });
+            searchBtn?.addEventListener('click', doSearch);
+
+            // ============ DRAWER MÓVIL ============
+            const hamburger = document.getElementById('irisHamburger');
+            const drawer = document.getElementById('irisDrawer');
+            const overlay = document.getElementById('irisOverlay');
+
+            hamburger?.addEventListener('click', () => {
+                drawer.classList.add('open');
+                overlay.classList.add('open');
+            });
+
+            overlay?.addEventListener('click', () => {
+                drawer.classList.remove('open');
+                overlay.classList.remove('open');
+            });
+
+            // ============ MARCAR LINK ACTIVO ============
+            const currentPath = window.location.pathname;
+            document.querySelectorAll('.iris-nav-link').forEach(link => {
+                const href = link.getAttribute('href');
+                if (href && currentPath === href) {
+                    link.classList.add('active');
+                }
+            });
+    </script>
+
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

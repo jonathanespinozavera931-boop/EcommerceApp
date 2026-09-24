@@ -1,0 +1,25 @@
+{
+  "name": "NexHard - Componentes de PC",
+  "short_name": "NexHard",
+  "description": "Tu tienda de componentes de PC en Bolivia",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FFFFFF",
+  "theme_color": "#FF003C",
+  "orientation": "portrait-primary",
+  "lang": "es",
+  "icons": [
+    {
+      "src": "/images/logo-nexhard.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/images/logo-nexhard.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
