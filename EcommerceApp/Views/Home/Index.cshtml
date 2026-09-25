@@ -97,60 +97,101 @@
             </a>
         </div>
 
+        @{
+            var productoDestacado = ViewBag.ProductoDestacado as EcommerceApp.Models.Product;
+            var productosMini = ViewBag.ProductosMini as List<EcommerceApp.Models.Product>;
+
+            string IconFor(string? category) => category switch
+            {
+                "GPU" => "🎮",
+                "CPU" => "🧠",
+                "RAM" => "💾",
+                "Almacenamiento" => "💿",
+                "Placa Madre" => "🔌",
+                "Fuente" => "⚡",
+                "Refrigeración" => "❄️",
+                "Gabinete" => "📦",
+                "Monitor" => "🖥️",
+                "Periférico" => "🖱️",
+                _ => "🔧"
+            };
+        }
+
         <div class="iris-novedades-grid">
-            <!-- Featured grande -->
-            <a asp-controller="Products" asp-action="Index" class="iris-novedad-featured"
-               style="background-image: url('https://images.unsplash.com/photo-1587202372775-e229f172b9d7?w=800&q=80');">
-                <div class="iris-novedad-featured-content">
-                    <span class="iris-novedad-featured-badge">🔥 Destacado</span>
-                    <h3 class="iris-novedad-featured-title">Equipos con IA integrada</h3>
-                    <p class="iris-novedad-featured-desc">Las PCs más inteligentes del mercado ya están disponibles en NexHard</p>
-                </div>
-            </a>
 
-            <!-- Lista de productos -->
+            <!-- PRODUCTO DESTACADO GRANDE -->
+            @if (productoDestacado != null)
+            {
+                <a asp-controller="Products" asp-action="Details" asp-route-id="@productoDestacado.Id"
+                   class="iris-novedad-featured">
+
+                    <div class="iris-novedad-featured-img"
+                         style="background-image: url('@(string.IsNullOrEmpty(productoDestacado.ImageUrl) ? "" : productoDestacado.ImageUrl)');">
+                    </div>
+
+                    <div class="iris-novedad-featured-content">
+                        <span class="iris-novedad-featured-badge">🔥 DESTACADO</span>
+                        <div class="iris-novedad-featured-cat">
+                            @IconFor(productoDestacado.Category) @productoDestacado.Category
+                        </div>
+                        <h3 class="iris-novedad-featured-title">@productoDestacado.Name</h3>
+                        <p class="iris-novedad-featured-desc">@productoDestacado.Description</p>
+
+                        <div class="iris-novedad-featured-footer">
+                            <div class="iris-novedad-featured-price">Bs @productoDestacado.Price.ToString("N2")</div>
+                            <span class="iris-novedad-featured-btn">
+                                Ver producto →
+                            </span>
+                        </div>
+                    </div>
+                </a>
+            }
+
+            <!-- LISTA MINI (3 productos) -->
             <div class="iris-novedades-list">
+                @if (productosMini != null)
+                {
+                    foreach (var item in productosMini)
+                    {
+                        <a asp-controller="Products" asp-action="Details" asp-route-id="@item.Id"
+                           class="iris-novedad-item">
 
-                <a asp-controller="Products" asp-action="Index" class="iris-novedad-item">
-                    <div class="iris-novedad-item-img">
-                        <img src="https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=200&q=80" alt="Teclado" />
-                    </div>
-                    <div class="iris-novedad-item-content">
-                        <span class="iris-novedad-item-brand">CORSAIR</span>
-                        <h3 class="iris-novedad-item-name">Corsair K100 RGB Teclado Mecánico</h3>
-                        <div class="iris-novedad-item-price">Bs 311</div>
-                    </div>
-                </a>
+                            <!-- IMAGEN GRANDE -->
+                            <div class="iris-novedad-item-img">
+                                @if (!string.IsNullOrEmpty(item.ImageUrl))
+                                {
+                                    <img src="@item.ImageUrl" alt="@item.Name"
+                                         onerror="this.style.display='none'; this.parentElement.innerHTML='<div class=&quot;iris-novedad-item-placeholder&quot;>@IconFor(item.Category)</div>';" />
+                                }
+                                else
+                                {
+                                    <div class="iris-novedad-item-placeholder">@IconFor(item.Category)</div>
+                                }
+                            </div>
 
-                <a asp-controller="Products" asp-action="Index" class="iris-novedad-item">
-                    <div class="iris-novedad-item-img">
-                        <img src="https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?w=200&q=80" alt="Mouse" />
-                    </div>
-                    <div class="iris-novedad-item-content">
-                        <span class="iris-novedad-item-brand">REDRAGON</span>
-                        <h3 class="iris-novedad-item-name">Redragon Olaf K648 Teclado RGB</h3>
-                        <div class="iris-novedad-item-price">Bs 115</div>
-                    </div>
-                </a>
+                            <!-- INFO -->
+                            <div class="iris-novedad-item-content">
+                                <span class="iris-novedad-item-brand">@item.Category</span>
+                                <h3 class="iris-novedad-item-name">@item.Name</h3>
+                                <p class="iris-novedad-item-desc">@item.Description</p>
 
-                <a asp-controller="Products" asp-action="Index" class="iris-novedad-item">
-                    <div class="iris-novedad-item-img">
-                        <img src="https://images.unsplash.com/photo-1527814050087-3793815479db?w=200&q=80" alt="Mouse Gaming" />
-                    </div>
-                    <div class="iris-novedad-item-content">
-                        <span class="iris-novedad-item-brand">LOGITECH</span>
-                        <h3 class="iris-novedad-item-name">Logitech G Pro X Superlight 2</h3>
-                        <div class="iris-novedad-item-price">Bs 159</div>
-                    </div>
-                </a>
+                                <div class="iris-novedad-item-footer">
+                                    <span class="iris-novedad-item-price">Bs @item.Price.ToString("N2")</span>
+                                </div>
+                            </div>
 
+                            <!-- FLECHA -->
+                            <div class="iris-novedad-item-arrow">→</div>
+                        </a>
+                    }
+                }
             </div>
         </div>
     </div>
 </section>
 
 <!-- ==================== CATEGORÍAS ==================== -->
-<section class="iris-section" style="background: var(--bg-gray);">
+<section class="iris-section" style="background: var(--bg-white);">
     <div class="container">
         <div class="iris-section-header">
             <div>
@@ -159,68 +200,48 @@
             </div>
         </div>
 
+        @{
+            var categoriasHome = ViewBag.Categorias as Dictionary<string, int> ?? new Dictionary<string, int>();
+            var imagenesCategorias = new Dictionary<string, string>
+    {
+        { "CPU", "https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?w=600&q=80" },
+        { "GPU", "https://images.unsplash.com/photo-1555617766-c94804975da3?w=600&q=80" },
+        { "RAM", "https://images.unsplash.com/photo-1541029071515-84cc54f84dc5?w=600&q=80" },
+        { "Almacenamiento", "https://images.unsplash.com/photo-1531492746076-161ca9bcad58?w=600&q=80" },
+        { "Placa Madre", "https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&q=80" },
+        { "Fuente", "https://images.unsplash.com/photo-1587202372634-32705e3bf49c?w=600&q=80" },
+        { "Refrigeración", "https://images.unsplash.com/photo-1597049097286-c9e77151bf01?w=600&q=80" },
+        { "Gabinete", "https://images.unsplash.com/photo-1587302912306-cf1ed9c33146?w=600&q=80" },
+        { "Periférico", "https://images.unsplash.com/photo-1527814050087-3793815479db?w=600&q=80" },
+        { "Monitor", "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=600&q=80" },
+    };
+        }
+
         <div class="iris-categories-grid">
+            @foreach (var cat in categoriasHome)
+            {
+                var imgUrl = imagenesCategorias.ContainsKey(cat.Key) ? imagenesCategorias[cat.Key] : "";
+                var nombreCat = cat.Key switch
+                {
+                    "CPU" => "Procesadores",
+                    "GPU" => "Tarjetas de Video",
+                    "RAM" => "Memoria RAM",
+                    "Almacenamiento" => "Almacenamiento",
+                    "Placa Madre" => "Placas Madre",
+                    "Fuente" => "Fuentes de Poder",
+                    "Refrigeración" => "Refrigeración",
+                    "Gabinete" => "Gabinetes",
+                    "Periférico" => "Periféricos",
+                    "Monitor" => "Monitores",
+                    _ => cat.Key
+                };
 
-            <a class="iris-category-item" asp-controller="Products" asp-action="Index" asp-route-category="CPU"
-               style="background-image: url('https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?w=600&q=80');">
-                <span class="iris-category-item-badge">@(categorias.ContainsKey("CPU") ? categorias["CPU"] : 0) productos</span>
-                <span class="iris-category-item-name">Procesadores</span>
-            </a>
-
-            <a class="iris-category-item" asp-controller="Products" asp-action="Index" asp-route-category="GPU"
-               style="background-image: url('https://images.unsplash.com/photo-1555617766-c94804975da3?w=600&q=80');">
-                <span class="iris-category-item-badge">@(categorias.ContainsKey("GPU") ? categorias["GPU"] : 0) productos</span>
-                <span class="iris-category-item-name">Tarjetas de Video</span>
-            </a>
-
-            <a class="iris-category-item" asp-controller="Products" asp-action="Index" asp-route-category="RAM"
-               style="background-image: url('https://images.unsplash.com/photo-1541029071515-84cc54f84dc5?w=600&q=80');">
-                <span class="iris-category-item-badge">@(categorias.ContainsKey("RAM") ? categorias["RAM"] : 0) productos</span>
-                <span class="iris-category-item-name">Memoria RAM</span>
-            </a>
-
-            <a class="iris-category-item" asp-controller="Products" asp-action="Index" asp-route-category="Almacenamiento"
-               style="background-image: url('https://images.unsplash.com/photo-1531492746076-161ca9bcad58?w=600&q=80');">
-                <span class="iris-category-item-badge">@(categorias.ContainsKey("Almacenamiento") ? categorias["Almacenamiento"] : 0) productos</span>
-                <span class="iris-category-item-name">Almacenamiento</span>
-            </a>
-
-            <a class="iris-category-item" asp-controller="Products" asp-action="Index" asp-route-category="Placa Madre"
-               style="background-image: url('https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&q=80');">
-                <span class="iris-category-item-badge">@(categorias.ContainsKey("Placa Madre") ? categorias["Placa Madre"] : 0) productos</span>
-                <span class="iris-category-item-name">Placas Madre</span>
-            </a>
-
-            <a class="iris-category-item" asp-controller="Products" asp-action="Index" asp-route-category="Fuente"
-               style="background-image: url('https://images.unsplash.com/photo-1587202372634-32705e3bf49c?w=600&q=80');">
-                <span class="iris-category-item-badge">@(categorias.ContainsKey("Fuente") ? categorias["Fuente"] : 0) productos</span>
-                <span class="iris-category-item-name">Fuentes de Poder</span>
-            </a>
-
-            <a class="iris-category-item" asp-controller="Products" asp-action="Index" asp-route-category="Refrigeración"
-               style="background-image: url('https://images.unsplash.com/photo-1597049097286-c9e77151bf01?w=600&q=80');">
-                <span class="iris-category-item-badge">@(categorias.ContainsKey("Refrigeración") ? categorias["Refrigeración"] : 0) productos</span>
-                <span class="iris-category-item-name">Refrigeración</span>
-            </a>
-
-            <a class="iris-category-item" asp-controller="Products" asp-action="Index" asp-route-category="Gabinete"
-               style="background-image: url('https://images.unsplash.com/photo-1587302912306-cf1ed9c33146?w=600&q=80');">
-                <span class="iris-category-item-badge">@(categorias.ContainsKey("Gabinete") ? categorias["Gabinete"] : 0) productos</span>
-                <span class="iris-category-item-name">Gabinetes</span>
-            </a>
-
-            <a class="iris-category-item" asp-controller="Products" asp-action="Index" asp-route-category="Periférico"
-               style="background-image: url('https://images.unsplash.com/photo-1527814050087-3793815479db?w=600&q=80');">
-                <span class="iris-category-item-badge">@(categorias.ContainsKey("Periférico") ? categorias["Periférico"] : 0) productos</span>
-                <span class="iris-category-item-name">Periféricos</span>
-            </a>
-
-            <a class="iris-category-item" asp-controller="Products" asp-action="Index" asp-route-category="Monitor"
-               style="background-image: url('https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=600&q=80');">
-                <span class="iris-category-item-badge">@(categorias.ContainsKey("Monitor") ? categorias["Monitor"] : 0) productos</span>
-                <span class="iris-category-item-name">Monitores</span>
-            </a>
-
+                <a class="iris-category-item" asp-controller="Products" asp-action="Index" asp-route-category="@cat.Key">
+                    <div class="iris-cat-bg" style="background-image: url('@imgUrl');"></div>
+                    <span class="iris-category-item-badge">@cat.Value productos</span>
+                    <span class="iris-category-item-name">@nombreCat</span>
+                </a>
+            }
         </div>
     </div>
 </section>
@@ -375,7 +396,21 @@
 <!-- ==================== EQUIPA TU SETUP ==================== -->
 <section class="iris-section">
     <div class="container">
+        @{
+            var productosSetup = ViewBag.ProductosSetup as List<EcommerceApp.Models.Product> ?? new List<EcommerceApp.Models.Product>();
+        }
+
         <div class="iris-setup-banner">
+
+            <!-- VIDEO DE FONDO -->
+            <div class="iris-setup-video">
+                <iframe src="https://www.youtube.com/embed/H4nJo-oqAro?autoplay=1&mute=1&loop=1&playlist=H4nJo-oqAro&controls=0&showinfo=0&modestbranding=1&playsinline=1"
+                        allow="autoplay; encrypted-media"
+                        allowfullscreen>
+                </iframe>
+            </div>
+
+            <!-- CONTENIDO -->
             <div class="iris-setup-content">
                 <span class="iris-setup-eyebrow">🎮 NEXHARD</span>
                 <h2 class="iris-setup-title">Equipa tu<br />Setup</h2>
@@ -387,44 +422,39 @@
                 </a>
             </div>
 
+            <!-- PRODUCTOS REALES -->
             <div class="iris-setup-products">
-
-                <a class="iris-setup-product" asp-controller="Products" asp-action="Index">
-                    <span class="iris-setup-product-sku">SKU fijo</span>
-                    <div class="iris-setup-product-img">
-                        <img src="https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=300&q=80" alt="Teclado" />
+                @if (productosSetup.Any())
+                {
+                    foreach (var prod in productosSetup)
+                    {
+                        <a class="iris-setup-product" asp-controller="Products" asp-action="Details" asp-route-id="@prod.Id">
+                            <span class="iris-setup-product-sku">SKU fijo</span>
+                            <div class="iris-setup-product-img">
+                                @if (!string.IsNullOrEmpty(prod.ImageUrl))
+                                {
+                                    <img src="@prod.ImageUrl" alt="@prod.Name"
+                                         onerror="this.style.display='none'; this.parentElement.innerHTML='<div style=&quot;font-size:3rem;opacity:0.4;&quot;>🖥️</div>';" />
+                                }
+                                else
+                                {
+                                    <div style="font-size:3rem;opacity:0.4;">🖥️</div>
+                                }
+                            </div>
+                            <div class="iris-setup-product-info">
+                                <span class="iris-setup-product-cat">@prod.Category</span>
+                                <h4 class="iris-setup-product-name">@prod.Name</h4>
+                                <div class="iris-setup-product-price">Bs @prod.Price.ToString("N2")</div>
+                            </div>
+                        </a>
+                    }
+                }
+                else
+                {
+                    <div style="grid-column: 1 / -1; text-align: center; color: white; padding: 30px;">
+                        <p>Cargando productos...</p>
                     </div>
-                    <div class="iris-setup-product-info">
-                        <span class="iris-setup-product-cat">Periféricos</span>
-                        <h4 class="iris-setup-product-name">Teclado Mecánico RGB</h4>
-                        <div class="iris-setup-product-price">Bs 447</div>
-                    </div>
-                </a>
-
-                <a class="iris-setup-product" asp-controller="Products" asp-action="Index">
-                    <span class="iris-setup-product-sku">SKU fijo</span>
-                    <div class="iris-setup-product-img">
-                        <img src="https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?w=300&q=80" alt="Mouse" />
-                    </div>
-                    <div class="iris-setup-product-info">
-                        <span class="iris-setup-product-cat">Periféricos</span>
-                        <h4 class="iris-setup-product-name">Mouse Gaming Inalámbrico</h4>
-                        <div class="iris-setup-product-price">Bs 220</div>
-                    </div>
-                </a>
-
-                <a class="iris-setup-product" asp-controller="Products" asp-action="Index">
-                    <span class="iris-setup-product-sku">SKU fijo</span>
-                    <div class="iris-setup-product-img">
-                        <img src="https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=300&q=80" alt="Monitor" />
-                    </div>
-                    <div class="iris-setup-product-info">
-                        <span class="iris-setup-product-cat">Monitor</span>
-                        <h4 class="iris-setup-product-name">Monitor Gaming 200Hz</h4>
-                        <div class="iris-setup-product-price">Bs 232</div>
-                    </div>
-                </a>
-
+                }
             </div>
         </div>
     </div>
@@ -434,13 +464,20 @@
 <section class="iris-section" style="padding-top: 0;">
     <div class="container">
         <div class="iris-4k-banner">
-            <div class="iris-4k-image">
-                <img src="https://images.unsplash.com/photo-1555617766-c94804975da3?w=500&q=80" alt="GPU" />
+
+            <!-- VIDEO DE FONDO -->
+            <div class="iris-4k-video">
+                <iframe src="https://www.youtube.com/embed/H4nJo-oqAro?autoplay=1&mute=1&loop=1&playlist=H4nJo-oqAro&controls=0&showinfo=0&modestbranding=1&playsinline=1&rel=0&iv_load_policy=3"
+                        allow="autoplay; encrypted-media"
+                        allowfullscreen>
+                </iframe>
             </div>
+
+            <!-- CONTENIDO -->
             <div class="iris-4k-content">
                 <h2 class="iris-4k-title">
                     Juega en 4K<br />
-                    Tus juegos triple AAA
+                    Tus juegos Triple AAA
                 </h2>
                 <a asp-controller="Products" asp-action="Index" asp-route-category="GPU" class="iris-4k-btn">
                     Ver productos →
@@ -449,7 +486,6 @@
         </div>
     </div>
 </section>
-
 <!-- ==================== MARCAS ==================== -->
 <section class="iris-section" style="background: var(--bg-gray);">
     <div class="container">
@@ -460,24 +496,35 @@
         </div>
 
         <div class="iris-brands-grid">
-            <div class="iris-brand-item">
-                <span style="font-family: var(--font-display); font-weight: 900; color: var(--text-primary); font-size: 1.2rem;">ASUS</span>
-            </div>
-            <div class="iris-brand-item">
-                <span style="font-family: var(--font-display); font-weight: 900; color: var(--text-primary); font-size: 1.2rem;">AMD</span>
-            </div>
-            <div class="iris-brand-item">
-                <span style="font-family: var(--font-display); font-weight: 900; color: var(--text-primary); font-size: 1.2rem;">CORSAIR</span>
-            </div>
-            <div class="iris-brand-item">
-                <span style="font-family: var(--font-display); font-weight: 900; color: var(--text-primary); font-size: 1.2rem;">MSI</span>
-            </div>
-            <div class="iris-brand-item">
-                <span style="font-family: var(--font-display); font-weight: 900; color: var(--text-primary); font-size: 1.2rem;">GIGABYTE</span>
-            </div>
-            <div class="iris-brand-item">
-                <span style="font-family: var(--font-display); font-weight: 900; color: var(--text-primary); font-size: 1.2rem;">NVIDIA</span>
-            </div>
+            <a class="iris-brand-item" asp-controller="Products" asp-action="Index" asp-route-search="ASUS"
+               style="--brand-bg: url('https://4kwallpapers.com/images/wallpapers/asus-rog-particles-1920x1080-17423.jpg');">
+                <span class="iris-brand-text">ASUS</span>
+            </a>
+
+            <a class="iris-brand-item" asp-controller="Products" asp-action="Index" asp-route-search="Ryzen"
+               style="--brand-bg: url('https://1000logos.net/wp-content/uploads/2020/05/Amd-logo.jpg');">
+                <span class="iris-brand-text">AMD</span>
+            </a>
+
+            <a class="iris-brand-item" asp-controller="Products" asp-action="Index" asp-route-search="Corsair"
+               style="--brand-bg: url('https://tse1.mm.bing.net/th/id/OIP.8ZnAtzd0bp0xoie4iGUAsQHaHa?r=0&rs=1&pid=ImgDetMain&o=7&rm=3');">
+                <span class="iris-brand-text">CORSAIR</span>
+            </a>
+
+            <a class="iris-brand-item" asp-controller="Products" asp-action="Index" asp-route-search="MSI"
+               style="--brand-bg: url('https://tse4.mm.bing.net/th/id/OIP.NjQwgT3ch2qFW1qEI2PRRwHaEK?r=0&rs=1&pid=ImgDetMain&o=7&rm=3');">
+                <span class="iris-brand-text">MSI</span>
+            </a>
+
+            <a class="iris-brand-item" asp-controller="Products" asp-action="Index" asp-route-search="Gigabyte"
+               style="--brand-bg: url('https://tse2.mm.bing.net/th/id/OIP.6c34iIbfNmaqM3ShNkicBQHaEK?r=0&rs=1&pid=ImgDetMain&o=7&rm=3');">
+                <span class="iris-brand-text">GIGABYTE</span>
+            </a>
+
+            <a class="iris-brand-item" asp-controller="Products" asp-action="Index" asp-route-search="NVIDIA"
+               style="--brand-bg: url('https://tse3.mm.bing.net/th/id/OIP.zDbJfohjoZkSx8i9gj-bYgHaE0?r=0&rs=1&pid=ImgDetMain&o=7&rm=3');">
+                <span class="iris-brand-text">NVIDIA</span>
+            </a>
         </div>
     </div>
 </section>

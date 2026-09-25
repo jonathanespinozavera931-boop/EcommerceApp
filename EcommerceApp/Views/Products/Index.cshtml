@@ -3,8 +3,14 @@
     ViewData["Title"] = "Productos";
     bool isAdmin = User.IsInRole("Admin");
     var categoriaActual = ViewBag.CategoriaActual as string;
+    var busquedaActual = ViewBag.BusquedaActual as string;
+    var marcaActual = ViewBag.MarcaActual as string;
     var categorias = ViewBag.Categorias as List<string> ?? new List<string>();
+    var conteoPorCategoria = ViewBag.ConteoPorCategoria as Dictionary<string, int> ?? new Dictionary<string, int>();
+    var conteoMarcas = ViewBag.ConteoMarcas as Dictionary<string, int> ?? new Dictionary<string, int>();
     var productos = Model.ToList();
+
+    var marcas = new[] { "AMD", "Intel", "NVIDIA", "Corsair", "ASUS", "MSI", "Gigabyte", "Kingston", "Samsung" };
 
     string IconFor(string? category) => category switch
     {
@@ -25,182 +31,273 @@
 <div class="iris-catalog">
     <div class="container">
 
-        <!-- BOTÓN FILTRO MÓVIL -->
-        <button id="mobileFilterBtn" class="iris-mobile-filter">☰ Categorías</button>
+        <button id="mobileFilterBtn" class="iris-mobile-filter">☰ Categorías y Filtros</button>
 
         <div class="iris-catalog-layout">
 
             <!-- ============ SIDEBAR ============ -->
             <aside class="iris-catalog-sidebar" id="irisSidebar">
-                <h3 class="iris-sidebar-title">📦 Productos</h3>
 
-                <ul class="iris-category-list">
-                    <li>
-                        <a class="iris-category-link @(string.IsNullOrEmpty(categoriaActual) ? "active" : "")"
-                           asp-action="Index">
-                            <span class="iris-category-link-text">
-                                <span>🔧</span> Todos los productos
-                            </span>
-                            <span class="iris-category-count-badge">@productos.Count</span>
-                        </a>
-                    </li>
-
-                    @foreach (var cat in categorias)
-                    {
-                        var count = productos.Count(p => p.Category == cat);
+                <!-- CATEGORÍAS -->
+                <div class="iris-sidebar-section">
+                    <h3 class="iris-sidebar-title">Categorías</h3>
+                    <ul class="iris-category-list">
                         <li>
-                            <a class="iris-category-link @(categoriaActual == cat ? "active" : "")"
-                               asp-action="Index" asp-route-category="@cat">
+                            <a class="iris-category-link @(string.IsNullOrEmpty(categoriaActual) && string.IsNullOrEmpty(marcaActual) ? "active" : "")"
+                               asp-action="Index">
                                 <span class="iris-category-link-text">
-                                    <span>@IconFor(cat)</span> @cat
+                                    <span>🔧</span> Todos
                                 </span>
-                                <span class="iris-category-count-badge">@count</span>
+                                <span class="iris-category-count-badge">@productos.Count</span>
                             </a>
                         </li>
-                    }
-                </ul>
 
-                <!-- Banner promocional -->
-                <div class="iris-sidebar-promo">
-                    <div class="iris-sidebar-promo-content">
-                        <h4 class="iris-sidebar-promo-title">
-                            Juega<br />
-                            <span class="highlight">SIN LÍMITES</span>
-                        </h4>
-                        <p class="iris-sidebar-promo-text">
-                            Descubrí las GPUs más potentes del mercado
-                        </p>
-                        <a asp-action="Index" asp-route-category="GPU" class="iris-sidebar-promo-btn">
-                            Ver GPUs →
-                        </a>
-                    </div>
-                </div>
-            </aside>
-
-            <!-- ============ CONTENIDO ============ -->
-            <div class="iris-catalog-main">
-
-                <!-- Header -->
-                <div class="iris-catalog-header">
-                    <div class="iris-catalog-header-info">
-                        <h1 class="iris-catalog-title">@(categoriaActual ?? "Productos")</h1>
-                        <span class="iris-catalog-count">@productos.Count productos encontrados</span>
-                    </div>
-
-                    <div class="iris-catalog-sort">
-                        <label for="sortSelect">Ordenar por:</label>
-                        <select id="sortSelect">
-                            <option value="relevance">Más relevantes</option>
-                            <option value="price-asc">Precio: menor a mayor</option>
-                            <option value="price-desc">Precio: mayor a menor</option>
-                            <option value="name">Nombre A-Z</option>
-                        </select>
-                    </div>
-                </div>
-
-                <!-- Búsqueda local -->
-                <div class="iris-catalog-search">
-                    <span class="iris-catalog-search-icon">🔍</span>
-                    <input type="text" id="localSearch" placeholder="Buscar dentro de los resultados..." />
-                </div>
-
-                <!-- Grid -->
-                <div class="iris-catalog-grid" id="productGrid">
-
-                    @if (!productos.Any())
-                    {
-                        <div class="iris-catalog-empty">
-                            <div class="iris-catalog-empty-icon">🔍</div>
-                            <h3>Sin resultados</h3>
-                            <p>No se encontraron productos en esta categoría</p>
-                            <a asp-action="Index" class="wt-btn-primary">Ver todos los productos</a>
-                        </div>
-                    }
-                    else
-                    {
-                        @foreach (var item in productos)
+                        @foreach (var cat in categorias)
                         {
-                            <div class="iris-catalog-card"
-                                 data-id="@item.Id"
-                                 data-category="@item.Category"
-                                 data-name="@item.Name"
-                                 data-price="@item.Price"
-                                 data-stock="@item.Stock">
-
-                                <!-- IMAGEN -->
-                                <a asp-action="Details" asp-route-id="@item.Id" class="iris-catalog-card-img">
-                                    @if (item.Stock > 0 && item.Stock < 15)
-                                    {
-                                        <span class="iris-catalog-card-badge">🔥 ÚLTIMAS UNIDADES</span>
-                                    }
-                                    else if (item.Price > 1000)
-                                    {
-                                        <span class="iris-catalog-card-badge cyan">⭐ PREMIUM</span>
-                                    }
-
-                                    @if (!string.IsNullOrEmpty(item.ImageUrl))
-                                    {
-                                        <img src="@item.ImageUrl" alt="@item.Name"
-                                             onerror="this.style.display='none'; this.parentElement.innerHTML+='<div class=&quot;iris-catalog-card-placeholder&quot;>@IconFor(item.Category)</div>';" />
-                                    }
-                                    else
-                                    {
-                                        <div class="iris-catalog-card-placeholder">@IconFor(item.Category)</div>
-                                    }
+                            var count = conteoPorCategoria.ContainsKey(cat) ? conteoPorCategoria[cat] : 0;
+                            <li>
+                                <a class="iris-category-link @(categoriaActual == cat ? "active" : "")"
+                                   asp-action="Index" asp-route-category="@cat">
+                                    <span class="iris-category-link-text">
+                                        <span>@IconFor(cat)</span> @cat
+                                    </span>
+                                    <span class="iris-category-count-badge">@count</span>
                                 </a>
+                            </li>
+                        }
+                    </ul>
+                </div>
 
-                                <!-- BODY -->
-                                <div class="iris-catalog-card-body">
-                                    <span class="iris-catalog-card-brand">@item.Category</span>
+                <!-- MARCAS -->
+                <div class="iris-sidebar-section">
+                    <h3 class="iris-sidebar-title">Marcas</h3>
+                    <div class="iris-brand-filters">
+                        @foreach (var m in marcas)
+                        {
+                            var count = conteoMarcas.ContainsKey(m) ? conteoMarcas[m] : 0;
+                            <a class="iris-brand-chip @(marcaActual == m ? "active" : "")"
+                               asp-action="Index" asp-route-marca="@m">
+                                @m @if (count > 0) {
+                                <text>(@count)</text>
+                            }
+                        </a>
+                    }
+                </div>
+            </div>
 
-                                    <h3 class="iris-catalog-card-name">
-                                        <a asp-action="Details" asp-route-id="@item.Id" style="color: inherit; text-decoration: none;">
-                                            @item.Name
-                                        </a>
+            <!-- RANGO DE PRECIO -->
+            <div class="iris-sidebar-section">
+                <h3 class="iris-sidebar-title">Rango de Precio</h3>
+                <div class="iris-price-range">
+                    <div class="iris-price-labels">
+                        <span>Bs <span class="iris-price-value" id="priceMinLabel">0</span></span>
+                        <span>Bs <span class="iris-price-value" id="priceMaxLabel">2000</span></span>
+                    </div>
+                    <input type="range" min="0" max="2000" step="50" value="2000" class="iris-range-input" id="priceRange" />
+                </div>
+            </div>
+
+            <!-- LIMPIAR -->
+            <div class="iris-sidebar-section">
+                <a asp-action="Index" class="iris-clear-filters" style="text-decoration: none;">🗑 Limpiar filtros</a>
+            </div>
+
+            <!-- PROMO -->
+            <div class="iris-sidebar-promo">
+                <div class="iris-sidebar-promo-content">
+                    <h4 class="iris-sidebar-promo-title">
+                        JUEGA<br />
+                        <span class="highlight">SIN LÍMITES</span>
+                    </h4>
+                    <p class="iris-sidebar-promo-text">
+                        Descubrí las GPUs más potentes del mercado
+                    </p>
+                    <a asp-action="Index" asp-route-category="GPU" class="iris-sidebar-promo-btn">
+                        Ver GPUs →
+                    </a>
+                </div>
+            </div>
+        </aside>
+
+        <!-- ============ CONTENIDO ============ -->
+        <div class="iris-catalog-main">
+
+            <div class="iris-catalog-header">
+                <div class="iris-catalog-header-info">
+                    <h1 class="iris-catalog-title">
+                        @if (!string.IsNullOrEmpty(busquedaActual))
+                        {
+                            <text>Búsqueda: "@busquedaActual"</text>
+                        }
+                        else if (!string.IsNullOrEmpty(marcaActual))
+                        {
+                            <text>@marcaActual</text>
+                        }
+                        else
+                        {
+                            @(categoriaActual ?? "Productos")
+                        }
+                    </h1>
+                    <span class="iris-catalog-count" id="productCount">@productos.Count productos</span>
+                </div>
+
+                <div class="iris-catalog-sort">
+                    <label for="sortSelect">Ordenar por:</label>
+                    <select id="sortSelect">
+                        <option value="relevance">Más relevantes</option>
+                        <option value="price-asc">Precio: menor a mayor</option>
+                        <option value="price-desc">Precio: mayor a menor</option>
+                        <option value="name">Nombre A-Z</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- BÚSQUEDA LOCAL -->
+            <div class="iris-catalog-search">
+                <span class="iris-catalog-search-icon">🔍</span>
+                <input type="text" id="localSearch" placeholder="Buscar dentro de los resultados..."
+                       value="@busquedaActual" />
+            </div>
+
+            <!-- GRID -->
+            <div class="iris-catalog-grid" id="productGrid">
+
+                @if (!productos.Any())
+                {
+                    <div class="iris-catalog-empty">
+                        <div class="iris-catalog-empty-icon">🔍</div>
+                        <h3>Sin resultados</h3>
+                        <p>No se encontraron productos.</p>
+                        <a asp-action="Index" class="wt-btn-primary">Ver todos los productos</a>
+                    </div>
+                }
+                else
+                {
+                    int counter = 0;
+                    @foreach (var item in productos)
+                    {
+                        counter++;
+
+                        // Banner promocional después del 4to producto
+                        if (counter == 5)
+                        {
+                            <a class="iris-catalog-promo-card" asp-action="Index" asp-route-category="GPU">
+                                <div class="iris-promo-content">
+                                    <span class="iris-promo-badge">🔥 OFERTA</span>
+                                    <h3 class="iris-promo-title">
+                                        JUEGA<br />
+                                        <span class="highlight">SIN LÍMITES</span>
                                     </h3>
+                                    <p class="iris-promo-text">
+                                        Descubrí las GPUs más potentes del mercado
+                                    </p>
+                                    <span class="iris-promo-btn">Ver GPUs →</span>
+                                </div>
+                            </a>
+                        }
 
-                                    <p class="iris-catalog-card-desc">@item.Description</p>
+                        // Badge
+                        string badgeText = "";
+                        string badgeClass = "";
 
-                                    <div class="iris-catalog-card-footer">
-                                        <div class="iris-catalog-card-price-block">
-                                            <span class="iris-catalog-card-price">Bs @item.Price.ToString("N2")</span>
-                                            @if (item.Stock > 0)
-                                            {
-                                                <span class="iris-catalog-card-stock in">✓ En stock (@item.Stock)</span>
-                                            }
-                                            else
-                                            {
-                                                <span class="iris-catalog-card-stock out">✗ Agotado</span>
-                                            }
-                                        </div>
+                        if (item.Stock > 0 && item.Stock < 15)
+                        {
+                            badgeText = "🔥 MÁS VENDIDO";
+                            badgeClass = "badge-orange";
+                        }
+                        else if (item.Price > 1000)
+                        {
+                            badgeText = "⭐ PREMIUM";
+                            badgeClass = "badge-blue";
+                        }
+                        else if (item.Price < 100)
+                        {
+                            badgeText = "💚 OFERTA";
+                            badgeClass = "badge-green";
+                        }
 
-                                        <button class="iris-catalog-card-cart add-to-cart-btn"
-                                                data-id="@item.Id"
-                                                data-name="@item.Name"
-                                                title="Agregar al carrito"
-                                            @(item.Stock <= 0 ? "disabled" : "")>
-                                            🛒
-                                        </button>
+                        <div class="iris-catalog-card"
+                             data-id="@item.Id"
+                             data-category="@item.Category"
+                             data-name="@item.Name"
+                             data-price="@item.Price"
+                             data-stock="@item.Stock">
+
+                            <!-- IMAGEN (link al detalle) -->
+                            <a asp-action="Details" asp-route-id="@item.Id" class="iris-catalog-card-img">
+                                @if (!string.IsNullOrEmpty(badgeText))
+                                {
+                                    <span class="iris-catalog-card-badge @badgeClass">@badgeText</span>
+                                }
+
+                                @if (!string.IsNullOrEmpty(item.ImageUrl))
+                                {
+                                    <img src="@item.ImageUrl" alt="@item.Name"
+                                         onerror="this.style.display='none'; this.parentElement.innerHTML+='<div class=&quot;iris-catalog-card-placeholder&quot;>@IconFor(item.Category)</div>';" />
+                                }
+                                else
+                                {
+                                    <div class="iris-catalog-card-placeholder">@IconFor(item.Category)</div>
+                                }
+                            </a>
+
+                            <div class="iris-catalog-card-body">
+                                <span class="iris-catalog-card-brand">@item.Category</span>
+
+                                <h3 class="iris-catalog-card-name">
+                                    <a asp-action="Details" asp-route-id="@item.Id" style="color: inherit; text-decoration: none;">
+                                        @item.Name
+                                    </a>
+                                </h3>
+
+                                <p class="iris-catalog-card-desc">@item.Description</p>
+
+                                <div class="iris-catalog-card-footer">
+                                    <div class="iris-catalog-card-price-block">
+                                        <span class="iris-catalog-card-price">Bs @item.Price.ToString("N2")</span>
+                                        @if (item.Stock > 0)
+                                        {
+                                            <span class="iris-catalog-card-stock in">✓ En stock (@item.Stock)</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="iris-catalog-card-stock out">✗ Agotado</span>
+                                        }
                                     </div>
 
-                                    @if (isAdmin)
-                                    {
-                                        <div class="iris-catalog-card-admin">
-                                            <a asp-action="Edit" asp-route-id="@item.Id" class="iris-catalog-admin-btn">✏️ Editar</a>
-                                            <a asp-action="Delete" asp-route-id="@item.Id" class="iris-catalog-admin-btn danger">🗑️ Borrar</a>
-                                        </div>
-                                    }
+                                    <button class="iris-catalog-card-cart add-to-cart-btn"
+                                            data-id="@item.Id"
+                                            data-name="@item.Name"
+                                            title="Agregar al carrito"
+                                        @(item.Stock <= 0 ? "disabled" : "")>
+                                        🛒
+                                    </button>
                                 </div>
+
+                                <!-- BOTONES DE ACCIÓN -->
+                                <div class="iris-catalog-card-actions">
+                                    <a asp-action="Details" asp-route-id="@item.Id" class="iris-btn-detail">
+                                        👁 Ver Detalles
+                                    </a>
+                                </div>
+
+                                @if (isAdmin)
+                                {
+                                    <div class="iris-catalog-card-admin">
+                                        <a asp-action="Edit" asp-route-id="@item.Id" class="iris-catalog-admin-btn">✏️ Editar</a>
+                                        <a asp-action="Delete" asp-route-id="@item.Id" class="iris-catalog-admin-btn danger">🗑️ Borrar</a>
+                                    </div>
+                                }
                             </div>
-                        }
+                        </div>
                     }
-                </div>
+                }
             </div>
         </div>
     </div>
 </div>
+</div>
 
-<!-- Formulario oculto para token anti-forgery -->
 <form id="antiForgeryForm" style="display:none;">
     @Html.AntiForgeryToken()
 </form>
@@ -208,17 +305,45 @@
 @section Scripts {
     <script src="~/js/shop.js"></script>
     <script>
-        // ============ BUSCADOR LOCAL ============
-        document.getElementById('localSearch')?.addEventListener('input', function () {
-            const term = this.value.toLowerCase().trim();
+        // ============ FILTROS LOCALES ============
+        const searchInput = document.getElementById('localSearch');
+        const priceRange = document.getElementById('priceRange');
+        const priceMaxLabel = document.getElementById('priceMaxLabel');
+        const productCount = document.getElementById('productCount');
+
+        let activeMaxPrice = 2000;
+
+        function aplicarFiltros() {
+            const term = (searchInput?.value || '').toLowerCase().trim();
+            let visible = 0;
+
             document.querySelectorAll('.iris-catalog-card').forEach(card => {
                 const name = card.dataset.name.toLowerCase();
-                card.style.display = name.includes(term) ? '' : 'none';
+                const price = parseFloat(card.dataset.price);
+
+                const coincideBusqueda = !term || name.includes(term);
+                const coincidePrecio = price <= activeMaxPrice;
+
+                const mostrar = coincideBusqueda && coincidePrecio;
+                card.style.display = mostrar ? '' : 'none';
+                if (mostrar) visible++;
             });
+
+            if (productCount) {
+                productCount.textContent = visible + ' producto' + (visible !== 1 ? 's' : '');
+            }
+        }
+
+        searchInput?.addEventListener('input', aplicarFiltros);
+
+        priceRange?.addEventListener('input', function() {
+            activeMaxPrice = parseFloat(this.value);
+            if (priceMaxLabel) priceMaxLabel.textContent = activeMaxPrice;
+            aplicarFiltros();
         });
 
         // ============ ORDENAR ============
-        document.getElementById('sortSelect')?.addEventListener('change', function () {
+        document.getElementById('sortSelect')?.addEventListener('change', function() {
             const grid = document.getElementById('productGrid');
             const cards = Array.from(grid.querySelectorAll('.iris-catalog-card'));
             const sortBy = this.value;
@@ -241,11 +366,12 @@
             sidebar.classList.toggle('open');
         });
 
-        // Cerrar sidebar al hacer clic en una categoría
         document.querySelectorAll('.iris-category-link').forEach(link => {
             link.addEventListener('click', () => {
                 sidebar.classList.remove('open');
             });
         });
+
+        aplicarFiltros();
     </script>
 }

@@ -33,18 +33,57 @@ namespace EcommerceApp.Controllers
             };
 
             ViewBag.Categorias = categorias;
+
+            // Producto destacado grande (el más caro, o uno específico)
+            var productoDestacado = await _context.Products
+                .Where(p => p.Stock > 0)
+                .OrderByDescending(p => p.Price)
+                .FirstOrDefaultAsync();
+
+            ViewBag.ProductoDestacado = productoDestacado;
+
+            // 3 productos mini (los más recientes o aleatorios)
+            var productosMini = await _context.Products
+                .Where(p => p.Stock > 0)
+                .OrderByDescending(p => p.Id)
+                .Skip(1)
+                .Take(3)
+                .ToListAsync();
+
+            ViewBag.ProductosMini = productosMini;
+
+            // Productos destacados para la grilla de tabs (los 8 más caros)
+            var productosDestacados = await _context.Products
+                .Where(p => p.Stock > 0)
+                .OrderByDescending(p => p.Price)
+                .Take(8)
+                .ToListAsync();
+
+            ViewBag.ProductosDestacados = productosDestacados;
+
+            // Productos para "Equipa tu Setup"
+            var productosSetup = await _context.Products
+                .Where(p => p.Stock > 0 && (p.Category == "Periférico" || p.Category == "Monitor"))
+                .OrderByDescending(p => p.Id)
+                .Take(3)
+                .ToListAsync();
+
+            ViewBag.ProductosSetup = productosSetup;
+
+            // Producto para banner 4K (una GPU)
+            var gpuBanner = await _context.Products
+                .Where(p => p.Category == "GPU" && p.Stock > 0)
+                .OrderByDescending(p => p.Price)
+                .FirstOrDefaultAsync();
+
+            ViewBag.GpuBanner = gpuBanner;
+
             return View();
         }
 
-        public IActionResult Privacy()
-        {
-            return View();
-        }
+        public IActionResult Privacy() => View();
 
-        public IActionResult Contact()
-        {
-            return View();
-        }
+        public IActionResult Contact() => View();
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

@@ -1,21 +1,80 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using EcommerceApp.Data;
+using EcommerceApp.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using EcommerceApp.Data;
-using EcommerceApp.Models;
 
 namespace EcommerceApp.Controllers
 {
-    // Constructor primario: "context" reemplaza el campo _context de antes.
-    // [Authorize] <--- ESTA LÍNEA SE ELIMINÓ PARA QUE CUALQUIERA PUEDA VER EL CATÁLOGO
     public class ProductsController(ApplicationDbContext context) : Controller
     {
-        public async Task<IActionResult> Index()
+        // ============================================
+        // INDEX - Lista con filtros y búsqueda
+        // ============================================
+        public async Task<IActionResult> Index(string? category, string? search, string? marca)
         {
-            var products = await context.Products.AsNoTracking().ToListAsync();
+            var query = context.Products.AsNoTracking();
+
+            // Filtro por categoría
+            if (!string.IsNullOrEmpty(category))
+            {
+                query = query.Where(p => p.Category == category);
+            }
+
+            // Filtro por marca
+            if (!string.IsNullOrEmpty(marca))
+            {
+                query = query.Where(p => p.Name.Contains(marca));
+            }
+
+            // Filtro por búsqueda
+            if (!string.IsNullOrEmpty(search))
+            {
+                var term = search.ToLower().Trim();
+                query = query.Where(p =>
+                    p.Name.ToLower().Contains(term) ||
+                    (p.Description != null && p.Description.ToLower().Contains(term)) ||
+                    p.Category.ToLower().Contains(term)
+                );
+            }
+
+            var products = await query
+                .OrderByDescending(p => p.Price)
+                .ToListAsync();
+
+            // Datos para la vista
+            ViewBag.CategoriaActual = category;
+            ViewBag.BusquedaActual = search;
+            ViewBag.MarcaActual = marca;
+
+            ViewBag.Categorias = await context.Products
+                .Select(p => p.Category)
+                .Distinct()
+                .OrderBy(c => c)
+                .ToListAsync();
+
+            var conteos = await context.Products
+                .GroupBy(p => p.Category)
+                .Select(g => new { Categoria = g.Key, Count = g.Count() })
+                .ToListAsync();
+
+            ViewBag.ConteoPorCategoria = conteos.ToDictionary(c => c.Categoria, c => c.Count);
+
+            // Conteo de marcas (para mostrar cantidad)
+            var marcas = new[] { "AMD", "Intel", "NVIDIA", "Corsair", "ASUS", "MSI", "Gigabyte", "Kingston", "Samsung" };
+            var conteoMarcas = new Dictionary<string, int>();
+            foreach (var m in marcas)
+            {
+                conteoMarcas[m] = await context.Products.CountAsync(p => p.Name.Contains(m));
+            }
+            ViewBag.ConteoMarcas = conteoMarcas;
+
             return View(products);
         }
 
+        // ============================================
+        // DETAILS
+        // ============================================
         public async Task<IActionResult> Details(int id)
         {
             var product = await context.Products.FindAsync(id);
@@ -23,6 +82,9 @@ namespace EcommerceApp.Controllers
             return View(product);
         }
 
+        // ============================================
+        // CREATE / EDIT / DELETE
+        // ============================================
         [Authorize(Roles = "Admin")]
         public IActionResult Create() => View();
 

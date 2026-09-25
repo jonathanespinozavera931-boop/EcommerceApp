@@ -177,33 +177,163 @@
         @RenderBody()
     </main>
 
-    <!-- ==================== FOOTER ==================== -->
+    <!-- ==================== FOOTER PROFESIONAL ==================== -->
     <footer class="wt-footer" id="contacto">
         <div class="container">
-            <div class="wt-footer-content">
-                <div class="wt-footer-copy">
-                    &copy; 2026 <strong style="color: var(--text-primary);">NexHard</strong> · Tu hardware, tu configuración.
+
+            <div class="wt-footer-grid">
+
+                <div class="wt-footer-brand-col">
+                    <img src="~/images/logo-nexhard.png" alt="NexHard" class="wt-footer-logo" />
+                    <p class="wt-footer-description">
+                        Tu tienda de componentes de PC en Bolivia. Encuentra los mejores productos de hardware,
+                        con garantía oficial y envío a todo el país.
+                    </p>
+
+                    <div class="wt-footer-social">
+                        <a href="https://facebook.com" target="_blank" class="wt-social-btn" title="Facebook">📘</a>
+                        <a href="https://instagram.com" target="_blank" class="wt-social-btn" title="Instagram">📷</a>
+                        <a href="https://tiktok.com" target="_blank" class="wt-social-btn" title="TikTok">🎵</a>
+                        <a href="https://youtube.com" target="_blank" class="wt-social-btn" title="YouTube">▶️</a>
+                        <a href="https://wa.me/59177777777" target="_blank" class="wt-social-btn" title="WhatsApp">💬</a>
+                    </div>
                 </div>
-                <div class="wt-footer-links">
+
+                <div class="wt-footer-col">
+                    <h4>Comprar</h4>
+                    <ul class="wt-footer-links-list">
+                        <li><a asp-controller="Products" asp-action="Index">Todos los productos</a></li>
+                        <li><a asp-controller="Products" asp-action="Index" asp-route-category="CPU">Procesadores</a></li>
+                        <li><a asp-controller="Products" asp-action="Index" asp-route-category="GPU">Tarjetas de Video</a></li>
+                        <li><a asp-controller="Products" asp-action="Index" asp-route-category="RAM">Memoria RAM</a></li>
+                        <li><a asp-controller="Products" asp-action="Index" asp-route-category="Monitor">Monitores</a></li>
+                        <li><a asp-controller="Products" asp-action="Index" asp-route-category="Periférico">Periféricos</a></li>
+                    </ul>
+                </div>
+
+                <div class="wt-footer-col">
+                    <h4>Mi Cuenta</h4>
+                    <ul class="wt-footer-links-list">
+                        @if (User.Identity != null && User.Identity.IsAuthenticated)
+                        {
+                            <li><a asp-controller="Orders" asp-action="MyOrders">Mis pedidos</a></li>
+                            <li><a asp-controller="Cart" asp-action="Index">Mi carrito</a></li>
+                            <li><a asp-controller="Account" asp-action="Login">Mi cuenta</a></li>
+                        }
+                        else
+                        {
+                            <li><a asp-controller="Account" asp-action="Login">Iniciar sesión</a></li>
+                            <li><a asp-controller="Account" asp-action="Register">Crear cuenta</a></li>
+                        }
+                        <li><a asp-controller="Cart" asp-action="Index">Ver carrito</a></li>
+                    </ul>
+                </div>
+
+                <div class="wt-footer-col">
+                    <h4>Ayuda</h4>
+                    <ul class="wt-footer-links-list">
+                        <li><a asp-controller="Home" asp-action="Contact">Contacto</a></li>
+                        <li><a asp-controller="Home" asp-action="Contact">Sobre nosotros</a></li>
+                        <li><a href="#">Envíos y entregas</a></li>
+                        <li><a href="#">Devoluciones</a></li>
+                        <li><a href="#">Preguntas frecuentes</a></li>
+                        <li><a href="#">Términos y condiciones</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="wt-footer-newsletter">
+                <div class="wt-footer-newsletter-text">
+                    <h3>📩 Únete a la República NexHard</h3>
+                    <p>Recibe ofertas exclusivas, novedades y descuentos especiales</p>
+                </div>
+
+                <form class="wt-footer-newsletter-form" onsubmit="event.preventDefault(); alert('¡Gracias por suscribirte! Te contactaremos pronto.'); this.reset();">
+                    <input type="email" class="wt-footer-newsletter-input" placeholder="tu@email.com" required />
+                    <button type="submit" class="wt-footer-newsletter-btn">Suscribirme</button>
+                </form>
+            </div>
+
+            <div class="wt-footer-payments">
+                <div>
+                    <p class="wt-footer-payments-label">💳 Aceptamos</p>
+                    <div class="wt-footer-payments-list">
+                        <span class="wt-payment-badge">💳 Tarjeta</span>
+                        <span class="wt-payment-badge">📱 QR</span>
+                        <span class="wt-payment-badge">💵 Efectivo</span>
+                        <span class="wt-payment-badge">🚚 Contra-entrega</span>
+                    </div>
+                </div>
+
+                <div>
+                    <p class="wt-footer-payments-label">🚚 Envíos</p>
+                    <div class="wt-footer-payments-list">
+                        <span class="wt-payment-badge">📦 Nacional</span>
+                        <span class="wt-payment-badge">🏪 Recojo en tienda</span>
+                        <span class="wt-payment-badge">⚡ Express</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="wt-footer-bottom">
+                <div>
+                    &copy; @DateTime.Now.Year <strong style="color:#FFFFFF;">NexHard</strong> · Todos los derechos reservados.
+                </div>
+                <div class="wt-footer-bottom-links">
                     <a asp-controller="Home" asp-action="Privacy">Privacidad</a>
                     <a href="#">Términos</a>
                     <a asp-controller="Home" asp-action="Contact">Contacto</a>
                 </div>
-            </div>
-            <div class="wt-footer-bottom">
-                Hecho con 💙 en Bolivia · Diseño Clean Tech
+                <div class="wt-footer-made-with">
+                    Hecho con <span>💙</span> en Bolivia
+                </div>
             </div>
         </div>
     </footer>
+
+    <!-- Botón "Volver arriba" -->
+    <button class="wt-back-to-top" id="backToTop" onclick="window.scrollTo({top: 0, behavior: 'smooth'});">↑</button>
+
+    <!-- ==================== BOTÓN FLOTANTE: ASISTENTE DE VOZ IA ==================== -->
+    <div class="wt-voice-assistant">
+        <div class="wt-voice-bubble" id="voiceBubble">
+            <strong>🤖 Asistente NexHard</strong>
+            <span id="voiceBubbleText">¡Hola! Haz clic en el micrófono y dime qué necesitas.</span>
+        </div>
+
+        <button class="wt-voice-btn" id="voiceAssistantBtn" title="Asistente de voz">
+            <div class="wt-voice-waves"></div>
+            <span class="wt-voice-tooltip">Asistente IA</span>
+            <svg viewBox="0 0 24 24">
+                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+                <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                <line x1="12" y1="19" x2="12" y2="23"></line>
+                <line x1="8" y1="23" x2="16" y2="23"></line>
+            </svg>
+        </button>
+    </div>
+
+    <!-- ==================== BOTÓN FLOTANTE: INSTALAR PWA ==================== -->
+    <div class="wt-pwa-install" id="pwaInstallBox">
+        <button class="wt-pwa-btn" id="pwaInstallBtn">
+            <svg viewBox="0 0 24 24">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            <span>Instalar App</span>
+            <span class="wt-pwa-close" id="pwaCloseBtn" title="Cerrar">✕</span>
+        </button>
+    </div>
 
     <!-- ==================== SCRIPTS ==================== -->
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/cart-badge.js" asp-append-version="true"></script>
-    <script src="~/js/voice-search.js" asp-append-version="true"></script>
 
-    <!-- ═══════════════ SERVICE WORKER (PWA) ═══════════════ -->
+    <!-- ═══════════════ SERVICE WORKER + PWA ═══════════════ -->
     <script>
+            // ══════════ REGISTRAR SERVICE WORKER ══════════
             if ('serviceWorker' in navigator) {
                 window.addEventListener('load', () => {
                     navigator.serviceWorker.register('/service-worker.js')
@@ -211,8 +341,52 @@
                         .catch(err => console.log('❌ Error SW:', err));
                 });
             }
+
+            // ══════════ PWA INSTALL PROMPT ══════════
+            let deferredPrompt = null;
+            const pwaInstallBox = document.getElementById('pwaInstallBox');
+            const pwaInstallBtn = document.getElementById('pwaInstallBtn');
+            const pwaCloseBtn = document.getElementById('pwaCloseBtn');
+
+            if (window.matchMedia('(display-mode: standalone)').matches) {
+                if (pwaInstallBox) pwaInstallBox.style.display = 'none';
+            }
+
+            window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault();
+                deferredPrompt = e;
+                setTimeout(() => {
+                    if (pwaInstallBox) pwaInstallBox.classList.add('show');
+                }, 3000);
+            });
+
+            pwaInstallBtn?.addEventListener('click', async (e) => {
+                if (e.target.closest('.wt-pwa-close')) return;
+
+                if (deferredPrompt) {
+                    deferredPrompt.prompt();
+                    const { outcome } = await deferredPrompt.userChoice;
+                    if (outcome === 'accepted') {
+                        pwaInstallBox.classList.remove('show');
+                    }
+                    deferredPrompt = null;
+                } else {
+                    alert('📱 Para instalar la app:\n\nChrome Android: Menú (⋮) → "Instalar aplicación"\niOS Safari: Compartir → "Añadir a pantalla de inicio"\nEscritorio: Clic en el ícono de instalar en la barra de direcciones');
+                }
+            });
+
+            pwaCloseBtn?.addEventListener('click', (e) => {
+                e.stopPropagation();
+                pwaInstallBox.classList.remove('show');
+                sessionStorage.setItem('pwaDismissed', 'true');
+            });
+
+            if (sessionStorage.getItem('pwaDismissed') === 'true') {
+                if (pwaInstallBox) pwaInstallBox.style.display = 'none';
+            }
     </script>
 
+    <!-- ═══════════════ BUSCADOR + DRAWER + VOZ ═══════════════ -->
     <script>
             // ============ BUSCADOR ============
             const searchInput = document.getElementById('irisSearch');
@@ -253,6 +427,219 @@
                     link.classList.add('active');
                 }
             });
+
+            // ============ BOTÓN VOLVER ARRIBA ============
+            const backToTop = document.getElementById('backToTop');
+            if (backToTop) {
+                window.addEventListener('scroll', () => {
+                    if (window.scrollY > 400) {
+                        backToTop.classList.add('visible');
+                    } else {
+                        backToTop.classList.remove('visible');
+                    }
+                });
+            }
+
+            // ══════════════════════════════════════════════════
+            // ══════════ ASISTENTE DE VOZ IA ══════════
+            // ══════════════════════════════════════════════════
+            const voiceBtn = document.getElementById('voiceAssistantBtn');
+            const voiceBubble = document.getElementById('voiceBubble');
+            const voiceBubbleText = document.getElementById('voiceBubbleText');
+
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            let recognition = null;
+            let isListening = false;
+
+            function mostrarBurbuja(texto, tiempo = 4000) {
+                if (!voiceBubble || !voiceBubbleText) return;
+                voiceBubbleText.textContent = texto;
+                voiceBubble.classList.add('show');
+
+                clearTimeout(window.voiceBubbleTimeout);
+                window.voiceBubbleTimeout = setTimeout(() => {
+                    voiceBubble.classList.remove('show');
+                }, tiempo);
+            }
+
+            function hablar(texto) {
+                if ('speechSynthesis' in window) {
+                    window.speechSynthesis.cancel();
+                    const utterance = new SpeechSynthesisUtterance(texto);
+                    utterance.lang = 'es-ES';
+                    utterance.rate = 1.0;
+                    utterance.pitch = 1.0;
+                    window.speechSynthesis.speak(utterance);
+                }
+            }
+
+            function procesarComando(texto) {
+                const t = texto.toLowerCase().trim();
+                console.log('🎤 Comando:', t);
+
+                // Saludo
+                if (t.includes('hola') || t.includes('hey') || t.includes('buenas')) {
+                    mostrarBurbuja('¡Hola! Puedes decir: "buscar RTX 4090", "ir a procesadores", "abrir carrito"...');
+                    hablar('Hola, ¿en qué puedo ayudarte?');
+                    return;
+                }
+
+                // Buscar
+                if (t.includes('buscar') || t.includes('busca') || t.includes('quiero ver') || t.includes('muéstrame')) {
+                    let termino = t
+                        .replace('buscar', '').replace('busca', '')
+                        .replace('quiero ver', '').replace('muéstrame', '')
+                        .replace('por favor', '').trim();
+
+                    if (termino) {
+                        mostrarBurbuja(`🔍 Buscando "${termino}"...`);
+                        hablar(`Buscando ${termino}`);
+                        setTimeout(() => {
+                            window.location.href = '/Products?search=' + encodeURIComponent(termino);
+                        }, 1200);
+                    } else {
+                        mostrarBurbuja('¿Qué producto quieres buscar?');
+                        hablar('¿Qué producto quieres buscar?');
+                    }
+                    return;
+                }
+
+                // Categorías
+                const categorias = {
+                    'procesador': 'CPU', 'procesadores': 'CPU', 'cpu': 'CPU',
+                    'tarjeta': 'GPU', 'tarjetas': 'GPU', 'gráfica': 'GPU', 'gráficas': 'GPU', 'gpu': 'GPU', 'video': 'GPU',
+                    'ram': 'RAM', 'memoria': 'RAM',
+                    'almacenamiento': 'Almacenamiento', 'disco': 'Almacenamiento', 'ssd': 'Almacenamiento',
+                    'placa': 'Placa Madre', 'motherboard': 'Placa Madre',
+                    'fuente': 'Fuente',
+                    'refrigeración': 'Refrigeración', 'cooler': 'Refrigeración',
+                    'gabinete': 'Gabinete', 'case': 'Gabinete',
+                    'monitor': 'Monitor', 'monitores': 'Monitor', 'pantalla': 'Monitor',
+                    'periférico': 'Periférico', 'periféricos': 'Periférico', 'teclado': 'Periférico', 'mouse': 'Periférico'
+                };
+
+                for (const [key, cat] of Object.entries(categorias)) {
+                    if (t.includes(key)) {
+                        mostrarBurbuja(`📦 Mostrando ${cat}...`);
+                        hablar(`Mostrando ${cat}`);
+                        setTimeout(() => {
+                            window.location.href = '/Products?category=' + encodeURIComponent(cat);
+                        }, 1200);
+                        return;
+                    }
+                }
+
+                // Navegación
+                if (t.includes('inicio') || t.includes('home') || t.includes('principal')) {
+                    mostrarBurbuja('🏠 Yendo al inicio...');
+                    hablar('Yendo al inicio');
+                    setTimeout(() => window.location.href = '/', 1000);
+                    return;
+                }
+
+                if (t.includes('carrito')) {
+                    mostrarBurbuja('🛒 Abriendo carrito...');
+                    hablar('Abriendo tu carrito');
+                    setTimeout(() => window.location.href = '/Cart', 1000);
+                    return;
+                }
+
+                if (t.includes('pedidos') || t.includes('compras')) {
+                    mostrarBurbuja('📦 Viendo tus pedidos...');
+                    hablar('Yendo a tus pedidos');
+                    setTimeout(() => window.location.href = '/Orders/MyOrders', 1000);
+                    return;
+                }
+
+                if (t.includes('contacto') || t.includes('contactar')) {
+                    mostrarBurbuja('📞 Abriendo contacto...');
+                    hablar('Abriendo contacto');
+                    setTimeout(() => window.location.href = '/Home/Contact', 1000);
+                    return;
+                }
+
+                if (t.includes('cuenta') || t.includes('login') || t.includes('iniciar sesión')) {
+                    mostrarBurbuja('👤 Yendo a iniciar sesión...');
+                    hablar('Yendo a iniciar sesión');
+                    setTimeout(() => window.location.href = '/Account/Login', 1000);
+                    return;
+                }
+
+                // Buscar por defecto
+                if (t.length > 2) {
+                    mostrarBurbuja(`🔍 Buscando "${texto}"...`);
+                    hablar(`Buscando ${texto}`);
+                    setTimeout(() => {
+                        window.location.href = '/Products?search=' + encodeURIComponent(texto);
+                    }, 1200);
+                } else {
+                    mostrarBurbuja('No entendí. Intenta: "buscar RTX 4090", "ir a procesadores", "abrir carrito"...');
+                    hablar('No entendí, intenta de nuevo');
+                }
+            }
+
+            // Inicializar reconocimiento
+            if (SpeechRecognition) {
+                recognition = new SpeechRecognition();
+                recognition.lang = 'es-ES';
+                recognition.continuous = false;
+                recognition.interimResults = false;
+                recognition.maxAlternatives = 1;
+
+                recognition.onstart = () => {
+                    isListening = true;
+                    voiceBtn.classList.add('listening');
+                    mostrarBurbuja('🎤 Escuchando...', 10000);
+                };
+
+                recognition.onend = () => {
+                    isListening = false;
+                    voiceBtn.classList.remove('listening');
+                };
+
+                recognition.onerror = (e) => {
+                    isListening = false;
+                    voiceBtn.classList.remove('listening');
+                    console.error('Error voz:', e.error);
+
+                    if (e.error === 'not-allowed') {
+                        mostrarBurbuja('❌ Debes permitir el acceso al micrófono.');
+                    } else if (e.error === 'no-speech') {
+                        mostrarBurbuja('No escuché nada. Intenta de nuevo.');
+                    } else {
+                        mostrarBurbuja('Error al escuchar. Intenta de nuevo.');
+                    }
+                };
+
+                recognition.onresult = (event) => {
+                    const texto = event.results[0][0].transcript;
+                    procesarComando(texto);
+                };
+
+                voiceBtn?.addEventListener('click', () => {
+                    if (isListening) {
+                        recognition.stop();
+                    } else {
+                        try {
+                            recognition.start();
+                        } catch (e) {
+                            console.log('Ya está escuchando');
+                        }
+                    }
+                });
+            } else {
+                voiceBtn?.addEventListener('click', () => {
+                    mostrarBurbuja('❌ Tu navegador no soporta comandos de voz. Prueba con Chrome o Edge.');
+                });
+            }
+
+            // Mostrar bienvenida (una vez por sesión)
+            setTimeout(() => {
+                if (!sessionStorage.getItem('voiceWelcomeShown')) {
+                    mostrarBurbuja('👋 ¡Hola! Soy tu asistente. Dime "buscar RTX 4090" o "ir a procesadores".', 6000);
+                    sessionStorage.setItem('voiceWelcomeShown', 'true');
+                }
+            }, 4000);
     </script>
 
     @await RenderSectionAsync("Scripts", required: false)
