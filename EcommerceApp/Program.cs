@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using EcommerceApp.Data;
 using EcommerceApp.Models;
+using Microsoft.AspNetCore.HttpOverrides;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -47,6 +48,26 @@ builder.Services.AddSession(options =>
 });
 
 var app = builder.Build();
+
+// ══════════════ FORWARDED HEADERS (para Render proxy) ══════════════
+app.UseForwardedHeaders(new ForwardedHeadersOptions
+{
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto,
+    RequireHeaderSymmetry = false,
+    KnownNetworks = { },
+    KnownProxies = { }
+});
+
+// ══════════════ ANTI-CACHÉ PARA DESARROLLO Y PRODUCCIÓN ══════════════
+app.Use(async (context, next) =>
+{
+    // No cachear HTML dinámico
+    context.Response.Headers["Cache-Control"] = "no-cache, no-store, must-revalidate, max-age=0";
+    context.Response.Headers["Pragma"] = "no-cache";
+    context.Response.Headers["Expires"] = "0";
+
+    await next();
+});
 
 if (!app.Environment.IsDevelopment())
 {
