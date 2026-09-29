@@ -11129,3 +11129,446 @@ textarea.wt-form-control {
         width: 85vw !important;
     }
 }
+
+/* ============================================================
+   54. FIX RESPONSIVE MÓVIL COMPLETO
+   ============================================================ */
+
+/* ══════════ NAVBAR EN MÓVIL ══════════ */
+@media (max-width: 992px) {
+    /* Navbar superior */
+    .iris-nav-top-inner {
+        padding: 10px 12px;
+        gap: 8px;
+        flex-wrap: nowrap;
+    }
+
+    .iris-hamburger {
+        display: flex !important;
+        width: 36px;
+        height: 36px;
+        flex-shrink: 0;
+    }
+
+    .iris-logo img {
+        height: 36px !important;
+    }
+
+    .iris-search {
+        height: 40px !important;
+        min-width: 0;
+        flex: 1;
+    }
+
+        .iris-search input {
+            padding: 0 10px !important;
+            font-size: 0.8rem !important;
+            min-width: 0;
+        }
+
+    .iris-search-btn {
+        min-width: 42px !important;
+        padding: 0 10px !important;
+    }
+
+    /* Ocultar búsqueda por voz en móvil */
+    #voiceSearchBtn {
+        display: none;
+    }
+
+    .iris-top-actions {
+        gap: 8px;
+        flex-shrink: 0;
+    }
+
+    .iris-top-icon {
+        min-width: auto;
+        padding: 4px;
+        font-size: 1.1rem;
+    }
+
+    .iris-top-icon-label {
+        display: none;
+    }
+
+    .iris-user-name {
+        display: none;
+    }
+
+    .iris-btn-logout {
+        width: 34px;
+        height: 34px;
+    }
+
+    /* Fila inferior (categorías) OCULTA */
+    .iris-nav-bottom {
+        display: none !important;
+    }
+}
+
+/* ══════════ HOME: SLIDER EN MÓVIL ══════════ */
+@media (max-width: 768px) {
+    .iris-slider {
+        aspect-ratio: auto;
+        height: 380px !important;
+        max-height: 380px;
+    }
+
+    .iris-slide {
+        padding: 0 20px !important;
+        align-items: center;
+    }
+
+    .iris-slide-content {
+        max-width: 100%;
+    }
+
+    .iris-slide-title {
+        font-size: 1.4rem !important;
+        line-height: 1.15;
+    }
+
+    .iris-slide-subtitle {
+        font-size: 0.8rem !important;
+        margin-bottom: 16px;
+    }
+
+    .iris-slide-btn {
+        padding: 10px 20px;
+        font-size: 0.75rem;
+    }
+
+    .iris-slider-arrow {
+        width: 34px !important;
+        height: 34px !important;
+        font-size: 0.9rem !important;
+    }
+
+        .iris-slider-arrow.prev {
+            left: 8px !important;
+        }
+
+        .iris-slider-arrow.next {
+            right: 8px !important;
+        }
+
+    /* Banner entregas */
+    .iris-delivery-banner {
+        padding: 12px 16px !important;
+        margin: -20px 12px 24px !important;
+        flex-direction: row;
+        gap: 12px;
+    }
+
+    .iris-delivery-banner-icon {
+        font-size: 1.6rem !important;
+    }
+
+    .iris-delivery-banner-text h3 {
+        font-size: 0.9rem !important;
+    }
+
+    .iris-delivery-banner-text p {
+        font-size: 0.7rem !important;
+    }
+}
+
+/* ══════════ HOME: EQUIPA TU SETUP EN MÓVIL ══════════ */
+@media (max-width: 992px) {
+    .iris-setup-banner {
+        grid-template-columns: 1fr !important;
+        min-height: auto !important;
+        margin: 30px 0 !important;
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+    .iris-setup-content {
+        padding: 30px 24px !important;
+        text-align: center;
+        min-height: auto;
+    }
+
+    .iris-setup-title {
+        font-size: 1.8rem !important;
+    }
+
+    .iris-setup-subtitle {
+        font-size: 0.85rem !important;
+        max-width: 100%;
+        margin-bottom: 20px;
+    }
+
+    .iris-setup-btn {
+        margin: 0 auto;
+    }
+
+    .iris-setup-products {
+        grid-template-columns: 1fr !important;
+        gap: 12px !important;
+        padding: 20px !important;
+    }
+
+    .iris-setup-product {
+        display: grid !important;
+        grid-template-columns: 100px 1fr;
+        align-items: center;
+        padding: 12px !important;
+    }
+
+    .iris-setup-product-img {
+        aspect-ratio: 1 / 1;
+        width: 100px;
+        height: 100px;
+        padding: 8px;
+    }
+
+    .iris-setup-product-info {
+        padding: 8px 12px !important;
+    }
+
+    .iris-setup-product-name {
+        font-size: 0.85rem !important;
+        -webkit-line-clamp: 2;
+    }
+
+    .iris-setup-product-price {
+        font-size: 1rem !important;
+    }
+}
+
+/* ══════════ HOME: JUEGA EN 4K EN MÓVIL ══════════ */
+@media (max-width: 768px) {
+    .iris-4k-banner {
+        min-height: 240px !important;
+        margin: 20px 0 40px !important;
+        border-radius: 12px;
+    }
+
+    .iris-4k-content {
+        padding: 30px 20px !important;
+    }
+
+    .iris-4k-title {
+        font-size: 1.3rem !important;
+        margin-bottom: 16px;
+    }
+
+    .iris-4k-btn {
+        padding: 12px 24px;
+        font-size: 0.8rem;
+    }
+}
+
+/* ══════════ HOME: CATEGORÍAS EN MÓVIL ══════════ */
+@media (max-width: 768px) {
+    .iris-categories-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 10px !important;
+    }
+
+    .iris-category-item {
+        aspect-ratio: 1 / 1;
+        padding: 14px !important;
+        border-radius: 10px;
+    }
+
+    .iris-category-item-name {
+        font-size: 0.85rem !important;
+    }
+
+    .iris-category-item-badge {
+        font-size: 0.6rem !important;
+        padding: 3px 8px !important;
+    }
+}
+
+/* ══════════ HOME: NOVEDADES EN MÓVIL ══════════ */
+@media (max-width: 768px) {
+    .iris-novedades-grid {
+        grid-template-columns: 1fr !important;
+        gap: 16px !important;
+    }
+
+    .iris-novedad-featured {
+        min-height: 320px !important;
+    }
+
+    .iris-novedad-featured-content {
+        padding: 20px !important;
+    }
+
+    .iris-novedad-featured-title {
+        font-size: 1.2rem !important;
+    }
+
+    .iris-novedad-featured-desc {
+        font-size: 0.8rem !important;
+    }
+
+    .iris-novedad-featured-footer {
+        flex-direction: row !important;
+        align-items: center !important;
+    }
+
+    .iris-novedad-featured-price {
+        font-size: 1.3rem !important;
+    }
+
+    .iris-novedad-featured-btn {
+        padding: 10px 18px !important;
+        font-size: 0.75rem !important;
+    }
+
+    .iris-novedad-item {
+        padding: 12px !important;
+        gap: 12px !important;
+    }
+
+    .iris-novedad-item-img {
+        width: 90px !important;
+        height: 90px !important;
+    }
+
+    .iris-novedad-item-name {
+        font-size: 0.85rem !important;
+    }
+
+    .iris-novedad-item-price {
+        font-size: 1rem !important;
+    }
+}
+
+/* ══════════ HOME: PRODUCTOS DESTACADOS EN MÓVIL ══════════ */
+@media (max-width: 768px) {
+    .iris-tabs {
+        gap: 6px;
+        overflow-x: auto;
+        padding-bottom: 8px;
+        margin-bottom: 16px;
+        scrollbar-width: none;
+    }
+
+        .iris-tabs::-webkit-scrollbar {
+            display: none;
+        }
+
+    .iris-tab {
+        padding: 8px 14px !important;
+        font-size: 0.7rem !important;
+        white-space: nowrap;
+    }
+
+    .iris-products-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 12px !important;
+    }
+
+    .iris-product-body {
+        padding: 12px !important;
+    }
+
+    .iris-product-name {
+        font-size: 0.8rem !important;
+        min-height: 36px;
+    }
+
+    .iris-product-price {
+        font-size: 1rem !important;
+    }
+
+    .iris-product-cart-btn {
+        width: 32px !important;
+        height: 32px !important;
+        font-size: 0.85rem !important;
+    }
+}
+
+/* ══════════ HOME: MARCAS EN MÓVIL ══════════ */
+@media (max-width: 768px) {
+    .iris-brands-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 10px !important;
+    }
+
+    .iris-brand-item {
+        aspect-ratio: 5 / 3;
+        padding: 20px 10px !important;
+    }
+
+    .iris-brand-text {
+        font-size: 0.95rem !important;
+    }
+}
+
+/* ══════════ SECCIONES GENERALES EN MÓVIL ══════════ */
+@media (max-width: 768px) {
+    .iris-section {
+        padding: 40px 0 !important;
+    }
+
+    .iris-section-header {
+        margin-bottom: 24px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .iris-section-title {
+        font-size: 1.4rem !important;
+    }
+
+    .iris-section-subtitle {
+        font-size: 0.85rem !important;
+    }
+
+    .iris-section-btn {
+        padding: 8px 16px;
+        font-size: 0.72rem;
+    }
+
+    /* Container con menos padding */
+    .container {
+        padding: 0 16px !important;
+    }
+}
+
+/* ══════════ BOTONES FLOTANTES EN MÓVIL ══════════ */
+@media (max-width: 600px) {
+    .wt-voice-assistant {
+        bottom: 20px !important;
+        right: 12px !important;
+    }
+
+    .wt-voice-btn {
+        width: 52px !important;
+        height: 52px !important;
+    }
+
+        .wt-voice-btn svg {
+            width: 22px !important;
+            height: 22px !important;
+        }
+
+    .wt-voice-bubble {
+        max-width: 240px !important;
+        font-size: 0.78rem !important;
+    }
+
+    .wt-pwa-install {
+        bottom: 20px !important;
+        left: 12px !important;
+    }
+
+    .wt-pwa-btn {
+        padding: 10px 14px !important;
+        font-size: 0.7rem !important;
+    }
+
+    .wt-back-to-top {
+        width: 42px !important;
+        height: 42px !important;
+        bottom: 80px !important;
+        right: 12px !important;
+    }
+}

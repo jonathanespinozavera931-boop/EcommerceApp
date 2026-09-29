@@ -1,66 +1,95 @@
 ﻿// ============================================================
-// NEXHARD - Service Worker (PWA + Push Notifications)
+// NEXHARD - Service Worker (PWA) - Versión 2
 // ============================================================
 
-const CACHE_NAME = 'nexhard-v1';
+const CACHE_NAME = 'nexhard-v2-' + Date.now();
 const urlsToCache = [
-    '/',
     '/css/white-tech.css',
     '/lib/bootstrap/dist/css/bootstrap.min.css',
-    '/js/site.js'
+    '/js/cart-badge.js'
 ];
 
-// INSTALACIÓN: cachear recursos básicos
+// INSTALACIÓN
 self.addEventListener('install', event => {
+    self.skipWaiting(); // Activar inmediatamente
     event.waitUntil(
         caches.open(CACHE_NAME)
-            .then(cache => cache.addAll(urlsToCache))
+            .then(cache => cache.addAll(urlsToCache).catch(() => { }))
     );
 });
 
-// ACTIVACIÓN: limpiar cachés viejos
+// ACTIVACIÓN - Limpiar TODAS las cachés viejas
 self.addEventListener('activate', event => {
     event.waitUntil(
         caches.keys().then(cacheNames => {
             return Promise.all(
                 cacheNames.map(cacheName => {
-                    if (cacheName !== CACHE_NAME) {
-                        return caches.delete(cacheName);
-                    }
+                    // Borrar TODAS las cachés (forzar recarga)
+                    return caches.delete(cacheName);
                 })
             );
-        })
+        }).then(() => self.clients.claim()) // Tomar control inmediato
     );
 });
 
-// FETCH: servir desde caché si está offline
+// FETCH - Estrategia: HTML siempre del servidor, assets desde caché
 self.addEventListener('fetch', event => {
-    event.respondWith(
-        caches.match(event.request)
-            .then(response => response || fetch(event.request))
-    );
-});
+    const request = event.request;
+    const url = new URL(request.url);
 
-// ============================================================
-// PUSH NOTIFICATIONS
-// ============================================================
-self.addEventListener('push', event => {
-    if (!event.data) {
-        console.log('Push sin datos');
+    // Solo procesar GET
+    if (request.method !== 'GET') return;
+
+    // Ignorar llamadas a otros dominios (Google, Unsplash, etc.)
+    if (url.origin !== self.location.origin) return;
+
+    // ══════════ HTML SIEMPRE DESDE EL SERVIDOR ══════════
+    if (request.headers.get('accept')?.includes('text/html')) {
+        event.respondWith(
+            fetch(request)
+                .then(response => {
+                    // No cachear HTML
+                    return response;
+                })
+                .catch(() => {
+                    // Si falla, intentar desde caché (offline)
+                    return caches.match(request);
+                })
+        );
         return;
     }
 
-    const data = event.data.json();
+    // ══════════ CSS/JS/IMÁGENES: caché primero ══════════
+    event.respondWith(
+        caches.match(request)
+            .then(cachedResponse => {
+                if (cachedResponse) return cachedResponse;
 
+                return fetch(request).then(response => {
+                    // Cachear solo si es 200 OK
+                    if (response.status === 200) {
+                        const responseClone = response.clone();
+                        caches.open(CACHE_NAME).then(cache => {
+                            cache.put(request, responseClone);
+                        });
+                    }
+                    return response;
+                });
+            })
+            .catch(() => fetch(request))
+    );
+});
+
+// PUSH NOTIFICATIONS (sin cambios)
+self.addEventListener('push', event => {
+    if (!event.data) return;
+
+    const data = event.data.json();
     const options = {
         body: data.body || 'Nueva notificación de NexHard',
         icon: data.icon || '/images/logo-nexhard.png',
         badge: data.badge || '/images/logo-nexhard.png',
-        image: data.image,
         data: data.data || { url: '/' },
-        tag: data.tag || 'nexhard-general',
-        requireInteraction: false,
-        silent: false,
         vibrate: [200, 100, 200]
     };
 
@@ -69,25 +98,19 @@ self.addEventListener('push', event => {
     );
 });
 
-// Al hacer clic en la notificación
 self.addEventListener('notificationclick', event => {
     event.notification.close();
-
     const url = event.notification.data?.url || '/';
 
     event.waitUntil(
         clients.matchAll({ type: 'window', includeUncontrolled: true })
             .then(windowClients => {
-                // Si ya hay una ventana abierta, enfocarla
                 for (let client of windowClients) {
                     if (client.url === url && 'focus' in client) {
                         return client.focus();
                     }
                 }
-                // Si no, abrir una nueva
-                if (clients.openWindow) {
-                    return clients.openWindow(url);
-                }
+                if (clients.openWindow) return clients.openWindow(url);
             })
     );
 });
