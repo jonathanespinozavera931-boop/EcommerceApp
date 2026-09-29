@@ -10795,3 +10795,203 @@ textarea.wt-form-control {
         max-width: 220px;
     }
 }
+
+/* ============================================================
+   51. ICONOS DE REDES SOCIALES - FIX
+   ============================================================ */
+
+.wt-social-btn img {
+    width: 26px;
+    height: 26px;
+    object-fit: contain;
+    display: block;
+    transition: all 0.3s;
+    /* Sin filtros, mostrar la imagen tal cual es */
+    filter: none;
+}
+
+.wt-social-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 46px;
+    height: 46px;
+    background: #FFFFFF; /* Fondo blanco para que los logos se vean */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    color: #94A3B8;
+    text-decoration: none;
+    transition: all 0.3s;
+}
+
+    .wt-social-btn:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 20px rgba(255, 0, 60, 0.4);
+        background: #FFFFFF;
+    }
+
+        .wt-social-btn:hover img {
+            transform: scale(1.15);
+        }
+
+.wt-social-btn:hover img {
+    filter: brightness(0) invert(1) sepia(1) saturate(5) hue-rotate(320deg); /* Efecto rojo al pasar el mouse */
+}
+
+/* ============================================================
+   49. MEGA MENÚ DESPLEGABLE - ESTILO ASUS ROG
+   ============================================================ */
+
+/* El contenedor del mega menú debe ser relative */
+.iris-nav-mega-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+/* Mega menú (oculto por defecto) */
+.iris-mega-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    min-width: 900px;
+    background: #FFFFFF;
+    border-top: 3px solid #FF003C;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0, 0, 0, 0.05);
+    padding: 40px 50px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 9999;
+}
+
+/* Al hacer hover en el wrapper, mostrar el mega menú */
+.iris-nav-mega-wrapper:hover .iris-mega-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+/* Grid de 3 columnas */
+.iris-mega-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 15px 50px;
+}
+
+/* Links del mega menú */
+.iris-mega-link {
+    display: flex;
+    align-items: center;
+    padding: 10px 0;
+    color: #0F172A;
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 0.95rem;
+    text-decoration: none;
+    transition: all 0.2s;
+    border-bottom: 1px solid transparent;
+    letter-spacing: 0.01em;
+}
+
+    .iris-mega-link:hover {
+        color: #FF003C;
+        padding-left: 8px;
+        border-bottom-color: #FF003C;
+    }
+
+    .iris-mega-link .count {
+        margin-left: auto;
+        color: #94A3B8;
+        font-size: 0.75rem;
+        font-weight: 500;
+        background: #F1F5F9;
+        padding: 2px 8px;
+        border-radius: 10px;
+    }
+
+    .iris-mega-link:hover .count {
+        background: #FF003C;
+        color: #FFFFFF;
+    }
+
+/* Footer del mega menú */
+.iris-mega-footer {
+    margin-top: 30px;
+    padding-top: 24px;
+    border-top: 1px solid #E2E8F0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.iris-mega-footer-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #0F172A;
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 0.9rem;
+    text-decoration: none;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+}
+
+    .iris-mega-footer-link:hover {
+        color: #FF003C;
+    }
+
+    .iris-mega-footer-link .arrow {
+        color: #FF003C;
+        font-size: 1.1rem;
+    }
+
+/* Responsive */
+@media (max-width: 1100px) {
+    .iris-mega-menu {
+        min-width: 700px;
+        padding: 30px;
+    }
+
+    .iris-mega-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 10px 30px;
+    }
+}
+
+@media (max-width: 768px) {
+    .iris-mega-menu {
+        display: none;
+    }
+}
+
+/* ============================================================
+   50. FIX: MEGA MENÚ - permitir que se salga del navbar
+   ============================================================ */
+
+.iris-nav-bottom-inner {
+    overflow-x: visible !important;
+    overflow-y: visible !important;
+}
+
+.iris-nav-bottom {
+    overflow: visible !important;
+}
+
+.iris-navbar {
+    overflow: visible !important;
+}
+
+/* Asegurar que el mega menú esté arriba de todo */
+.iris-nav-mega-wrapper {
+    position: relative;
+    z-index: 999;
+}
+
+.iris-mega-menu {
+    z-index: 10000 !important;
+}

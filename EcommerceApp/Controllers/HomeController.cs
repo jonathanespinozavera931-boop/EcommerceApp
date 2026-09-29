@@ -17,7 +17,7 @@ namespace EcommerceApp.Controllers
 
         public async Task<IActionResult> Index()
         {
-            // Contar productos por categoría
+            // Conteo por categoría
             var categorias = new Dictionary<string, int>
             {
                 { "CPU", await _context.Products.CountAsync(p => p.Category == "CPU") },
@@ -31,51 +31,68 @@ namespace EcommerceApp.Controllers
                 { "Periférico", await _context.Products.CountAsync(p => p.Category == "Periférico") },
                 { "Monitor", await _context.Products.CountAsync(p => p.Category == "Monitor") },
             };
-
             ViewBag.Categorias = categorias;
 
-            // Producto destacado grande (el más caro, o uno específico)
+            // Producto destacado grande
             var productoDestacado = await _context.Products
                 .Where(p => p.Stock > 0)
                 .OrderByDescending(p => p.Price)
                 .FirstOrDefaultAsync();
-
             ViewBag.ProductoDestacado = productoDestacado;
 
-            // 3 productos mini (los más recientes o aleatorios)
+            // 3 productos mini
             var productosMini = await _context.Products
                 .Where(p => p.Stock > 0)
                 .OrderByDescending(p => p.Id)
                 .Skip(1)
                 .Take(3)
                 .ToListAsync();
-
             ViewBag.ProductosMini = productosMini;
 
-            // Productos destacados para la grilla de tabs (los 8 más caros)
-            var productosDestacados = await _context.Products
-                .Where(p => p.Stock > 0)
+            // ⬇️ PRODUCTOS POR CATEGORÍA PARA LOS TABS
+            var productosCPU = await _context.Products
+                .Where(p => p.Category == "CPU" && p.Stock > 0)
                 .OrderByDescending(p => p.Price)
                 .Take(8)
                 .ToListAsync();
 
-            ViewBag.ProductosDestacados = productosDestacados;
+            var productosGPU = await _context.Products
+                .Where(p => p.Category == "GPU" && p.Stock > 0)
+                .OrderByDescending(p => p.Price)
+                .Take(8)
+                .ToListAsync();
 
-            // Productos para "Equipa tu Setup"
+            var productosRAM = await _context.Products
+                .Where(p => p.Category == "RAM" && p.Stock > 0)
+                .OrderByDescending(p => p.Price)
+                .Take(8)
+                .ToListAsync();
+
+            var productosMonitor = await _context.Products
+                .Where(p => p.Category == "Monitor" && p.Stock > 0)
+                .OrderByDescending(p => p.Price)
+                .Take(8)
+                .ToListAsync();
+
+            // Paquete para la vista
+            ViewBag.ProductosCPU = productosCPU;
+            ViewBag.ProductosGPU = productosGPU;
+            ViewBag.ProductosRAM = productosRAM;
+            ViewBag.ProductosMonitor = productosMonitor;
+
+            // Equipa tu setup (periféricos y monitores)
             var productosSetup = await _context.Products
                 .Where(p => p.Stock > 0 && (p.Category == "Periférico" || p.Category == "Monitor"))
                 .OrderByDescending(p => p.Id)
                 .Take(3)
                 .ToListAsync();
-
             ViewBag.ProductosSetup = productosSetup;
 
-            // Producto para banner 4K (una GPU)
+            // GPU para banner
             var gpuBanner = await _context.Products
                 .Where(p => p.Category == "GPU" && p.Stock > 0)
                 .OrderByDescending(p => p.Price)
                 .FirstOrDefaultAsync();
-
             ViewBag.GpuBanner = gpuBanner;
 
             return View();

@@ -1,13 +1,28 @@
 ﻿@{
     ViewData["Title"] = "Inicio";
     var categorias = ViewBag.Categorias as Dictionary<string, int> ?? new Dictionary<string, int>();
+
+    // IconFor UNA SOLA VEZ
+    string IconFor(string? category) => category switch
+    {
+        "GPU" => "🎮",
+        "CPU" => "🧠",
+        "RAM" => "💾",
+        "Almacenamiento" => "💿",
+        "Placa Madre" => "🔌",
+        "Fuente" => "⚡",
+        "Refrigeración" => "❄️",
+        "Gabinete" => "📦",
+        "Monitor" => "🖥️",
+        "Periférico" => "🖱️",
+        _ => "🔧"
+    };
 }
 
 <!-- ==================== BANNER SLIDER ==================== -->
 <section class="iris-slider" id="irisSlider">
     <div class="iris-slider-track" id="sliderTrack">
 
-        <!-- SLIDE 1 -->
         <div class="iris-slide" style="background-image: url('https://images.unsplash.com/photo-1542751371-adc38448a05e?w=1920&q=80');">
             <div class="iris-slide-content">
                 <span class="iris-slide-eyebrow">🔥 Ofertas de la semana</span>
@@ -25,7 +40,6 @@
             </div>
         </div>
 
-        <!-- SLIDE 2 -->
         <div class="iris-slide" style="background-image: url('https://images.unsplash.com/photo-1593640408182-31c70c8268f5?w=1920&q=80');">
             <div class="iris-slide-content">
                 <span class="iris-slide-eyebrow">💻 Nuevos ingresos</span>
@@ -43,7 +57,6 @@
             </div>
         </div>
 
-        <!-- SLIDE 3 -->
         <div class="iris-slide" style="background-image: url('https://images.unsplash.com/photo-1591488320449-011701bb6704?w=1920&q=80');">
             <div class="iris-slide-content">
                 <span class="iris-slide-eyebrow">⚡ Hardware Premium</span>
@@ -100,26 +113,10 @@
         @{
             var productoDestacado = ViewBag.ProductoDestacado as EcommerceApp.Models.Product;
             var productosMini = ViewBag.ProductosMini as List<EcommerceApp.Models.Product>;
-
-            string IconFor(string? category) => category switch
-            {
-                "GPU" => "🎮",
-                "CPU" => "🧠",
-                "RAM" => "💾",
-                "Almacenamiento" => "💿",
-                "Placa Madre" => "🔌",
-                "Fuente" => "⚡",
-                "Refrigeración" => "❄️",
-                "Gabinete" => "📦",
-                "Monitor" => "🖥️",
-                "Periférico" => "🖱️",
-                _ => "🔧"
-            };
         }
 
         <div class="iris-novedades-grid">
 
-            <!-- PRODUCTO DESTACADO GRANDE -->
             @if (productoDestacado != null)
             {
                 <a asp-controller="Products" asp-action="Details" asp-route-id="@productoDestacado.Id"
@@ -147,7 +144,6 @@
                 </a>
             }
 
-            <!-- LISTA MINI (3 productos) -->
             <div class="iris-novedades-list">
                 @if (productosMini != null)
                 {
@@ -156,7 +152,6 @@
                         <a asp-controller="Products" asp-action="Details" asp-route-id="@item.Id"
                            class="iris-novedad-item">
 
-                            <!-- IMAGEN GRANDE -->
                             <div class="iris-novedad-item-img">
                                 @if (!string.IsNullOrEmpty(item.ImageUrl))
                                 {
@@ -169,7 +164,6 @@
                                 }
                             </div>
 
-                            <!-- INFO -->
                             <div class="iris-novedad-item-content">
                                 <span class="iris-novedad-item-brand">@item.Category</span>
                                 <h3 class="iris-novedad-item-name">@item.Name</h3>
@@ -180,7 +174,6 @@
                                 </div>
                             </div>
 
-                            <!-- FLECHA -->
                             <div class="iris-novedad-item-arrow">→</div>
                         </a>
                     }
@@ -203,18 +196,18 @@
         @{
             var categoriasHome = ViewBag.Categorias as Dictionary<string, int> ?? new Dictionary<string, int>();
             var imagenesCategorias = new Dictionary<string, string>
-    {
-        { "CPU", "https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?w=600&q=80" },
-        { "GPU", "https://images.unsplash.com/photo-1555617766-c94804975da3?w=600&q=80" },
-        { "RAM", "https://images.unsplash.com/photo-1541029071515-84cc54f84dc5?w=600&q=80" },
-        { "Almacenamiento", "https://images.unsplash.com/photo-1531492746076-161ca9bcad58?w=600&q=80" },
-        { "Placa Madre", "https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&q=80" },
-        { "Fuente", "https://images.unsplash.com/photo-1587202372634-32705e3bf49c?w=600&q=80" },
-        { "Refrigeración", "https://images.unsplash.com/photo-1597049097286-c9e77151bf01?w=600&q=80" },
-        { "Gabinete", "https://images.unsplash.com/photo-1587302912306-cf1ed9c33146?w=600&q=80" },
-        { "Periférico", "https://images.unsplash.com/photo-1527814050087-3793815479db?w=600&q=80" },
-        { "Monitor", "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=600&q=80" },
-    };
+            {
+                { "CPU", "https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?w=600&q=80" },
+                { "GPU", "https://images.unsplash.com/photo-1555617766-c94804975da3?w=600&q=80" },
+                { "RAM", "https://images.unsplash.com/photo-1541029071515-84cc54f84dc5?w=600&q=80" },
+                { "Almacenamiento", "https://images.unsplash.com/photo-1531492746076-161ca9bcad58?w=600&q=80" },
+                { "Placa Madre", "https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&q=80" },
+                { "Fuente", "https://images.unsplash.com/photo-1587202372634-32705e3bf49c?w=600&q=80" },
+                { "Refrigeración", "https://images.unsplash.com/photo-1597049097286-c9e77151bf01?w=600&q=80" },
+                { "Gabinete", "https://images.unsplash.com/photo-1587302912306-cf1ed9c33146?w=600&q=80" },
+                { "Periférico", "https://images.unsplash.com/photo-1527814050087-3793815479db?w=600&q=80" },
+                { "Monitor", "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=600&q=80" },
+            };
         }
 
         <div class="iris-categories-grid">
@@ -256,138 +249,159 @@
             </div>
         </div>
 
-        <!-- Tabs -->
-        <div class="iris-tabs">
+        @{
+            var productosCPU = ViewBag.ProductosCPU as List<EcommerceApp.Models.Product> ?? new List<EcommerceApp.Models.Product>();
+            var productosGPU = ViewBag.ProductosGPU as List<EcommerceApp.Models.Product> ?? new List<EcommerceApp.Models.Product>();
+            var productosRAM = ViewBag.ProductosRAM as List<EcommerceApp.Models.Product> ?? new List<EcommerceApp.Models.Product>();
+            var productosMonitor = ViewBag.ProductosMonitor as List<EcommerceApp.Models.Product> ?? new List<EcommerceApp.Models.Product>();
+        }
+
+        <!-- TABS -->
+        <div class="iris-tabs" id="productTabs">
             <button class="iris-tab active" data-tab="cpu">🧠 Procesadores</button>
             <button class="iris-tab" data-tab="gpu">🎮 Tarjetas de Video</button>
             <button class="iris-tab" data-tab="ram">💾 Memoria RAM</button>
             <button class="iris-tab" data-tab="monitor">🖥️ Monitores</button>
         </div>
 
-        <!-- Grid -->
-        <div class="iris-products-grid">
+        <!-- CONTENIDO DE LOS TABS -->
+        <div class="iris-tab-content" id="tabContent">
 
-            <a class="iris-product-card" asp-controller="Products" asp-action="Index">
-                <div class="iris-product-img">
-                    <span class="iris-product-badge">🔥 MÁS VENDIDO</span>
-                    <img src="https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?w=400&q=80" alt="Ryzen 9" />
+            <!-- TAB CPU -->
+            <div class="iris-tab-panel active" data-panel="cpu">
+                <div class="iris-products-grid">
+                    @if (productosCPU.Any())
+                    {
+                        foreach (var item in productosCPU)
+                        {
+                            <a class="iris-product-card" asp-controller="Products" asp-action="Details" asp-route-id="@item.Id">
+                                <div class="iris-product-img">
+                                    @if (!string.IsNullOrEmpty(item.ImageUrl))
+                                    {
+                                        <img src="@item.ImageUrl" alt="@item.Name"
+                                             onerror="this.style.display='none'; this.parentElement.innerHTML='<div class=&quot;iris-product-img-placeholder&quot;>@IconFor(item.Category)</div>';" />
+                                    }
+                                    else
+                                    {
+                                        <div class="iris-product-img-placeholder">@IconFor(item.Category)</div>
+                                    }
+                                </div>
+                                <div class="iris-product-body">
+                                    <span class="iris-product-brand">@item.Category</span>
+                                    <h3 class="iris-product-name">@item.Name</h3>
+                                    <p class="iris-product-desc">@item.Description</p>
+                                    <div class="iris-product-footer">
+                                        <span class="iris-product-price">Bs @item.Price.ToString("N2")</span>
+                                        <span class="iris-product-cart-btn">🛒</span>
+                                    </div>
+                                </div>
+                            </a>
+                        }
+                    }
                 </div>
-                <div class="iris-product-body">
-                    <span class="iris-product-brand">AMD</span>
-                    <h3 class="iris-product-name">Ryzen 9 7950X3D</h3>
-                    <p class="iris-product-desc">16 núcleos · 32 hilos · 5.7 GHz</p>
-                    <div class="iris-product-footer">
-                        <span class="iris-product-price">Bs 749.99</span>
-                        <button class="iris-product-cart-btn">🛒</button>
-                    </div>
-                </div>
-            </a>
+            </div>
 
-            <a class="iris-product-card" asp-controller="Products" asp-action="Index">
-                <div class="iris-product-img">
-                    <span class="iris-product-badge cyan">⭐ NUEVO</span>
-                    <img src="https://images.unsplash.com/photo-1555617766-c94804975da3?w=400&q=80" alt="RTX 4090" />
+            <!-- TAB GPU -->
+            <div class="iris-tab-panel" data-panel="gpu">
+                <div class="iris-products-grid">
+                    @if (productosGPU.Any())
+                    {
+                        foreach (var item in productosGPU)
+                        {
+                            <a class="iris-product-card" asp-controller="Products" asp-action="Details" asp-route-id="@item.Id">
+                                <div class="iris-product-img">
+                                    @if (!string.IsNullOrEmpty(item.ImageUrl))
+                                    {
+                                        <img src="@item.ImageUrl" alt="@item.Name"
+                                             onerror="this.style.display='none'; this.parentElement.innerHTML='<div class=&quot;iris-product-img-placeholder&quot;>@IconFor(item.Category)</div>';" />
+                                    }
+                                    else
+                                    {
+                                        <div class="iris-product-img-placeholder">@IconFor(item.Category)</div>
+                                    }
+                                </div>
+                                <div class="iris-product-body">
+                                    <span class="iris-product-brand">@item.Category</span>
+                                    <h3 class="iris-product-name">@item.Name</h3>
+                                    <p class="iris-product-desc">@item.Description</p>
+                                    <div class="iris-product-footer">
+                                        <span class="iris-product-price">Bs @item.Price.ToString("N2")</span>
+                                        <span class="iris-product-cart-btn">🛒</span>
+                                    </div>
+                                </div>
+                            </a>
+                        }
+                    }
                 </div>
-                <div class="iris-product-body">
-                    <span class="iris-product-brand">NVIDIA</span>
-                    <h3 class="iris-product-name">RTX 4090 Gaming OC</h3>
-                    <p class="iris-product-desc">24GB GDDR6X · Ray Tracing · 4K</p>
-                    <div class="iris-product-footer">
-                        <span class="iris-product-price">Bs 1,899.99</span>
-                        <button class="iris-product-cart-btn">🛒</button>
-                    </div>
-                </div>
-            </a>
+            </div>
 
-            <a class="iris-product-card" asp-controller="Products" asp-action="Index">
-                <div class="iris-product-img">
-                    <img src="https://images.unsplash.com/photo-1541029071515-84cc54f84dc5?w=400&q=80" alt="Corsair RAM" />
+            <!-- TAB RAM -->
+            <div class="iris-tab-panel" data-panel="ram">
+                <div class="iris-products-grid">
+                    @if (productosRAM.Any())
+                    {
+                        foreach (var item in productosRAM)
+                        {
+                            <a class="iris-product-card" asp-controller="Products" asp-action="Details" asp-route-id="@item.Id">
+                                <div class="iris-product-img">
+                                    @if (!string.IsNullOrEmpty(item.ImageUrl))
+                                    {
+                                        <img src="@item.ImageUrl" alt="@item.Name"
+                                             onerror="this.style.display='none'; this.parentElement.innerHTML='<div class=&quot;iris-product-img-placeholder&quot;>@IconFor(item.Category)</div>';" />
+                                    }
+                                    else
+                                    {
+                                        <div class="iris-product-img-placeholder">@IconFor(item.Category)</div>
+                                    }
+                                </div>
+                                <div class="iris-product-body">
+                                    <span class="iris-product-brand">@item.Category</span>
+                                    <h3 class="iris-product-name">@item.Name</h3>
+                                    <p class="iris-product-desc">@item.Description</p>
+                                    <div class="iris-product-footer">
+                                        <span class="iris-product-price">Bs @item.Price.ToString("N2")</span>
+                                        <span class="iris-product-cart-btn">🛒</span>
+                                    </div>
+                                </div>
+                            </a>
+                        }
+                    }
                 </div>
-                <div class="iris-product-body">
-                    <span class="iris-product-brand">CORSAIR</span>
-                    <h3 class="iris-product-name">Vengeance RGB PRO DDR5</h3>
-                    <p class="iris-product-desc">32GB · 6000MHz · RGB · XMP 3.0</p>
-                    <div class="iris-product-footer">
-                        <span class="iris-product-price">Bs 329.99</span>
-                        <button class="iris-product-cart-btn">🛒</button>
-                    </div>
-                </div>
-            </a>
+            </div>
 
-            <a class="iris-product-card" asp-controller="Products" asp-action="Index">
-                <div class="iris-product-img">
-                    <img src="https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=400&q=80" alt="Monitor LG" />
+            <!-- TAB MONITOR -->
+            <div class="iris-tab-panel" data-panel="monitor">
+                <div class="iris-products-grid">
+                    @if (productosMonitor.Any())
+                    {
+                        foreach (var item in productosMonitor)
+                        {
+                            <a class="iris-product-card" asp-controller="Products" asp-action="Details" asp-route-id="@item.Id">
+                                <div class="iris-product-img">
+                                    @if (!string.IsNullOrEmpty(item.ImageUrl))
+                                    {
+                                        <img src="@item.ImageUrl" alt="@item.Name"
+                                             onerror="this.style.display='none'; this.parentElement.innerHTML='<div class=&quot;iris-product-img-placeholder&quot;>@IconFor(item.Category)</div>';" />
+                                    }
+                                    else
+                                    {
+                                        <div class="iris-product-img-placeholder">@IconFor(item.Category)</div>
+                                    }
+                                </div>
+                                <div class="iris-product-body">
+                                    <span class="iris-product-brand">@item.Category</span>
+                                    <h3 class="iris-product-name">@item.Name</h3>
+                                    <p class="iris-product-desc">@item.Description</p>
+                                    <div class="iris-product-footer">
+                                        <span class="iris-product-price">Bs @item.Price.ToString("N2")</span>
+                                        <span class="iris-product-cart-btn">🛒</span>
+                                    </div>
+                                </div>
+                            </a>
+                        }
+                    }
                 </div>
-                <div class="iris-product-body">
-                    <span class="iris-product-brand">LG</span>
-                    <h3 class="iris-product-name">UltraGear 27GP950 4K</h3>
-                    <p class="iris-product-desc">27" · 4K · 144Hz · G-Sync</p>
-                    <div class="iris-product-footer">
-                        <span class="iris-product-price">Bs 799.99</span>
-                        <button class="iris-product-cart-btn">🛒</button>
-                    </div>
-                </div>
-            </a>
-
-            <a class="iris-product-card" asp-controller="Products" asp-action="Index">
-                <div class="iris-product-img">
-                    <img src="https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?w=400&q=80" alt="Ryzen 7" />
-                </div>
-                <div class="iris-product-body">
-                    <span class="iris-product-brand">AMD</span>
-                    <h3 class="iris-product-name">Ryzen 7 7800X3D</h3>
-                    <p class="iris-product-desc">8 núcleos · 16 hilos · 5.0 GHz</p>
-                    <div class="iris-product-footer">
-                        <span class="iris-product-price">Bs 449.99</span>
-                        <button class="iris-product-cart-btn">🛒</button>
-                    </div>
-                </div>
-            </a>
-
-            <a class="iris-product-card" asp-controller="Products" asp-action="Index">
-                <div class="iris-product-img">
-                    <img src="https://images.unsplash.com/photo-1555617766-c94804975da3?w=400&q=80" alt="RX 7900" />
-                </div>
-                <div class="iris-product-body">
-                    <span class="iris-product-brand">AMD</span>
-                    <h3 class="iris-product-name">Radeon RX 7900 XTX</h3>
-                    <p class="iris-product-desc">24GB GDDR6 · RDNA 3 · 4K</p>
-                    <div class="iris-product-footer">
-                        <span class="iris-product-price">Bs 999.99</span>
-                        <button class="iris-product-cart-btn">🛒</button>
-                    </div>
-                </div>
-            </a>
-
-            <a class="iris-product-card" asp-controller="Products" asp-action="Index">
-                <div class="iris-product-img">
-                    <img src="https://images.unsplash.com/photo-1541029071515-84cc54f84dc5?w=400&q=80" alt="G.Skill" />
-                </div>
-                <div class="iris-product-body">
-                    <span class="iris-product-brand">G.SKILL</span>
-                    <h3 class="iris-product-name">Trident Z5 RGB 32GB</h3>
-                    <p class="iris-product-desc">DDR5 · 6400MHz · RGB</p>
-                    <div class="iris-product-footer">
-                        <span class="iris-product-price">Bs 219.99</span>
-                        <button class="iris-product-cart-btn">🛒</button>
-                    </div>
-                </div>
-            </a>
-
-            <a class="iris-product-card" asp-controller="Products" asp-action="Index">
-                <div class="iris-product-img">
-                    <img src="https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=400&q=80" alt="Samsung" />
-                </div>
-                <div class="iris-product-body">
-                    <span class="iris-product-brand">SAMSUNG</span>
-                    <h3 class="iris-product-name">Odyssey G9 49"</h3>
-                    <p class="iris-product-desc">49" · DQHD · 240Hz · Curvo</p>
-                    <div class="iris-product-footer">
-                        <span class="iris-product-price">Bs 1,299.99</span>
-                        <button class="iris-product-cart-btn">🛒</button>
-                    </div>
-                </div>
-            </a>
+            </div>
 
         </div>
     </div>
@@ -402,7 +416,6 @@
 
         <div class="iris-setup-banner">
 
-            <!-- VIDEO DE FONDO -->
             <div class="iris-setup-video">
                 <iframe src="https://www.youtube.com/embed/H4nJo-oqAro?autoplay=1&mute=1&loop=1&playlist=H4nJo-oqAro&controls=0&showinfo=0&modestbranding=1&playsinline=1"
                         allow="autoplay; encrypted-media"
@@ -410,7 +423,6 @@
                 </iframe>
             </div>
 
-            <!-- CONTENIDO -->
             <div class="iris-setup-content">
                 <span class="iris-setup-eyebrow">🎮 NEXHARD</span>
                 <h2 class="iris-setup-title">Equipa tu<br />Setup</h2>
@@ -422,7 +434,6 @@
                 </a>
             </div>
 
-            <!-- PRODUCTOS REALES -->
             <div class="iris-setup-products">
                 @if (productosSetup.Any())
                 {
@@ -465,7 +476,6 @@
     <div class="container">
         <div class="iris-4k-banner">
 
-            <!-- VIDEO DE FONDO -->
             <div class="iris-4k-video">
                 <iframe src="https://www.youtube.com/embed/H4nJo-oqAro?autoplay=1&mute=1&loop=1&playlist=H4nJo-oqAro&controls=0&showinfo=0&modestbranding=1&playsinline=1&rel=0&iv_load_policy=3"
                         allow="autoplay; encrypted-media"
@@ -473,7 +483,6 @@
                 </iframe>
             </div>
 
-            <!-- CONTENIDO -->
             <div class="iris-4k-content">
                 <h2 class="iris-4k-title">
                     Juega en 4K<br />
@@ -486,6 +495,7 @@
         </div>
     </div>
 </section>
+
 <!-- ==================== MARCAS ==================== -->
 <section class="iris-section" style="background: var(--bg-gray);">
     <div class="container">
@@ -529,10 +539,10 @@
     </div>
 </section>
 
-<!-- ==================== SCRIPTS DEL SLIDER Y TABS ==================== -->
+<!-- ==================== SCRIPTS ==================== -->
 @section Scripts {
     <script>
-        // ============ SLIDER ============
+        // ══════════ SLIDER ══════════
         const track = document.getElementById('sliderTrack');
         const dots = document.querySelectorAll('.iris-slider-dot');
         const prevBtn = document.getElementById('sliderPrev');
@@ -568,11 +578,23 @@
 
         startAuto();
 
-        // ============ TABS (solo visual por ahora) ============
+        // ══════════ TABS FUNCIONALES ══════════
         document.querySelectorAll('.iris-tab').forEach(tab => {
-            tab.addEventListener('click', function () {
+            tab.addEventListener('click', function() {
+                const tabName = this.dataset.tab;
+
+                // Cambiar tab activa
                 document.querySelectorAll('.iris-tab').forEach(t => t.classList.remove('active'));
                 this.classList.add('active');
+
+                // Cambiar panel visible
+                document.querySelectorAll('.iris-tab-panel').forEach(panel => {
+                    if (panel.dataset.panel === tabName) {
+                        panel.classList.add('active');
+                    } else {
+                        panel.classList.remove('active');
+                    }
+                });
             });
         });
     </script>

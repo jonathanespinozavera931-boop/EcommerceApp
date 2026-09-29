@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - NexHard</title>
 
+    <!-- ═══════════════ ANTI-CACHÉ ═══════════════ -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+
     <!-- ═══════════════ CSS ═══════════════ -->
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/white-tech.css" asp-append-version="true" />
@@ -28,7 +33,6 @@
         <div class="iris-nav-top">
             <div class="iris-nav-top-inner">
 
-                <!-- Hamburguesa -->
                 <button class="iris-hamburger" id="irisHamburger" aria-label="Menú">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
                         <line x1="3" y1="6" x2="21" y2="6"></line>
@@ -37,12 +41,10 @@
                     </svg>
                 </button>
 
-                <!-- Logo -->
                 <a class="iris-logo" asp-controller="Home" asp-action="Index">
                     <img src="~/images/logo-nexhard.png" alt="NexHard" />
                 </a>
 
-                <!-- Buscador -->
                 <div class="iris-search">
                     <input type="text" id="irisSearch" placeholder="Buscar productos..." />
                     <button class="iris-search-btn" id="irisSearchBtn" title="Buscar">
@@ -61,7 +63,6 @@
                     </button>
                 </div>
 
-                <!-- Iconos acciones -->
                 <div class="iris-top-actions">
 
                     @if (User.Identity != null && User.Identity.IsAuthenticated)
@@ -117,12 +118,78 @@
         <div class="iris-nav-bottom">
             <div class="iris-nav-bottom-inner">
                 <a class="iris-nav-link" asp-controller="Home" asp-action="Index">Inicio</a>
-                <a class="iris-nav-link" asp-controller="Products" asp-action="Index">Productos</a>
-                <a class="iris-nav-link" asp-controller="Products" asp-action="Index" asp-route-category="CPU">Procesadores</a>
-                <a class="iris-nav-link" asp-controller="Products" asp-action="Index" asp-route-category="GPU">Tarjetas de Video</a>
-                <a class="iris-nav-link" asp-controller="Products" asp-action="Index" asp-route-category="RAM">Memoria RAM</a>
-                <a class="iris-nav-link" asp-controller="Products" asp-action="Index" asp-route-category="Monitor">Monitores</a>
-                <a class="iris-nav-link" asp-controller="Products" asp-action="Index" asp-route-category="Periférico">Periféricos</a>
+
+                <!-- ══════════════════════════════════════════════════ -->
+                <!-- MEGA MENÚ DE PRODUCTOS (hover para desplegar) -->
+                <!-- ══════════════════════════════════════════════════ -->
+                <div class="iris-nav-mega-wrapper">
+                    <a class="iris-nav-link" asp-controller="Products" asp-action="Index">
+                        Productos ▾
+                    </a>
+
+                    <!-- Panel del mega menú -->
+                    <div class="iris-mega-menu">
+                        <div class="iris-mega-grid">
+                            <a class="iris-mega-link" asp-controller="Products" asp-action="Index" asp-route-category="CPU">
+                                <span>🧠 Procesadores</span>
+                                <span class="count">8</span>
+                            </a>
+                            <a class="iris-mega-link" asp-controller="Products" asp-action="Index" asp-route-category="Placa Madre">
+                                <span>🔌 Placas Madre</span>
+                                <span class="count">8</span>
+                            </a>
+                            <a class="iris-mega-link" asp-controller="Products" asp-action="Index" asp-route-category="Monitor">
+                                <span>🖥️ Monitores</span>
+                                <span class="count">6</span>
+                            </a>
+
+                            <a class="iris-mega-link" asp-controller="Products" asp-action="Index" asp-route-category="RAM">
+                                <span>💾 Memoria RAM</span>
+                                <span class="count">6</span>
+                            </a>
+                            <a class="iris-mega-link" asp-controller="Products" asp-action="Index" asp-route-category="Fuente">
+                                <span>⚡ Fuentes de Poder</span>
+                                <span class="count">6</span>
+                            </a>
+                            <a class="iris-mega-link" asp-controller="Products" asp-action="Index" asp-route-category="Periférico">
+                                <span>🖱️ Periféricos</span>
+                                <span class="count">12</span>
+                            </a>
+
+                            <a class="iris-mega-link" asp-controller="Products" asp-action="Index" asp-route-category="Almacenamiento">
+                                <span>💿 Almacenamiento</span>
+                                <span class="count">8</span>
+                            </a>
+                            <a class="iris-mega-link" asp-controller="Products" asp-action="Index" asp-route-category="Refrigeración">
+                                <span>❄️ Refrigeración</span>
+                                <span class="count">6</span>
+                            </a>
+                            <a class="iris-mega-link" asp-controller="Products" asp-action="Index" asp-route-category="Gabinete">
+                                <span>📦 Gabinetes</span>
+                                <span class="count">6</span>
+                            </a>
+
+                            <a class="iris-mega-link" asp-controller="Products" asp-action="Index" asp-route-category="GPU">
+                                <span>🎮 Tarjetas de Video</span>
+                                <span class="count">10</span>
+                            </a>
+                        </div>
+
+                        <!-- Footer del mega menú -->
+                        <div class="iris-mega-footer">
+                            <a class="iris-mega-footer-link" asp-controller="Products" asp-action="Index">
+                                <span>Ver todos los productos</span>
+                                <span class="arrow">→</span>
+                            </a>
+                            <a class="iris-mega-footer-link" asp-controller="Products" asp-action="Index" asp-route-category="GPU">
+                                <span>🔥 Ofertas en GPUs</span>
+                                <span class="arrow">→</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+               
                 <a class="iris-nav-link" asp-controller="Home" asp-action="Contact">Contacto</a>
 
                 @if (User.Identity != null && User.Identity.IsAuthenticated && User.IsInRole("Admin"))
@@ -191,11 +258,21 @@
                     </p>
 
                     <div class="wt-footer-social">
-                        <a href="https://facebook.com" target="_blank" class="wt-social-btn" title="Facebook">📘</a>
-                        <a href="https://instagram.com" target="_blank" class="wt-social-btn" title="Instagram">📷</a>
-                        <a href="https://tiktok.com" target="_blank" class="wt-social-btn" title="TikTok">🎵</a>
-                        <a href="https://youtube.com" target="_blank" class="wt-social-btn" title="YouTube">▶️</a>
-                        <a href="https://wa.me/59177777777" target="_blank" class="wt-social-btn" title="WhatsApp">💬</a>
+                        <a href="https://facebook.com" target="_blank" class="wt-social-btn" title="Facebook">
+                            <img src="https://tse1.mm.bing.net/th/id/OIP.CEfHLfHa6ViRIeX2L6cCCQHaHa?r=0&o=7rm=3&rs=1&pid=ImgDetMain&o=7&rm=3" alt="Facebook" />
+                        </a>
+                        <a href="https://instagram.com" target="_blank" class="wt-social-btn" title="Instagram">
+                            <img src="https://tse1.mm.bing.net/th/id/OIP.VEjJIIZku_pV2IaYBbc0mQHaHa?r=0&rs=1&pid=ImgDetMain&o=7&rm=3" alt="Instagram" />
+                        </a>
+                        <a href="https://tiktok.com" target="_blank" class="wt-social-btn" title="TikTok">
+                            <img src="https://i.pinimg.com/originals/25/54/16/255416c2617d1e43f95c80dfa0f76794.png" alt="TikTok" />
+                        </a>
+                        <a href="https://youtube.com" target="_blank" class="wt-social-btn" title="YouTube">
+                            <img src="https://tse1.mm.bing.net/th/id/OIP.RxrVW-1QZoP_gap1wrBq2AHaHa?r=0&rs=1&pid=ImgDetMain&o=7&rm=3" alt="YouTube" />
+                        </a>
+                        <a href="https://wa.me/59177777777" target="_blank" class="wt-social-btn" title="WhatsApp">
+                            <img src="https://tse2.mm.bing.net/th/id/OIP.AUf95f3tMbQxgxaSNeDH_gHaHa?r=0&rs=1&pid=ImgDetMain&o=7&rm=3" alt="WhatsApp" />
+                        </a>
                     </div>
                 </div>
 
@@ -291,7 +368,6 @@
         </div>
     </footer>
 
-    <!-- Botón "Volver arriba" -->
     <button class="wt-back-to-top" id="backToTop" onclick="window.scrollTo({top: 0, behavior: 'smooth'});">↑</button>
 
     <!-- ==================== BOTÓN FLOTANTE: ASISTENTE DE VOZ IA ==================== -->
@@ -331,9 +407,8 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/cart-badge.js" asp-append-version="true"></script>
 
-    <!-- ═══════════════ SERVICE WORKER + PWA ═══════════════ -->
     <script>
-            // ══════════ REGISTRAR SERVICE WORKER ══════════
+            // ══════════ SERVICE WORKER ══════════
             if ('serviceWorker' in navigator) {
                 window.addEventListener('load', () => {
                     navigator.serviceWorker.register('/service-worker.js')
@@ -386,7 +461,6 @@
             }
     </script>
 
-    <!-- ═══════════════ BUSCADOR + DRAWER + VOZ ═══════════════ -->
     <script>
             // ============ BUSCADOR ============
             const searchInput = document.getElementById('irisSearch');
@@ -440,9 +514,7 @@
                 });
             }
 
-            // ══════════════════════════════════════════════════
             // ══════════ ASISTENTE DE VOZ IA ══════════
-            // ══════════════════════════════════════════════════
             const voiceBtn = document.getElementById('voiceAssistantBtn');
             const voiceBubble = document.getElementById('voiceBubble');
             const voiceBubbleText = document.getElementById('voiceBubbleText');
@@ -477,14 +549,12 @@
                 const t = texto.toLowerCase().trim();
                 console.log('🎤 Comando:', t);
 
-                // Saludo
                 if (t.includes('hola') || t.includes('hey') || t.includes('buenas')) {
                     mostrarBurbuja('¡Hola! Puedes decir: "buscar RTX 4090", "ir a procesadores", "abrir carrito"...');
                     hablar('Hola, ¿en qué puedo ayudarte?');
                     return;
                 }
 
-                // Buscar
                 if (t.includes('buscar') || t.includes('busca') || t.includes('quiero ver') || t.includes('muéstrame')) {
                     let termino = t
                         .replace('buscar', '').replace('busca', '')
@@ -504,7 +574,6 @@
                     return;
                 }
 
-                // Categorías
                 const categorias = {
                     'procesador': 'CPU', 'procesadores': 'CPU', 'cpu': 'CPU',
                     'tarjeta': 'GPU', 'tarjetas': 'GPU', 'gráfica': 'GPU', 'gráficas': 'GPU', 'gpu': 'GPU', 'video': 'GPU',
@@ -529,7 +598,6 @@
                     }
                 }
 
-                // Navegación
                 if (t.includes('inicio') || t.includes('home') || t.includes('principal')) {
                     mostrarBurbuja('🏠 Yendo al inicio...');
                     hablar('Yendo al inicio');
@@ -565,7 +633,6 @@
                     return;
                 }
 
-                // Buscar por defecto
                 if (t.length > 2) {
                     mostrarBurbuja(`🔍 Buscando "${texto}"...`);
                     hablar(`Buscando ${texto}`);
@@ -578,7 +645,6 @@
                 }
             }
 
-            // Inicializar reconocimiento
             if (SpeechRecognition) {
                 recognition = new SpeechRecognition();
                 recognition.lang = 'es-ES';
@@ -633,7 +699,6 @@
                 });
             }
 
-            // Mostrar bienvenida (una vez por sesión)
             setTimeout(() => {
                 if (!sessionStorage.getItem('voiceWelcomeShown')) {
                     mostrarBurbuja('👋 ¡Hola! Soy tu asistente. Dime "buscar RTX 4090" o "ir a procesadores".', 6000);
