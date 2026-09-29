@@ -11572,3 +11572,78 @@ textarea.wt-form-control {
         right: 12px !important;
     }
 }
+
+/* ============================================================
+   55. PRECIOS EN USD CON CONVERSIÓN A BS
+   ============================================================ */
+
+.price-usd {
+    font-family: var(--font-display);
+    font-weight: 800;
+    color: var(--rog-red);
+    letter-spacing: -0.02em;
+    line-height: 1;
+}
+
+.price-usd-symbol {
+    font-size: 0.85em;
+    margin-right: 2px;
+}
+
+.price-usd-tag {
+    font-size: 0.55em;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-left: 4px;
+    letter-spacing: 0.05em;
+}
+
+.price-bs-conversion {
+    display: block;
+    font-family: var(--font-body);
+    font-size: 0.72em;
+    font-weight: 500;
+    color: var(--text-secondary);
+    margin-top: 4px;
+    letter-spacing: 0;
+}
+
+    .price-bs-conversion::before {
+        content: '≈ ';
+        color: var(--cyber-cyan-dark);
+    }
+
+/* Variantes para diferentes lugares */
+
+/* Featured / Hero */
+.iris-novedad-featured-price .price-bs-conversion {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+    .iris-novedad-featured-price .price-bs-conversion::before {
+        color: var(--rog-red);
+    }
+
+/* Product card grid */
+.iris-catalog-card-price .price-bs-conversion,
+.iris-product-price .price-bs-conversion,
+.iris-setup-product-price .price-bs-conversion {
+    font-size: 0.65em;
+    margin-top: 2px;
+}
+
+/* Purchase panel */
+.iris-purchase-price .price-bs-conversion {
+    font-size: 0.45em;
+    margin-top: 6px;
+    color: var(--text-secondary);
+}
+
+/* Cart / Orders */
+.wt-summary-total-value .price-bs-conversion,
+.wt-cart-subtotal-value .price-bs-conversion,
+.wt-order-total .price-bs-conversion,
+.wt-order-product-subtotal .price-bs-conversion {
+    font-size: 0.5em;
+    margin-top: 3px;
+}

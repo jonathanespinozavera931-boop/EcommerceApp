@@ -67,7 +67,8 @@ namespace EcommerceApp.Controllers
 
             // Calcular totales
             decimal subtotal = cart.Sum(c => c.Subtotal);
-            decimal envio = subtotal >= 500 ? 0 : 20;
+            // Envío gratis desde $71 USD (= Bs 497), si no $3 USD
+            decimal envio = subtotal >= 71 ? 0 : 3;
             decimal total = subtotal + envio;
 
             // Crear la orden

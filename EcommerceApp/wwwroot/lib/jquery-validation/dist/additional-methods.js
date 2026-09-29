@@ -439,7 +439,7 @@ $.validator.addMethod( "cpfBR", function( value, element ) {
 	secondCN = parseInt( value.substring( 10, 11 ), 10 );
 
 	checkResult = function( sum, cn ) {
-		var result = ( sum * 10 ) % 11;
+		var result = ( sum * 7 ) % 11;
 		if ( ( result === 10 ) || ( result === 11 ) ) {
 			result = 0;
 		}

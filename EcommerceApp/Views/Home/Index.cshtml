@@ -135,7 +135,13 @@
                         <p class="iris-novedad-featured-desc">@productoDestacado.Description</p>
 
                         <div class="iris-novedad-featured-footer">
-                            <div class="iris-novedad-featured-price">Bs @productoDestacado.Price.ToString("N2")</div>
+                            <div class="iris-novedad-featured-price">
+                                <span class="price-usd">
+                                    <span class="price-usd-symbol">$</span>@productoDestacado.Price.ToString("N2")
+                                    <span class="price-usd-tag">USD</span>
+                                </span>
+                                <span class="price-bs-conversion">Bs @((productoDestacado.Price * 7).ToString("N2"))</span>
+                            </div>
                             <span class="iris-novedad-featured-btn">
                                 Ver producto →
                             </span>
@@ -170,7 +176,13 @@
                                 <p class="iris-novedad-item-desc">@item.Description</p>
 
                                 <div class="iris-novedad-item-footer">
-                                    <span class="iris-novedad-item-price">Bs @item.Price.ToString("N2")</span>
+                                    <span class="iris-novedad-item-price">
+                                        <span class="price-usd">
+                                            <span class="price-usd-symbol">$</span>@item.Price.ToString("N2")
+                                            <span class="price-usd-tag">USD</span>
+                                        </span>
+                                        <span class="price-bs-conversion">Bs @((item.Price * 7).ToString("N2"))</span>
+                                    </span>
                                 </div>
                             </div>
 
@@ -291,7 +303,13 @@
                                     <h3 class="iris-product-name">@item.Name</h3>
                                     <p class="iris-product-desc">@item.Description</p>
                                     <div class="iris-product-footer">
-                                        <span class="iris-product-price">Bs @item.Price.ToString("N2")</span>
+                                        <span class="iris-product-price">
+                                            <span class="price-usd">
+                                                <span class="price-usd-symbol">$</span>@item.Price.ToString("N2")
+                                                <span class="price-usd-tag">USD</span>
+                                            </span>
+                                            <span class="price-bs-conversion">Bs @((item.Price * 7).ToString("N2"))</span>
+                                        </span>
                                         <span class="iris-product-cart-btn">🛒</span>
                                     </div>
                                 </div>
@@ -325,7 +343,13 @@
                                     <h3 class="iris-product-name">@item.Name</h3>
                                     <p class="iris-product-desc">@item.Description</p>
                                     <div class="iris-product-footer">
-                                        <span class="iris-product-price">Bs @item.Price.ToString("N2")</span>
+                                        <span class="iris-product-price">
+                                            <span class="price-usd">
+                                                <span class="price-usd-symbol">$</span>@item.Price.ToString("N2")
+                                                <span class="price-usd-tag">USD</span>
+                                            </span>
+                                            <span class="price-bs-conversion">Bs @((item.Price * 7).ToString("N2"))</span>
+                                        </span>
                                         <span class="iris-product-cart-btn">🛒</span>
                                     </div>
                                 </div>
@@ -359,7 +383,13 @@
                                     <h3 class="iris-product-name">@item.Name</h3>
                                     <p class="iris-product-desc">@item.Description</p>
                                     <div class="iris-product-footer">
-                                        <span class="iris-product-price">Bs @item.Price.ToString("N2")</span>
+                                        <span class="iris-product-price">
+                                            <span class="price-usd">
+                                                <span class="price-usd-symbol">$</span>@item.Price.ToString("N2")
+                                                <span class="price-usd-tag">USD</span>
+                                            </span>
+                                            <span class="price-bs-conversion">Bs @((item.Price * 7).ToString("N2"))</span>
+                                        </span>
                                         <span class="iris-product-cart-btn">🛒</span>
                                     </div>
                                 </div>
@@ -393,7 +423,13 @@
                                     <h3 class="iris-product-name">@item.Name</h3>
                                     <p class="iris-product-desc">@item.Description</p>
                                     <div class="iris-product-footer">
-                                        <span class="iris-product-price">Bs @item.Price.ToString("N2")</span>
+                                        <span class="iris-product-price">
+                                            <span class="price-usd">
+                                                <span class="price-usd-symbol">$</span>@item.Price.ToString("N2")
+                                                <span class="price-usd-tag">USD</span>
+                                            </span>
+                                            <span class="price-bs-conversion">Bs @((item.Price * 7).ToString("N2"))</span>
+                                        </span>
                                         <span class="iris-product-cart-btn">🛒</span>
                                     </div>
                                 </div>
@@ -455,7 +491,13 @@
                             <div class="iris-setup-product-info">
                                 <span class="iris-setup-product-cat">@prod.Category</span>
                                 <h4 class="iris-setup-product-name">@prod.Name</h4>
-                                <div class="iris-setup-product-price">Bs @prod.Price.ToString("N2")</div>
+                                <div class="iris-setup-product-price">
+                                    <span class="price-usd">
+                                        <span class="price-usd-symbol">$</span>@prod.Price.ToString("N2")
+                                        <span class="price-usd-tag">USD</span>
+                                    </span>
+                                    <span class="price-bs-conversion">Bs @((prod.Price * 7).ToString("N2"))</span>
+                                </div>
                             </div>
                         </a>
                     }
@@ -553,7 +595,7 @@
 
         function goToSlide(index) {
             currentSlide = (index + totalSlides) % totalSlides;
-            track.style.transform = `translateX(-${currentSlide * 100}%)`;
+            track.style.transform = `translateX(-${currentSlide * 70}%)`;
             dots.forEach((d, i) => d.classList.toggle('active', i === currentSlide));
         }
 

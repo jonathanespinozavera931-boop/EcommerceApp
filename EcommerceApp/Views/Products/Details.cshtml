@@ -114,7 +114,13 @@
                 <!-- PANEL DE COMPRA -->
                 <div class="iris-purchase-panel">
                     <span class="iris-purchase-label">Precio</span>
-                    <div class="iris-purchase-price">Bs @Model.Price.ToString("N2")</div>
+                    <div class="iris-purchase-price">
+                        <span class="price-usd">
+                            <span class="price-usd-symbol">$</span>@Model.Price.ToString("N2")
+                            <span class="price-usd-tag">USD</span>
+                        </span>
+                        <span class="price-bs-conversion">Bs @((Model.Price * 7).ToString("N2"))</span>
+                    </div>
 
                     @if (Model.Stock > 0)
                     {

@@ -2,7 +2,8 @@
 @{
     ViewData["Title"] = "Mi Carrito";
     decimal subtotal = Model.Sum(c => c.Subtotal);
-    decimal envio = subtotal >= 500 ? 0 : (subtotal > 0 ? 20 : 0);
+    // Envío gratis desde $71 USD (= Bs 497), si no $3 USD
+    decimal envio = subtotal >= 71 ? 0 : (subtotal > 0 ? 3 : 0);
     decimal total = subtotal + envio;
 }
 
@@ -58,7 +59,12 @@
                                 <span class="wt-cart-item-cat">@item.Category</span>
                                 <h3 class="wt-cart-item-name">@item.Name</h3>
                                 <div class="wt-cart-item-price">
-                                    Bs @item.Price.ToString("N2") c/u
+                                    <span style="color:var(--rog-red); font-weight:700;">
+                                        $@item.Price.ToString("N2") USD
+                                    </span>
+                                    <span style="color:var(--text-light);">
+                                        · Bs @((item.Price * 7).ToString("N2")) c/u
+                                    </span>
                                 </div>
                             </div>
 
@@ -71,7 +77,12 @@
                             <div class="wt-cart-subtotal">
                                 <span class="wt-cart-subtotal-label">Subtotal</span>
                                 <span class="wt-cart-subtotal-value" id="subtotal-@item.ProductId">
-                                    Bs @item.Subtotal.ToString("N2")
+                                    <span style="color:var(--rog-red); font-weight:700;">
+                                        $@item.Subtotal.ToString("N2")
+                                    </span>
+                                    <span class="price-bs-conversion" style="font-size:0.75rem; color:var(--text-secondary); display:block;">
+                                        ≈ Bs @((item.Subtotal * 7).ToString("N2"))
+                                    </span>
                                 </span>
                             </div>
 
@@ -99,7 +110,9 @@
 
                     <div class="wt-summary-row">
                         <span>Subtotal</span>
-                        <span id="summary-subtotal">Bs @subtotal.ToString("N2")</span>
+                        <span id="summary-subtotal">
+                            $@subtotal.ToString("N2") USD
+                        </span>
                     </div>
 
                     <div class="wt-summary-row">
@@ -111,7 +124,7 @@
                             }
                             else
                             {
-                                <text>Bs @envio.ToString("N2")</text>
+                                <text>$@envio.ToString("N2") USD</text>
                             }
                         </span>
                     </div>
@@ -119,7 +132,9 @@
                     @if (envio > 0)
                     {
                         <div class="wt-envio-info">
-                            🚚 Te faltan <strong>Bs @((500 - subtotal).ToString("N2"))</strong> para envío gratis
+                            🚚 Te faltan <strong>$@((71 - subtotal).ToString("N2")) USD</strong> para envío gratis
+                            <br />
+                            <small>(≈ Bs @(((71 - subtotal) * 7).ToString("N2")))</small>
                         </div>
                     }
 
@@ -127,7 +142,14 @@
 
                     <div class="wt-summary-total">
                         <span class="wt-summary-total-label">Total</span>
-                        <span class="wt-summary-total-value" id="summary-total">Bs @total.ToString("N2")</span>
+                        <span class="wt-summary-total-value" id="summary-total">
+                            <span style="color:var(--rog-red); font-weight:800;">
+                                $@total.ToString("N2")
+                            </span>
+                            <span class="price-bs-conversion" style="font-size:0.8rem; color:var(--text-secondary); display:block;">
+                                ≈ Bs @((total * 7).ToString("N2"))
+                            </span>
+                        </span>
                     </div>
 
                     <a asp-controller="Checkout" asp-action="Index" class="wt-btn-checkout">
@@ -187,7 +209,20 @@
                 .then(data => {
                     if (data.success) {
                         document.getElementById(`qty-${productId}`).textContent = quantity;
-                        document.getElementById(`subtotal-${productId}`).textContent = 'Bs ' + data.itemSubtotal.toFixed(2);
+
+                        // Actualizar subtotal del item con USD y Bs (rate 7)
+                        const subtotalEl = document.getElementById(`subtotal-${productId}`);
+                        const subtotalUSD = data.itemSubtotal;
+                        const subtotalBs = subtotalUSD * 7;
+                        subtotalEl.innerHTML = `
+                                    <span style="color:var(--rog-red); font-weight:700;">
+                                        $${subtotalUSD.toFixed(2)}
+                                    </span>
+                                    <span class="price-bs-conversion" style="font-size:0.75rem; color:var(--text-secondary); display:block;">
+                                        ≈ Bs ${subtotalBs.toFixed(2)}
+                                    </span>
+                                `;
+
                         updateSummary(data.subtotal);
                         if (typeof updateCartBadge === 'function') updateCartBadge();
                     } else {
@@ -231,26 +266,44 @@
                 });
         }
 
-        // ACTUALIZAR RESUMEN
+        // ACTUALIZAR RESUMEN (rate 7)
         function updateSummary(subtotal) {
-            const ENVIO_GRATIS_DESDE = 500;
-            const ENVIO_COSTO = 20;
+            const ENVIO_GRATIS_DESDE = 71; // $71 USD ≈ Bs 500
+            const ENVIO_COSTO = 3; // $3 USD ≈ Bs 21
             let envio = subtotal >= ENVIO_GRATIS_DESDE ? 0 : (subtotal > 0 ? ENVIO_COSTO : 0);
-            let envioTexto = envio === 0 ? '<span class="wt-envio-gratis">🎉 ¡GRATIS!</span>' : 'Bs ' + envio.toFixed(2);
+            let envioTexto = envio === 0
+                ? '<span class="wt-envio-gratis">🎉 ¡GRATIS!</span>'
+                : '$' + envio.toFixed(2) + ' USD';
             const total = subtotal + envio;
 
             const subtotalEl = document.getElementById('summary-subtotal');
             const envioEl = document.getElementById('summary-envio');
             const totalEl = document.getElementById('summary-total');
 
-            if (subtotalEl) subtotalEl.textContent = 'Bs ' + subtotal.toFixed(2);
+            if (subtotalEl) subtotalEl.textContent = '$' + subtotal.toFixed(2) + ' USD';
             if (envioEl) envioEl.innerHTML = envioTexto;
-            if (totalEl) totalEl.textContent = 'Bs ' + total.toFixed(2);
+            if (totalEl) {
+                totalEl.innerHTML = `
+                            <span style="color:var(--rog-red); font-weight:800;">
+                                $${total.toFixed(2)}
+                            </span>
+                            <span class="price-bs-conversion" style="font-size:0.8rem; color:var(--text-secondary); display:block;">
+                                ≈ Bs ${(total * 7).toFixed(2)}
+                            </span>
+                        `;
+            }
 
             const envioInfo = document.querySelector('.wt-envio-info');
             if (subtotal > 0 && subtotal < ENVIO_GRATIS_DESDE) {
                 const faltan = (ENVIO_GRATIS_DESDE - subtotal).toFixed(2);
-                if (envioInfo) envioInfo.innerHTML = `🚚 Te faltan <strong>Bs ${faltan}</strong> para envío gratis`;
+                const faltanBs = (faltan * 7).toFixed(2);
+                if (envioInfo) {
+                    envioInfo.innerHTML = `
+                                🚚 Te faltan <strong>$${faltan} USD</strong> para envío gratis
+                                <br />
+                                <small>(≈ Bs ${faltanBs})</small>
+                            `;
+                }
             } else if (envioInfo) {
                 envioInfo.remove();
             }

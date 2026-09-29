@@ -259,7 +259,13 @@
 
                                 <div class="iris-catalog-card-footer">
                                     <div class="iris-catalog-card-price-block">
-                                        <span class="iris-catalog-card-price">Bs @item.Price.ToString("N2")</span>
+                                        <span class="iris-catalog-card-price">
+                                            <span class="price-usd">
+                                                <span class="price-usd-symbol">$</span>@item.Price.ToString("N2")
+                                                <span class="price-usd-tag">USD</span>
+                                            </span>
+                                            <span class="price-bs-conversion">Bs @((item.Price * 7).ToString("N2"))</span>
+                                        </span>
                                         @if (item.Stock > 0)
                                         {
                                             <span class="iris-catalog-card-stock in">✓ En stock (@item.Stock)</span>
