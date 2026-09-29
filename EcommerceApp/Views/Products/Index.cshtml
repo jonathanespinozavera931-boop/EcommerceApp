@@ -31,7 +31,10 @@
 <div class="iris-catalog">
     <div class="container">
 
-        <button id="mobileFilterBtn" class="iris-mobile-filter">☰ Categorías y Filtros</button>
+        <!-- BOTÓN FILTRO MÓVIL -->
+        <button id="mobileFilterBtn" class="iris-mobile-filter">
+            ☰ Categorías y Filtros
+        </button>
 
         <div class="iris-catalog-layout">
 
@@ -99,7 +102,9 @@
 
             <!-- LIMPIAR -->
             <div class="iris-sidebar-section">
-                <a asp-action="Index" class="iris-clear-filters" style="text-decoration: none;">🗑 Limpiar filtros</a>
+                <a asp-action="Index" class="iris-clear-filters" style="text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                    🗑 Limpiar filtros
+                </a>
             </div>
 
             <!-- PROMO -->
@@ -223,7 +228,7 @@
                              data-price="@item.Price"
                              data-stock="@item.Stock">
 
-                            <!-- IMAGEN (link al detalle) -->
+                            <!-- IMAGEN -->
                             <a asp-action="Details" asp-route-id="@item.Id" class="iris-catalog-card-img">
                                 @if (!string.IsNullOrEmpty(badgeText))
                                 {
@@ -274,7 +279,7 @@
                                     </button>
                                 </div>
 
-                                <!-- BOTONES DE ACCIÓN -->
+                                <!-- BOTÓN VER DETALLES -->
                                 <div class="iris-catalog-card-actions">
                                     <a asp-action="Details" asp-route-id="@item.Id" class="iris-btn-detail">
                                         👁 Ver Detalles
@@ -358,18 +363,37 @@
             cards.forEach(card => grid.appendChild(card));
         });
 
-        // ============ SIDEBAR MÓVIL ============
+        // ============ SIDEBAR MÓVIL (CORREGIDO) ============
         const mobileBtn = document.getElementById('mobileFilterBtn');
         const sidebar = document.getElementById('irisSidebar');
 
-        mobileBtn?.addEventListener('click', () => {
+        // Abrir/cerrar al hacer clic en el botón
+        mobileBtn?.addEventListener('click', (e) => {
+            e.stopPropagation();
             sidebar.classList.toggle('open');
         });
 
-        document.querySelectorAll('.iris-category-link').forEach(link => {
+        // Cerrar al hacer clic fuera del sidebar
+        document.addEventListener('click', (e) => {
+            if (sidebar?.classList.contains('open')) {
+                if (!sidebar.contains(e.target) && e.target !== mobileBtn && !mobileBtn?.contains(e.target)) {
+                    sidebar.classList.remove('open');
+                }
+            }
+        });
+
+        // Cerrar al hacer clic en una categoría
+        document.querySelectorAll('.iris-category-link, .iris-brand-chip').forEach(link => {
             link.addEventListener('click', () => {
-                sidebar.classList.remove('open');
+                sidebar?.classList.remove('open');
             });
+        });
+
+        // Cerrar al tocar ESC
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && sidebar?.classList.contains('open')) {
+                sidebar.classList.remove('open');
+            }
         });
 
         aplicarFiltros();

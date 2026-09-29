@@ -10387,50 +10387,84 @@ textarea.wt-form-control {
         box-shadow: 0 8px 20px rgba(255, 0, 60, 0.5);
         color: #FFFFFF;
     }
-
 /* ============================================================
    44. FIX DEFINITIVO: SIDEBAR CON SCROLL PROPIO
    ============================================================ */
 
-.iris-catalog-sidebar {
-    position: sticky !important;
-    top: 20px !important;
-    max-height: calc(100vh - 40px) !important;
-    overflow-y: auto !important;
-    overflow-x: hidden !important;
-    background: var(--bg-white) !important;
-    border: 1px solid var(--border-light) !important;
-    border-radius: var(--radius-lg) !important;
-    box-shadow: var(--shadow-xs) !important;
-    /* Scrollbar delgada */
-    scrollbar-width: thin;
-    scrollbar-color: #CBD5E1 transparent;
-}
-
-    /* Scrollbar Chrome / Edge */
-    .iris-catalog-sidebar::-webkit-scrollbar {
-        width: 8px;
+/* Desktop: sidebar sticky con scroll */
+@media (min-width: 993px) {
+    .iris-catalog-sidebar {
+        position: sticky !important;
+        top: 20px !important;
+        max-height: calc(100vh - 40px) !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+        background: var(--bg-white) !important;
+        border: 1px solid var(--border-light) !important;
+        border-radius: var(--radius-lg) !important;
+        box-shadow: var(--shadow-xs) !important;
+        scrollbar-width: thin;
+        scrollbar-color: #CBD5E1 transparent;
     }
 
-    .iris-catalog-sidebar::-webkit-scrollbar-track {
-        background: transparent;
-        margin: 6px 0;
-    }
-
-    .iris-catalog-sidebar::-webkit-scrollbar-thumb {
-        background: #CBD5E1;
-        border-radius: 4px;
-    }
-
-        .iris-catalog-sidebar::-webkit-scrollbar-thumb:hover {
-            background: #FF003C;
+        .iris-catalog-sidebar::-webkit-scrollbar {
+            width: 8px;
         }
 
-    /* El último elemento del sidebar tiene borde redondeado abajo */
-    .iris-catalog-sidebar > *:last-child {
-        border-bottom-left-radius: var(--radius-lg);
-        border-bottom-right-radius: var(--radius-lg);
+        .iris-catalog-sidebar::-webkit-scrollbar-track {
+            background: transparent;
+            margin: 6px 0;
+        }
+
+        .iris-catalog-sidebar::-webkit-scrollbar-thumb {
+            background: #CBD5E1;
+            border-radius: 4px;
+        }
+
+            .iris-catalog-sidebar::-webkit-scrollbar-thumb:hover {
+                background: #FF003C;
+            }
+}
+
+/* ══════════ MÓVIL / TABLET: sidebar como drawer ══════════ */
+@media (max-width: 992px) {
+    .iris-catalog-sidebar {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        bottom: 0 !important;
+        width: 300px !important;
+        max-width: 85vw !important;
+        max-height: 100vh !important;
+        height: 100vh !important;
+        z-index: 9999 !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+        transform: translateX(-105%) !important;
+        transition: transform 0.3s ease !important;
+        border-radius: 0 !important;
+        background: var(--bg-white) !important;
+        box-shadow: none !important;
+        visibility: hidden;
     }
+
+        .iris-catalog-sidebar.open {
+            transform: translateX(0) !important;
+            visibility: visible !important;
+            box-shadow: 4px 0 30px rgba(0, 0, 0, 0.4) !important;
+        }
+
+            /* Overlay oscuro detrás del sidebar */
+            .iris-catalog-sidebar.open::before {
+                content: '';
+                position: fixed;
+                inset: 0;
+                background: rgba(0, 0, 0, 0.5);
+                z-index: -1;
+                left: 100%;
+                width: 100vw;
+            }
+}
 
 /* ============================================================
    45. BOTÓN FLOTANTE - ASISTENTE DE VOZ IA
@@ -10994,4 +11028,104 @@ textarea.wt-form-control {
 
 .iris-mega-menu {
     z-index: 10000 !important;
+}
+
+/* ============================================================
+   53. RESPONSIVE MÓVIL MEJORADO
+   ============================================================ */
+
+@media (max-width: 992px) {
+    /* El layout del catálogo en móvil */
+    .iris-catalog-layout {
+        grid-template-columns: 1fr !important;
+        gap: 0 !important;
+    }
+
+    /* El botón de filtros se ve bien */
+    .iris-mobile-filter {
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        width: 100%;
+        padding: 14px;
+        background: linear-gradient(135deg, #FF003C, #D40032);
+        color: #FFFFFF;
+        border: none;
+        border-radius: var(--radius);
+        font-family: var(--font-heading);
+        font-weight: 700;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        cursor: pointer;
+        margin-bottom: 16px;
+        box-shadow: 0 8px 20px rgba(255, 0, 60, 0.3);
+    }
+
+    /* El contenido principal ocupa todo el ancho */
+    .iris-catalog-main {
+        width: 100% !important;
+        margin-left: 0 !important;
+    }
+
+    /* Botones flotantes más chicos */
+    .wt-voice-btn {
+        width: 52px !important;
+        height: 52px !important;
+    }
+
+    .wt-pwa-btn {
+        padding: 10px 14px !important;
+        font-size: 0.72rem !important;
+    }
+}
+
+@media (max-width: 600px) {
+    /* Grid de productos 2 columnas en móvil */
+    .iris-catalog-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 12px !important;
+    }
+
+    /* Tarjetas más compactas */
+    .iris-catalog-card-img {
+        padding: 12px !important;
+    }
+
+    .iris-catalog-card-body {
+        padding: 12px !important;
+    }
+
+    .iris-catalog-card-name {
+        font-size: 0.8rem !important;
+        min-height: 38px !important;
+    }
+
+    .iris-catalog-card-price {
+        font-size: 1rem !important;
+    }
+
+    .iris-catalog-card-cart {
+        width: 34px !important;
+        height: 34px !important;
+        font-size: 0.9rem !important;
+    }
+
+    /* Header del catálogo */
+    .iris-catalog-header {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        padding: 16px !important;
+        gap: 12px !important;
+    }
+
+    .iris-catalog-title {
+        font-size: 1.2rem !important;
+    }
+
+    /* Sidebar ocupa casi toda la pantalla */
+    .iris-catalog-sidebar {
+        width: 85vw !important;
+    }
 }
